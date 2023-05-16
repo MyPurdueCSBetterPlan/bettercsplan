@@ -1,74 +1,61 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
 
 function Login() {
     const navigate = useNavigate();
-    const [inputValue, setInputValue] = useState({
-        email: "",
-        password: "",
-    });
-    const { email, password } = inputValue;
-    const handleOnChange = (e) => {
-        const { name, value } = e.target;
-        setInputValue({
-            ...inputValue,
-            [name]: value,
-        });
-    };
 
-    const handleError = (err) =>
-        toast.error(err, {
-            position: "bottom-left",
-        });
-    const handleSuccess = (msg) =>
-        toast.success(msg, {
-            position: "bottom-left",
-        });
+    //called when login is unsuccessful
+    function handleError(message) {
+        console.log(message)
+    }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const { data } = await axios.post(
-                "http://localhost:4000/login",
-                {
-                    ...inputValue,
-                },
-                { withCredentials: true }
-            );
-            console.log(data);
-            const { success, message } = data;
-            if (success) {
-                handleSuccess(message);
-                setTimeout(() => {
-                    navigate("/");
-                }, 1000);
-            } else {
-                handleError(message);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-        setInputValue({
-            ...inputValue,
-            email: "",
-            password: "",
-        });
-    };
+    //called when login is successful
+    function handleSuccess(message) {
+        console.log(message)
+    }
+
+    //called when user presses submit button
+    function handleSubmit(e) {
+
+        //prevents page reload
+        e.preventDefault()
+
+        //gets username and password from input fields as an object
+        const credentials = Object.fromEntries(new FormData(e.target).entries())
+
+        //sends username and password to server, goes to "/" on success and displays error message on failure
+        axios.post(
+            "http://localhost:8000/login",
+            {
+                "username": credentials.username,
+                "password": credentials.password,
+            },
+            {withCredentials: true}
+        )
+            .then((response) => {
+                const {message, success} = response.data
+                if (success) {
+                    handleSuccess(message)
+                    setTimeout(() => navigate("/"), 1000)
+                } else {
+                    handleError(message)
+                }
+            })
+            .catch((error) => console.log(error))
+    }
 
     return (
-        <div className="form_container">
+        <div>
             <h2>Login Account</h2>
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label htmlFor="email">Email</label>
+                    <label htmlFor="username">Username</label>
                     <input
-                        type="email"
-                        name="email"
-                        value={email}
-                        placeholder="Enter your email"
-                        onChange={handleOnChange}
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter your username"
                     />
                 </div>
                 <div>
@@ -76,17 +63,12 @@ function Login() {
                     <input
                         type="password"
                         name="password"
-                        value={password}
                         placeholder="Enter your password"
-                        onChange={handleOnChange}
                     />
                 </div>
                 <button type="submit">Submit</button>
-                <span>
-          Already have an account? <Link to={"/signup"}>Signup</Link>
-        </span>
+                <span>Don't have an account? <Link to={"/signup"}>Signup</Link></span>
             </form>
-            <ToastContainer />
         </div>
     );
 }

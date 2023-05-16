@@ -1,49 +1,59 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 
 function Home() {
     const navigate = useNavigate();
     const [cookies, removeCookie] = useCookies([]);
     const [username, setUsername] = useState("");
+
+    //Checks if the user is logged in or not
     useEffect(() => {
-        const verifyCookie = async () => {
-            if (cookies.token === null) {
-                navigate("/login");
-            }
-            const { data } = await axios.post(
-                "http://localhost:8000",
-                {},
-                { withCredentials: true }
-            );
-            const { status, user } = data;
-            setUsername(user);
-            return status
-                ? toast(`Hello ${user}`, {
-                    position: "top-right",
-                })
-                : (removeCookie("token"), navigate("/login"));
-        };
-        verifyCookie();
+
+        //if no token exists, go to login page
+        if (cookies.token === null) {
+            navigate("/login")
+            return
+        }
+
+        //sends post req to see if token is valid, welcomes the user or goes to login page based on result
+        axios.post(
+            "http://localhost:8000",
+            {},
+            { withCredentials: true }
+        )
+            .then((response) => {
+                const {status, user} = response.data
+                setUsername(user)
+                if (status) {
+                    console.log("success!")
+                } else {
+                    removeCookie("token", [])
+                    navigate("/login")
+                }
+            })
+            .catch(() => {
+                console.log("could not communicate with the server")
+            })
     }, [cookies, navigate, removeCookie]);
-    const Logout = () => {
-        removeCookie("token");
+
+    //logs the user out
+    function Logout(){
+        removeCookie("token", []);
         navigate("/signup");
-    };
+    }
+
     return (
         <>
-            <div className="home_page">
+            <div>
                 <h4>
-                    {" "}
                     Welcome <span>{username}</span>
                 </h4>
                 <button onClick={Logout}>LOGOUT</button>
             </div>
-            <ToastContainer />
         </>
-    );
-};
+    )
+}
 
 export default Home;
