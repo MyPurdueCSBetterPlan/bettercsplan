@@ -1,3 +1,11 @@
+/*
+ * UserModel.js
+ *
+ * This class will...
+ *
+ * @bettercsplan, 2023
+ */
+
 const mongoose = require("mongoose")
 const bcrypt = require("bcrypt")
 
@@ -17,7 +25,7 @@ const userSchema = new mongoose.Schema({
 })
 
 //before saving user, hash their password
-userSchema.pre("save", async function() {
+userSchema.pre("save", async function () {
     this.password = await bcrypt.hash(this.password, 12)
 })
 

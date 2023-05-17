@@ -41,7 +41,7 @@ function Home() {
     //logs the user out
     function Logout(){
         removeCookie("token", []);
-        navigate("/signup");
+        navigate("/login");
     }
 
     return (

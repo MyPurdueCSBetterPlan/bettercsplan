@@ -24,6 +24,12 @@ function Signup() {
         //gets username and password from input fields as an object
         const credentials = Object.fromEntries(new FormData(e.target).entries())
 
+        //check for password confirmation
+        if (credentials.password !== credentials.confirmPassword) {
+            handleError("Passwords do not match")
+            return
+        }
+
         //sends username and password to server, goes to "/" on success and displays error message on failure
         axios.post(
             "http://localhost:8000/signup",
@@ -65,6 +71,15 @@ function Signup() {
                         id="password"
                         name="password"
                         placeholder="Enter your password"
+                    />
+                </div>
+                <div>
+                    <label htmlFor="confirmPassword">Confirm Password</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        placeholder="Confirm your password"
                     />
                 </div>
                 <button type="submit">Submit</button>
