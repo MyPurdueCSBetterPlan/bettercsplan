@@ -1,4 +1,10 @@
-
+/*
+ * AuthRoute.js
+ *
+ * This class will...
+ *
+ * @bettercsplan, 2023
+ */
 
 const { Signup, Login, userVerification} = require('../Controllers/AuthController')
 const router = require('express').Router()

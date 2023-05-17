@@ -23,7 +23,7 @@ module.exports.Signup = async (req, res, next) => {
             httpOnly: false,
         })
 
-        res.status(201).json({ message: "User signed in successfully", success: true, user })
+        res.status(201).json({ message: "User signed-in successfully", success: true, user })
 
         next()
     } catch (error) {

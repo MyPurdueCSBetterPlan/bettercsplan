@@ -1,3 +1,11 @@
+/*
+ * ClassModel.js
+ *
+ * This class will...
+ *
+ * @bettercsplan, 2023
+ */
+
 const mongoose = require("mongoose")
 
 const classSchema = new mongoose.Schema({
