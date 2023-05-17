@@ -14,6 +14,15 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: new Date(),
     },
+
+    //Each subarray contains the class names for a particular semester
+    schedule: {
+        type: [[String]]
+    },
+    openToSummer: {
+        type: Boolean,
+        default: false
+    }
 })
 
 //before saving user, hash their password
