@@ -5,6 +5,8 @@ const app = express()
 require("dotenv").config()
 const cookieParser = require("cookie-parser")
 const authRoute = require("./Routes/AuthRoute")
+const createRoute = require("./Routes/CreateRoute")
+const homeRoute = require("./Routes/HomeRoute")
 const { MONGO_URL, PORT } = process.env
 
 //attempts to connect to MongoDB Atlas
@@ -31,10 +33,15 @@ app.use(
 )
 
 //parses cookies from requests into an object and makes them available in req.cookies
-app.use(cookieParser());
+app.use(cookieParser())
 
 //parses json data from request body and makes it available in req.body
-app.use(express.json());
+app.use(express.json())
 
 //requests enabled for authentication routes
-app.use("/", authRoute);
+app.use("/", authRoute)
+
+//requests enabled for create routes
+app.use("/", createRoute)
+
+app.use("/", homeRoute)

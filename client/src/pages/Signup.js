@@ -37,7 +37,7 @@ function Signup() {
                 const {message, success, user} = response.data
                 if (success) {
                     handleSuccess(message)
-                    setTimeout(() => navigate("/"), 1000)
+                    navigate("/")
                 } else {
                     handleError(message)
                 }

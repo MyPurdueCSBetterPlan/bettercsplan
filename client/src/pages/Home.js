@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import axios from "axios";
+import LogOut from "../components/LogOut"
 
 function Home() {
     const navigate = useNavigate();
@@ -17,17 +18,27 @@ function Home() {
             return
         }
 
-        //sends post req to see if token is valid, welcomes the user or goes to login page based on result
+        //sends post req to see if token is valid and if the user is new and acts accordingly
+        // either displays the user's schedule, goes back to login page, or takes them to create page
         axios.post(
             "http://localhost:8000",
             {},
             { withCredentials: true }
         )
             .then((response) => {
-                const {status, user} = response.data
+                const {status, user, schedule} = response.data
                 setUsername(user)
                 if (status) {
-                    console.log("success!")
+                    console.log("successfully logged in!")
+
+                    //set boolean variable depending on whether the user is new or not
+                    if(schedule.length !== 0) {
+                        console.log("existing user")
+                    }
+                    else {
+                        console.log("new user")
+                        navigate("/create")
+                    }
                 } else {
                     removeCookie("token", [])
                     navigate("/login")
@@ -38,19 +49,13 @@ function Home() {
             })
     }, [cookies, navigate, removeCookie]);
 
-    //logs the user out
-    function Logout(){
-        removeCookie("token", []);
-        navigate("/signup");
-    }
-
     return (
         <>
             <div>
                 <h4>
                     Welcome <span>{username}</span>
                 </h4>
-                <button onClick={Logout}>LOGOUT</button>
+                <LogOut />
             </div>
         </>
     )

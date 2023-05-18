@@ -37,7 +37,7 @@ function Login() {
                 const {message, success} = response.data
                 if (success) {
                     handleSuccess(message)
-                    setTimeout(() => navigate("/"), 1000)
+                    navigate("/")
                 } else {
                     handleError(message)
                 }
