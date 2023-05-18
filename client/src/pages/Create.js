@@ -2,13 +2,17 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import LogOut from "../components/LogOut";
+import Class from "../components/Class";
+import SearchFilter from "../components/SearchFilter";
+
 
 function Create() {
     const navigate = useNavigate();
     const [tracksInput, setTracksInput] = useState(false)
     const [takenInput, setTakenInput] = useState(false)
+    const [classesList, setClassesList] = useState([])
 
-    const saveTracks = (e) => {
+    function saveTracks(e) {
         e.preventDefault()
         const tracks = Object.fromEntries(new FormData(e.target).entries())
 
@@ -25,6 +29,7 @@ function Create() {
                 .then((response) => {
                     if(response.status) {
                         setTracksInput(true)
+                        getAllClasses()
                     } else {
                         console.log("error while updating tracks")
                     }
@@ -32,6 +37,21 @@ function Create() {
                 .catch(() => console.log("connection failed?"))
         }
 
+    }
+
+    function getAllClasses() {
+        axios.get(
+            "http://localhost:8000/classes",
+            {withCredentials: true}
+        )
+            .then((response) => {
+
+                //array containing all the class names
+                const classes = response.data.classes
+                setClassesList(classes)
+            })
+            .catch(() => console.log("connection failed?"))
+        console.log("run")
     }
 
     if (tracksInput === false) {
@@ -75,6 +95,7 @@ function Create() {
         return (
             <div>
                 Choose your already taken courses
+                <SearchFilter options={classesList}/>
                 <LogOut />
             </div>
         )
