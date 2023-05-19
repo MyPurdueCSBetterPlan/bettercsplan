@@ -5,10 +5,10 @@ const {TOKEN_KEY} = process.env
 const jwt = require("jsonwebtoken")
 
 //called when post request is sent to "/signup"
-module.exports.Signup = async (req, res, next) => {
+module.exports.Signup = async (req, res) => {
     try {
         const {username, password} = req.body
-        const existingUser = await User.findOne({username})
+        const existingUser = await User.findOne({username: username})
 
         if (existingUser !== null) {
             return res.json({ message: "User already exists" })
@@ -23,16 +23,14 @@ module.exports.Signup = async (req, res, next) => {
             httpOnly: false,
         })
 
-        res.status(201).json({ message: "User signed-in successfully", success: true, user })
-
-        next()
+        res.status(201).json({ message: "User signed in successfully", success: true, user })
     } catch (error) {
         console.error(error)
     }
 }
 
 //called when post request is sent to "/login"
-module.exports.Login = async (req, res, next) => {
+module.exports.Login = async (req, res) => {
     try {
         const { username, password } = req.body
 
@@ -40,7 +38,7 @@ module.exports.Login = async (req, res, next) => {
             return res.json({message:'All fields are required'})
         }
 
-        const user = await User.findOne({ username })
+        const user = await User.findOne({username: username })
         if(user === null){
             return res.json({message:'Incorrect password or username'})
         }
@@ -59,33 +57,8 @@ module.exports.Login = async (req, res, next) => {
         });
 
         res.status(201).json({message: "User logged in successfully", success: true})
-
-        next()
     } catch (error) {
         console.error(error)
     }
 }
 
-//called when post request is sent to "/"
-module.exports.userVerification = (req, res) => {
-    const token = req.cookies.token
-    if (token === null) {
-        return res.json({ status: false })
-    }
-
-    //decrypts the secret token using the token key
-    //gives false status when there is an error or the username is null, gives true status otherwise
-    jwt.verify(token, TOKEN_KEY, async (err, decoded) => {
-        if (err !== null) {
-            return res.json({ status: false })
-        } else {
-            const user = await User.findById(decoded.id)
-            if (user !== null) {
-                return res.json({status: true, user: user.username, schedule: user.schedule})
-            }
-            else {
-                return res.json({status: false})
-            }
-        }
-    })
-}
