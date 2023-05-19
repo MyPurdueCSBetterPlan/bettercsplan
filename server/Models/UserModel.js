@@ -20,10 +20,7 @@ const userSchema = new mongoose.Schema({
     taken: {
         type: [String]
     },
-    timeGrad: {
-        type: Number
-    },
-    maxCredits: {
+    years: {
         type: Number
     },
     openToSummer: {
