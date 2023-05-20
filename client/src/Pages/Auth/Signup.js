@@ -21,7 +21,7 @@ function Signup() {
 
         //check for password confirmation
         if (credentials.password !== credentials.confirmPassword) {
-            ErrorAction("Ensure that the password are correct");
+            ErrorAction("Ensure that the passwords match.");
             return
         }
 

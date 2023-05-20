@@ -8,7 +8,7 @@
 
 const express = require('express');
 const router = express.Router();
-const {Signup, Login, userVerification} = require('../../Controllers/Auth/AuthController');
+const {Signup, Login} = require('../../Controllers/Auth/AuthController');
 const googleUser = require('../../Controllers/Auth/GoogleController');
 const passport = require('passport');
 
