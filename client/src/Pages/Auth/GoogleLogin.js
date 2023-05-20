@@ -4,7 +4,11 @@ import alert from "sweetalert2";
 //It will handle the Google interaction with the server
 export function GoogleLogin(dispatch, navigate) {
 
-    const googleWindow = window.open('http://localhost:8000/google', 'Google Login', 'popup=yes');
+    const googleWindow = window.open(
+        'http://localhost:8000/google',
+        'Google Login',
+        'popup=yes'
+    );
 
     // Check if the Google login window is closed at regular intervals
     const checkWindowClosed = setInterval(() => {

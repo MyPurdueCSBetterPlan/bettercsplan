@@ -9,6 +9,7 @@
 const User = require("../../Models/UserModel");
 const {createSecretToken} = require("../../util/SecretToken");
 const bcrypt = require("bcrypt");
+const validator = require("validator");
 
 // called when post request is sent to "/signup"
 module.exports.Signup = async (req, res) => {
@@ -20,11 +21,19 @@ module.exports.Signup = async (req, res) => {
         }
 
         if (email === null || password === null || name == null) {
-            return res.json({message: "All fields are required."});
+            return res.json({message: "All fields are required.", status: false});
         }
 
         if (email === '' || password === '' || name === '') {
-            return res.json({ message: "All fields are required." });
+            return res.json({message: "All fields are required.", status: false});
+        }
+
+        if (!validator.isEmail(email)) {
+            return res.json({message: "Ensure that you are writing a valid email.", status: false});
+        }
+
+        if (!validator.isStrongPassword(password)) {
+            return res.json({message: "Ensure that you are writing a valid password.", status: false});
         }
 
         // Regular sign-up process
@@ -56,21 +65,21 @@ module.exports.Login = async (req, res) => {
         const {email, password} = req.body;
 
         if (email === null || password === null) {
-            return res.json({message: "All fields are required."});
+            return res.json({message: "All fields are required.", status: false});
         }
         if (email === '' || password === '') {
-            return res.json({ message: "All fields are required." });
+            return res.json({message: "All fields are required.", status: false});
         }
 
         const existingUser = await User.findOne({email: email});
 
         if (existingUser === null) {
-            return res.json({message: "Incorrect password or email."});
+            return res.json({message: "Incorrect password or email.", status: false});
         }
 
         //if the user contains ID, means needs to log in with google
         if (existingUser.googleID) {
-            return res.json({message: "Please use Google login for this account."});
+            return res.json({message: "Please use Google login for this account.", status: false});
         }
 
 
@@ -78,7 +87,7 @@ module.exports.Login = async (req, res) => {
         const auth = await bcrypt.compare(password, existingUser.password);
 
         if (!auth) {
-            return res.json({message: "Incorrect password or email."});
+            return res.json({message: "Incorrect password or email.", status: false});
         }
 
         // sends secret token value as part of the cookie header to the client

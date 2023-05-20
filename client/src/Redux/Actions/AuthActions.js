@@ -1,6 +1,4 @@
 import alert from "sweetalert2";
-import {useNavigate} from "react-router-dom";
-import {useCookies} from "react-cookie";
 
 // Handle the Success action (data send by the server)
 const SuccessAction = (message, name) => {

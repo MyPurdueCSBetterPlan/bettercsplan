@@ -41,7 +41,7 @@ const googleUser = async (profile) => {
         let existingUser = await User.findOne({googleID: profile.id});
         if (!existingUser) {
             //Creates random password
-            const hashedPassword = await bcrypt.hash(generatorPassword(), 10);
+            const hashedPassword = await bcrypt.hash(generatorPassword(), 12);
             existingUser = await User.create({
                 email: profile.emails[0].value,
                 name: profile.name.givenName,
