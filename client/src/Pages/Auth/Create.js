@@ -1,9 +1,8 @@
 import {useState} from "react";
-import LogOut from "../components/LogOut";
-import ChooseClasses from "../components/ChooseClasses";
-import ChooseTracks from "../components/ChooseTracks";
-import ChooseOptions from "../components/ChooseOptions";
-
+import LogOut from "../../Components/Auth/LogOut";
+import ChooseClasses from "../../Components/Auth/ChooseClasses";
+import ChooseTracks from "../../Components/Auth/ChooseTracks";
+import ChooseOptions from "../../Components/Auth/ChooseOptions";
 
 function Create() {
 
@@ -15,23 +14,22 @@ function Create() {
             <div>
                 Choose your tracks
                 <ChooseTracks next={() => setTracksInput(true)}/>
-                <LogOut />
+                <LogOut/>
             </div>
         )
-    }
-    else if (classInput === false) {
+    } else if (classInput === false) {
         return (
             <div>
                 Choose your already taken courses
                 <ChooseClasses next={() => setClassInput(true)}/>
-                <LogOut />
+                <LogOut/>
             </div>
         )
     } else {
         return (
             <div>
-                <ChooseOptions />
-                <LogOut />
+                <ChooseOptions/>
+                <LogOut/>
             </div>
 
         )

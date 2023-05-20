@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {useCookies} from "react-cookie";
 import axios from "axios";
-import LogOut from "../components/LogOut"
+import LogOut from "../../Components/Auth/LogOut"
 
 function Home() {
     const navigate = useNavigate();
     const [cookies, removeCookie] = useCookies([]);
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
 
     //Checks if the user is logged in or not
     useEffect(() => {
@@ -23,19 +23,18 @@ function Home() {
         axios.post(
             "http://localhost:8000",
             {},
-            { withCredentials: true }
+            {withCredentials: true}
         )
             .then((response) => {
                 const {status, user, schedule} = response.data
-                setUsername(user)
+                setEmail(email)
                 if (status) {
                     console.log("successfully logged in!")
 
                     //set boolean variable depending on whether the user is new or not
-                    if(schedule.length !== 0) {
+                    if (schedule.length !== 0) {
                         console.log("existing user")
-                    }
-                    else {
+                    } else {
                         console.log("new user")
                         navigate("/create")
                     }
@@ -53,9 +52,9 @@ function Home() {
         <>
             <div>
                 <h4>
-                    Welcome <span>{username}</span>
+                    Welcome <span>{email}</span>
                 </h4>
-                <LogOut />
+                <LogOut/>
             </div>
         </>
     )

@@ -12,10 +12,11 @@ const cors = require("cors")
 const app = express()
 require("dotenv").config()
 const cookieParser = require("cookie-parser")
-const authRoute = require("./Routes/AuthRoute")
-const createRoute = require("./Routes/CreateRoute")
-const homeRoute = require("./Routes/HomeRoute")
-const { MONGO_URL, PORT } = process.env
+const authRoute = require("./Routes/Auth/AuthRoute")
+const createRoute = require("./Routes/Auth/CreateRoute")
+const homeRoute = require("./Routes/Home/HomeRoute")
+const passport = require("passport");
+const {MONGO_URL, PORT} = process.env
 
 //attempts to connect to MongoDB Atlas
 mongoose
@@ -39,6 +40,8 @@ app.use(
         credentials: true,
     })
 )
+
+app.use(passport.initialize());
 
 //parses cookies from requests into an object and makes them available in req.cookies
 app.use(cookieParser())

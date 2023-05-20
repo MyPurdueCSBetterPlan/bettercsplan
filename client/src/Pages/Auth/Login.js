@@ -1,19 +1,15 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
+import {GoogleLogin} from "./GoogleLogin";
+import GoogleButton from 'react-google-button'
+import {useDispatch} from "react-redux";
+import {ErrorAction, SuccessAction} from "../../Redux/Actions/AuthActions";
+
 
 function Login() {
     const navigate = useNavigate();
-
-    //called when login is unsuccessful
-    function handleError(message) {
-        console.log(message)
-    }
-
-    //called when login is successful
-    function handleSuccess(message) {
-        console.log(message)
-    }
+    const dispatch = useDispatch();
 
     //called when user presses submit button
     function handleSubmit(e) {
@@ -23,26 +19,31 @@ function Login() {
 
         //gets username and password from input fields as an object
         const credentials = Object.fromEntries(new FormData(e.target).entries())
-
-        //sends username and password to server, goes to "/" on success and displays error message on failure
+        //sends email and password to server, goes to "/" on success and displays error message on failure
         axios.post(
             "http://localhost:8000/login",
             {
-                "username": credentials.username,
+                "email": credentials.email,
                 "password": credentials.password,
             },
             {withCredentials: true}
         )
             .then((response) => {
-                const {message, success} = response.data
+                const {message, success, name} = response.data
                 if (success) {
-                    handleSuccess(message)
                     navigate("/")
+                    SuccessAction(message, name);
                 } else {
-                    handleError(message)
+                    navigate("/login")
+                    ErrorAction(message);
                 }
             })
             .catch((error) => console.log(error))
+    }
+
+    // called when the user clicks on the Google sign-in button
+    function handleGoogleLogin() {
+        GoogleLogin(dispatch, navigate);
     }
 
     return (
@@ -50,12 +51,12 @@ function Login() {
             <h2>Login Account</h2>
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label htmlFor="username">Username</label>
+                    <label htmlFor="email">Email</label>
                     <input
                         type="text"
-                        id="username"
-                        name="username"
-                        placeholder="Enter your username"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
                     />
                 </div>
                 <div>
@@ -63,12 +64,18 @@ function Login() {
                     <input
                         type="password"
                         name="password"
+                        id="password"
                         placeholder="Enter your password"
                     />
                 </div>
                 <button type="submit">Submit</button>
                 <span>Don't have an account? <Link to={"/signup"}>Signup</Link></span>
             </form>
+            <GoogleButton
+                label='Sign up with Google'
+                type="light"
+                onClick={() => {handleGoogleLogin()}}
+            />
         </div>
     );
 }
