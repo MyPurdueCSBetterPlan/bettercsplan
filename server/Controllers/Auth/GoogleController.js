@@ -1,9 +1,17 @@
+/*
+ * GoogleController.js
+ *
+ * This class will...
+ *
+ * @bettercsplan, 2023
+ */
+
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const User = require("../Models/UserModel");
-const {createSecretToken} = require("../util/SecretToken");
+const User = require("../../Models/UserModel");
+const {createSecretToken} = require("../../util/SecretToken");
 const bcrypt = require("bcrypt");
-const {generatorPassword} = require("../Generators/PasswordGenerator");
+const {generatorPassword} = require("../../util/PasswordGenerator");
 require("dotenv").config();
 const {CLIENT_ID, CLIENT_SECRET} = process.env;
 
@@ -22,7 +30,6 @@ passport.use('google',
             callbackURL: "http://localhost:8000/auth/google/callback",
         },
         function (accessToken, refreshToken, profile, done) {
-            console.log("test")
             return done(null, profile)
         }
     )
@@ -36,11 +43,11 @@ const googleUser = async (profile) => {
             //Creates random password
             const hashedPassword = await bcrypt.hash(generatorPassword(), 10);
             existingUser = await User.create({
-                username: profile.emails[0].value,
+                email: profile.emails[0].value,
+                name: profile.name.givenName,
                 googleID: profile.id,
                 password: hashedPassword
             });
-            console.log("Finished process of creating account");
         }
         const token = createSecretToken(existingUser._id);
         //Returns the data of the user created
@@ -50,8 +57,9 @@ const googleUser = async (profile) => {
             token: token,
             user: {
                 id: existingUser._id,
+                name: existingUser.name,
                 googleId: existingUser.googleID,
-                username: existingUser.username,
+                email: existingUser.email,
             }
         }
     } catch (error) {

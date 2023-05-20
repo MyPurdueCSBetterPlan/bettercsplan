@@ -3,20 +3,12 @@ import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 import {GoogleLogin} from "./GoogleLogin";
 import {useDispatch} from "react-redux";
+import GoogleButton from "react-google-button";
+import {ErrorAction, SuccessAction} from "../../Redux/Actions/AuthActions";
 
 function Signup() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
-    //called when signup is unsuccessful
-    function handleError(message) {
-        console.log(message)
-    }
-
-    //called when signup is successful
-    function handleSuccess(message) {
-        console.log(message)
-    }
 
     //called when user presses submit button
     function handleSubmit(e) {
@@ -29,7 +21,7 @@ function Signup() {
 
         //check for password confirmation
         if (credentials.password !== credentials.confirmPassword) {
-            handleError("Passwords do not match")
+            ErrorAction("Ensure that the password are correct");
             return
         }
 
@@ -37,27 +29,27 @@ function Signup() {
         axios.post(
             "http://localhost:8000/signup",
             {
-                "username": credentials.username,
+                "email": credentials.email,
+                "name": credentials.name,
                 "password": credentials.password,
             },
             {withCredentials: true}
         )
             .then((response) => {
-                const {message, success, user} = response.data
+                const {message, success, name} = response.data
                 if (success) {
-                    handleSuccess(message)
-                    setTimeout(() => navigate("/"), 1000)
+                    SuccessAction(message, name);
+                    navigate("/")
                 } else {
-                    handleError(message)
+                    navigate("/signup")
+                    ErrorAction(message);
                 }
             })
             .catch((error) => console.log(error))
     }
 
-    // called when the user clicks on the Google sign-up button
     // called when the user clicks on the Google sign-in button
-    function handleGoogleLogin(e) {
-        e.preventDefault()
+    function handleGoogleLogin() {
         GoogleLogin(dispatch, navigate);
     }
 
@@ -66,12 +58,21 @@ function Signup() {
             <h2>Signup Account</h2>
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label htmlFor="username">Username</label>
+                    <label htmlFor="name">Nickname</label>
                     <input
                         type="text"
-                        id="username"
-                        name="username"
-                        placeholder="Enter your username"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your Nickname"
+                    />
+                </div>
+                <div>
+                    <label htmlFor="email">Email</label>
+                    <input
+                        type="text"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
                     />
                 </div>
                 <div>
@@ -95,7 +96,11 @@ function Signup() {
                 <button type="submit">Submit</button>
                 <span>Already have an account? <Link to={"/login"}>Login</Link></span>
             </form>
-            <button onClick={handleGoogleLogin}>Sign up with Google</button>
+            <GoogleButton
+                label='Sign up with Google'
+                type="light"
+                onClick={() => {handleGoogleLogin()}}
+            />
         </div>
     )
 }

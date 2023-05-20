@@ -10,9 +10,12 @@ const mongoose = require("mongoose")
 const bcrypt = require("bcrypt")
 
 const userSchema = new mongoose.Schema({
-    username: {
+    email: {
         type: String,
-        required: [true, "Your username is required"]
+        required: [true, "Your email is required"]
+    },
+    name: {
+        type: String,
     },
     googleID: {
         type: String,
@@ -25,14 +28,22 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: new Date(),
     },
-
-    //Each subarray contains the class names for a particular semester
-    schedule: {
-        type: [[String]]
+    tracks: {
+        type: [String]
+    },
+    taken: {
+        type: [String]
+    },
+    years: {
+        type: Number
     },
     openToSummer: {
         type: Boolean,
         default: false
+    },
+    //Each subarray contains the class names for a particular semester
+    schedule: {
+        type: [[String]]
     }
 })
 

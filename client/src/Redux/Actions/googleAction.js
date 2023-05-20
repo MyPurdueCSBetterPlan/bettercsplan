@@ -1,20 +1,20 @@
 import {
-    setShowOverlay,
     setUser,
 } from '../Reducers/AuthReducer';
-import Swal from "sweetalert2";
+import alert from "sweetalert2";
 
 // Handle the Google user action (data send by the server)
 const googleUserAction = (payload) => {
     return async function (dispatch) {
         try {
             dispatch(setUser(payload)); // Dispatch an action to set the user data
-            // Show a success message using Swal (a library for pop-up messages)
-            await Swal.fire({
-                title: `Hello ${payload.user.username}!`,
+            // Show a success message using alert (a library for pop-up messages)
+            await alert.fire({
+                title: `Hello ${payload.user.name}!`,
                 text: 'You logged  in correctly!',
                 icon: 'success',
-                timer: 10000,
+                showConfirmButton: false,
+                timer: 1500,
             });
         } catch (error) {
             console.log(error)

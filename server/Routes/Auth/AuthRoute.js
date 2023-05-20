@@ -8,14 +8,12 @@
 
 const express = require('express');
 const router = express.Router();
+const {Signup, Login, userVerification} = require('../../Controllers/Auth/AuthController');
+const googleUser = require('../../Controllers/Auth/GoogleController');
 const passport = require('passport');
-const {Signup, Login, userVerification} = require('../Controllers/AuthController');
-const googleUser = require('../Controllers/GoogleController');
-const User = require("../Models/UserModel");
 
 router.post('/signup', Signup);
 router.post('/login', Login);
-router.post('/', userVerification);
 
 ///Use the 'google' authentication strategy provided by Passport.js
 router.get(
@@ -44,7 +42,7 @@ router.get(
                 httpOnly: false,
             });
             res.send(`
-                <html>
+                <html lang="en">
                     <body>
                         <script>
                             window.onload = function() {
@@ -59,7 +57,7 @@ router.get(
           `);
         } catch (error) {
             res.send(`
-                <html>
+                <html lang="en">
                     <body>
                         <script>
                             window.onload = function() {
