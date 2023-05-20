@@ -72,7 +72,7 @@ function Login() {
                 <span>Don't have an account? <Link to={"/signup"}>Signup</Link></span>
             </form>
             <GoogleButton
-                label='Sign up with Google'
+                label='Login with Google'
                 type="light"
                 onClick={() => {handleGoogleLogin()}}
             />
