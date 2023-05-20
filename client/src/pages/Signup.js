@@ -51,6 +51,29 @@ function Signup() {
             .catch((error) => console.log(error))
     }
 
+    // called when the user clicks on the Google sign-up button
+    function handleGoogleSignup(e) {
+        console.log("Here")
+        window.location.href = 'http://localhost:8000/google';
+        e.preventDefault()
+        // axios.post(
+        //   'http://localhost:8000/google',
+        ///    {},
+        //  {withCredentials: true}
+        //  )
+        //.then((response) => {
+        // const {message, success, user} = response.data
+        // if (success) {
+        //     console.log("Gets logged")
+        //     handleSuccess(message)
+        //     setTimeout(() => navigate("/"), 100)
+        //  } else {
+        //        handleError(message)
+        //  }
+        //  })
+        // .catch((error) => console.log(error))
+    }
+
     return (
         <div>
             <h2>Signup Account</h2>
@@ -85,6 +108,7 @@ function Signup() {
                 <button type="submit">Submit</button>
                 <span>Already have an account? <Link to={"/login"}>Login</Link></span>
             </form>
+            <button onClick={handleGoogleSignup}>Sign up with Google</button>
         </div>
     )
 }

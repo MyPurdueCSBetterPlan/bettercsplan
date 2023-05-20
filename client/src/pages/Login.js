@@ -1,6 +1,7 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
+
 
 function Login() {
     const navigate = useNavigate();
@@ -45,6 +46,27 @@ function Login() {
             .catch((error) => console.log(error))
     }
 
+    // called when the user clicks on the Google sign-in button
+    function handleGoogleLogin() {
+        window.location.href = 'http://localhost:8000/google';
+       // axios.post(
+         //   'http://localhost:8000/google',
+        ///    {},
+          //  {withCredentials: true}
+      //  )
+            //.then((response) => {
+               // const {message, success, user} = response.data
+               // if (success) {
+               //     console.log("Gets logged")
+               //     handleSuccess(message)
+               //     setTimeout(() => navigate("/"), 100)
+              //  } else {
+            //        handleError(message)
+              //  }
+          //  })
+           // .catch((error) => console.log(error))
+    }
+
     return (
         <div>
             <h2>Login Account</h2>
@@ -67,6 +89,7 @@ function Login() {
                     />
                 </div>
                 <button type="submit">Submit</button>
+                <button onClick={handleGoogleLogin}>Login with Google</button>
                 <span>Don't have an account? <Link to={"/signup"}>Signup</Link></span>
             </form>
         </div>

@@ -14,6 +14,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "Your username is required"]
     },
+    googleID: {
+        type: String,
+    },
     password: {
         type: String,
         required: [true, "Your password is required"]

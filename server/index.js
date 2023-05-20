@@ -13,6 +13,7 @@ const app = express()
 require("dotenv").config()
 const cookieParser = require("cookie-parser")
 const authRoute = require("./Routes/AuthRoute")
+const passport = require("passport");
 const { MONGO_URL, PORT } = process.env
 
 //attempts to connect to MongoDB Atlas
@@ -37,6 +38,8 @@ app.use(
         credentials: true,
     })
 )
+
+app.use(passport.initialize());
 
 //parses cookies from requests into an object and makes them available in req.cookies
 app.use(cookieParser());
