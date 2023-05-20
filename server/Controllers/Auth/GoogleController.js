@@ -46,7 +46,7 @@ const googleUser = async (profile) => {
                 email: profile.emails[0].value,
                 name: profile.name.givenName,
                 googleID: profile.id,
-                password: hashedPassword
+                password: hashedPassword,
             });
         }
         const token = createSecretToken(existingUser._id);
