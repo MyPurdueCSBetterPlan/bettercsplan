@@ -1,10 +1,13 @@
 import React from "react";
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
+import {GoogleLogin} from "./GoogleLogin";
+import {useDispatch} from "react-redux";
 
 
 function Login() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     //called when login is unsuccessful
     function handleError(message) {
@@ -37,34 +40,21 @@ function Login() {
             .then((response) => {
                 const {message, success} = response.data
                 if (success) {
-                    handleSuccess(message)
-                    setTimeout(() => navigate("/"), 1000)
+                    setTimeout(() => navigate("/"), 300);
+                    console.log("Gets logged");
+                    handleSuccess(message);
                 } else {
-                    handleError(message)
+                    setTimeout(() => navigate("/"), 300);
+                    handleError(message);
                 }
             })
             .catch((error) => console.log(error))
     }
 
     // called when the user clicks on the Google sign-in button
-    function handleGoogleLogin() {
-        window.location.href = 'http://localhost:8000/google';
-       // axios.post(
-         //   'http://localhost:8000/google',
-        ///    {},
-          //  {withCredentials: true}
-      //  )
-            //.then((response) => {
-               // const {message, success, user} = response.data
-               // if (success) {
-               //     console.log("Gets logged")
-               //     handleSuccess(message)
-               //     setTimeout(() => navigate("/"), 100)
-              //  } else {
-            //        handleError(message)
-              //  }
-          //  })
-           // .catch((error) => console.log(error))
+    function handleGoogleLogin(e) {
+        e.preventDefault()
+        GoogleLogin(dispatch, navigate);
     }
 
     return (

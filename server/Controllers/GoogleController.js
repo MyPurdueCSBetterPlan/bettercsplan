@@ -22,6 +22,7 @@ passport.use('google',
             callbackURL: "http://localhost:8000/auth/google/callback",
         },
         function (accessToken, refreshToken, profile, done) {
+            console.log("test")
             return done(null, profile)
         }
     )
@@ -34,15 +35,15 @@ const googleUser = async (profile) => {
         if (!existingUser) {
             //Creates random password
             const hashedPassword = await bcrypt.hash(generatorPassword(), 10);
-            console.log(profile.email);
             existingUser = await User.create({
-                username: profile.name.givenName,
+                username: profile.emails[0].value,
                 googleID: profile.id,
                 password: hashedPassword
             });
             console.log("Finished process of creating account");
         }
         const token = createSecretToken(existingUser._id);
+        //Returns the data of the user created
         return {
             error: null,
             authenticated: true,
@@ -50,7 +51,7 @@ const googleUser = async (profile) => {
             user: {
                 id: existingUser._id,
                 googleId: existingUser.googleID,
-                name: existingUser.name,
+                username: existingUser.username,
             }
         }
     } catch (error) {
