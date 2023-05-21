@@ -9,7 +9,6 @@
 const express = require('express');
 const router = express.Router();
 const {Signup, Login} = require('../../Controllers/Auth/AuthController');
-const googleUser = require('../../Controllers/Auth/GoogleController');
 const passport = require('passport');
 const {GoogleUserLogin, GoogleUserSignUp} = require("../../Controllers/Auth/GoogleController");
 
