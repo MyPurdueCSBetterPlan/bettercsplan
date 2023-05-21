@@ -2,11 +2,11 @@ import {googleUserAction} from "../../Redux/Actions/googleAction";
 import alert from "sweetalert2";
 
 //It will handle the Google interaction with the server
-export function GoogleLogin(dispatch, navigate) {
+export function GoogleAuth(dispatch, navigate, mode) {
 
     const googleWindow = window.open(
-        'http://localhost:8000/google',
-        'Google Login',
+        `http://localhost:8000/google/${mode}`,
+        'Google Auth',
         'popup=yes'
     );
 
@@ -21,7 +21,7 @@ export function GoogleLogin(dispatch, navigate) {
     window.addEventListener('message', async function (event) {
         if (event.origin !== 'http://localhost:8000') return;
         if (event.data.type === 'AUTH_SUCCESS') {
-            dispatch(googleUserAction(event.data.payload));
+            dispatch(googleUserAction(event.data.payload, mode));
             navigate('/')
         } else if (event.data.type === 'AUTH_ERROR') {
             await alert.fire({

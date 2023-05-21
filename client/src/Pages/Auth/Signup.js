@@ -1,7 +1,7 @@
 import React from "react";
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
-import {GoogleLogin} from "./GoogleLogin";
+import {GoogleAuth} from "./GoogleAuth";
 import {useDispatch} from "react-redux";
 import GoogleButton from "react-google-button";
 import {ErrorAction, SuccessAction} from "../../Redux/Actions/AuthActions";
@@ -50,7 +50,7 @@ function Signup() {
 
     // called when the user clicks on the Google sign-in button
     function handleGoogleLogin() {
-        GoogleLogin(dispatch, navigate);
+        GoogleAuth(dispatch, navigate, "signup");
     }
 
     return (
@@ -99,7 +99,9 @@ function Signup() {
             <GoogleButton
                 label='Sign up with Google'
                 type="light"
-                onClick={() => {handleGoogleLogin()}}
+                onClick={() => {
+                    handleGoogleLogin()
+                }}
             />
         </div>
     )

@@ -21,13 +21,26 @@ passport.serializeUser((user, done) => {
     done(null, user._id);
 });
 
-//
-passport.use('google',
+
+passport.use('login',
     new GoogleStrategy(
         {
             clientID: CLIENT_ID,
             clientSecret: CLIENT_SECRET,
-            callbackURL: "http://localhost:8000/auth/google/callback",
+            callbackURL: "http://localhost:8000/auth/google/login/callback",
+        },
+        function (accessToken, refreshToken, profile, done) {
+            return done(null, profile)
+        }
+    )
+);
+
+passport.use('signup',
+    new GoogleStrategy(
+        {
+            clientID: CLIENT_ID,
+            clientSecret: CLIENT_SECRET,
+            callbackURL: "http://localhost:8000/auth/google/signup/callback",
         },
         function (accessToken, refreshToken, profile, done) {
             return done(null, profile)
@@ -36,7 +49,27 @@ passport.use('google',
 );
 
 //This function will create a Google account for the database.
-const googleUser = async (profile) => {
+const GoogleUserLogin = async (profile) => {
+    let existingUser = await User.findOne({googleID: profile.id});
+    if (existingUser === null) {
+        return null;
+    }
+
+    const token = createSecretToken(existingUser._id);
+    return {
+        error: null,
+        authenticated: true,
+        token: token,
+        user: {
+            id: existingUser._id,
+            name: existingUser.name,
+            googleId: existingUser.googleID,
+            email: existingUser.email,
+        }
+    }
+}
+
+const GoogleUserSignUp = async (profile) => {
     try {
         let existingUser = await User.findOne({googleID: profile.id});
         if (!existingUser) {
@@ -68,4 +101,7 @@ const googleUser = async (profile) => {
 }
 
 
-module.exports = googleUser;
+module.exports = {
+    GoogleUserLogin,
+    GoogleUserSignUp
+};
