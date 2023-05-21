@@ -35,7 +35,6 @@ router.get(
         try {
             // sends secret token value as part of the cookie header to the client and creates google account for
             // database
-            console.log("test2")
             const result = await googleUser(req.user);
             res.cookie("token", result.token, {
                 withCredentials: true,
