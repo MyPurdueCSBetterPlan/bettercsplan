@@ -13,6 +13,7 @@ const validator = require("validator");
 
 // called when post request is sent to "/signup"
 module.exports.Signup = async (req, res) => {
+    let token;
     try {
         const {email, name, password} = req.body;
         const existingUser = await User.findOne({email: email});
@@ -42,7 +43,7 @@ module.exports.Signup = async (req, res) => {
             name: name,
             password: password,
         });
-        const token = createSecretToken(user._id);
+        token = createSecretToken(user._id);
 
         // sends secret token value as part of the cookie header to the client
         res.cookie("token", token, {
@@ -54,6 +55,13 @@ module.exports.Signup = async (req, res) => {
             .status(201)
             .json({message: "You signed up correctly.", success: true, name: user.name});
     } catch (error) {
+        if (token !== null) {
+            res.clearCookie("token", token, {
+                withCredentials: true,
+                httpOnly: false,
+            });
+        }
+        res.status(401).json({message: "Something went wrong...", success: false});
         console.error(error);
     }
 };
@@ -61,6 +69,7 @@ module.exports.Signup = async (req, res) => {
 
 // called when post request is sent to "/login"
 module.exports.Login = async (req, res) => {
+    let token;
     try {
         const {email, password} = req.body;
 
@@ -77,7 +86,7 @@ module.exports.Login = async (req, res) => {
             return res.json({message: "Incorrect password or email.", status: false});
         }
 
-        //if the user contains ID, means needs to log in with google
+        //if the user contains ID, means needs to log in with Google
         if (existingUser.googleID) {
             return res.json({message: "Please use Google login for this account.", status: false});
         }
@@ -91,7 +100,7 @@ module.exports.Login = async (req, res) => {
         }
 
         // sends secret token value as part of the cookie header to the client
-        const token = createSecretToken(existingUser._id);
+        token = createSecretToken(existingUser._id);
         res.cookie("token", token, {
             withCredentials: true,
             httpOnly: false,
@@ -99,6 +108,13 @@ module.exports.Login = async (req, res) => {
 
         res.status(201).json({message: "You logged in correctly.", success: true, name: existingUser.name});
     } catch (error) {
+        if (token !== null) {
+            res.clearCookie("token", token, {
+                withCredentials: true,
+                httpOnly: false,
+            });
+        }
+        res.status(401).json({message: "Something went wrong...", success: false});
         console.error(error);
     }
 };

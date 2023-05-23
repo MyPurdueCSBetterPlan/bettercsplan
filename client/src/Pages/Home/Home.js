@@ -7,7 +7,7 @@ import LogOut from "../../Components/Auth/LogOut"
 function Home() {
     const navigate = useNavigate();
     const [cookies, removeCookie] = useCookies([]);
-    const [email, setEmail] = useState("");
+    const [name, setName] = useState("");
 
     //Checks if the user is logged in or not
     useEffect(() => {
@@ -26,11 +26,9 @@ function Home() {
             {withCredentials: true}
         )
             .then((response) => {
-                const {status, user, schedule} = response.data
-                setEmail(email)
+                const {status, name, schedule} = response.data
+                setName(name)
                 if (status) {
-                    console.log("successfully logged in!")
-
                     //set boolean variable depending on whether the user is new or not
                     if (schedule.length !== 0) {
                         console.log("existing user")
@@ -44,7 +42,7 @@ function Home() {
                 }
             })
             .catch(() => {
-                console.log("could not communicate with the server")
+                window.location.href = "*";
             })
     }, [cookies, navigate, removeCookie]);
 
@@ -52,7 +50,7 @@ function Home() {
         <>
             <div>
                 <h4>
-                    Welcome <span>{email}</span>
+                    Welcome <span>{name}</span>
                 </h4>
                 <LogOut/>
             </div>

@@ -38,7 +38,7 @@ function Login() {
                     ErrorAction(message);
                 }
             })
-            .catch((error) => console.log(error))
+            .catch(() => window.location.href = "*")
     }
 
     // called when the user clicks on the Google sign-in button

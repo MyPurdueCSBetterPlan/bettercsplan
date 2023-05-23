@@ -97,6 +97,7 @@ const GoogleUserSignUp = async (profile) => {
         }
     } catch (error) {
         console.log(error);
+        return null;
     }
 }
 

@@ -32,6 +32,7 @@ const ErrorAction = (message) => {
     }
 };
 
+
 // Handle the LogOut action (data send by the server)
 const LogOutAction = (removeCookie, navigate) => {
     try {
