@@ -21,7 +21,7 @@ cursor = db_con.cursor()
 cursor.execute("""
             CREATE TABLE classesList(class_id, full_name, description, credit_hours, semesters_offered, prereqs, 
             core_wc, core_il, core_oc, core_sci, core_sts, core_mqr, core_hum, core_bss, sci_wc, sci_tw, sci_tp,
-            sci_team, sci_lang, sci_lab, sci_math, sci_stat, sci_comp, sci_gen)
+            sci_team, sci_lang, sci_lab, sci_math, sci_stat, sci_comp, sci_gis, sci_gen)
             """)
 
 # open webpage with selenium
@@ -32,13 +32,18 @@ driver.get("https://catalog.purdue.edu/content.php?catoid=15&navoid=19001")
 # iterates through every page
 
 
-for page in range(2, 81):
+for page in range(1, 82):
+
+    if page != 1:
+        print("clicked next page")
+        next_page = driver.find_element(By.CSS_SELECTOR, 'a[aria-label="Page {}"]'.format(page))
+        next_page.click()
 
     # clicks each class to show description and credit hours
     class_links = driver.find_elements(By.CSS_SELECTOR, 'td.width > a')
     for link in class_links:
         link.click()
-        time.sleep(0.2)
+        time.sleep(0.3)
 
     # parses text for each class
     classes = driver.find_elements(By.CSS_SELECTOR, 'td.coursepadding > div:nth-of-type(2)')
@@ -84,6 +89,5 @@ for page in range(2, 81):
                         """, [cls_id, cls_full_name, cls_desc, cls_hours, cls_sem])
             db_con.commit()
 
-    print("clicked next page")
-    next_page = driver.find_element(By.CSS_SELECTOR, 'a[aria-label="Page {}"]'.format(page))
-    next_page.click()
+
+
