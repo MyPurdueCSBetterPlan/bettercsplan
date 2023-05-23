@@ -157,9 +157,20 @@ for course in no_sts_rows:
         #""", ["sci_sts", class_id])
 
 # lab science
-lab_resp = requests.get("https://www.purdue.edu/science/Current_Students/curriculum_and_degree_requirements/approved"
-                        "-sequences-in-laboratory-science.html")
+lab_resp = requests.get("https://catalog.purdue.edu/preview_program.php?catoid=8&poid=9739")
 lab_soup = BeautifulSoup(lab_resp.content, 'html5lib')
+
+course_rows = lab_soup.find_all('div', class_='acalog-core')[0].find('ul').find_all('a')
+
+for i in range(len(course_rows)):
+    row_entry = course_rows[i].getText()
+    class_id = row_entry[:row_entry.index(' ', 5)]
+    print(class_id)
+    # cursor.execute("""
+    #         UPDATE classesList SET ? = true WHERE class_id = ?
+    #         """, ["sci_lab", class_id])
+
+
 
 # math
 # i don't think this is even necessary cuz calc is required for cs
