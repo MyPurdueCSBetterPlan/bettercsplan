@@ -115,6 +115,7 @@ for course in no_sts_rows:
             #UPDATE classesList SET ? = false WHERE class_id = ?
         #""", ["sci_sts", class_id])
 
+ #hello
 # lab science
 lab_resp = requests.get("https://www.purdue.edu/science/Current_Students/curriculum_and_degree_requirements/approved"
                         "-sequences-in-laboratory-science.html")
