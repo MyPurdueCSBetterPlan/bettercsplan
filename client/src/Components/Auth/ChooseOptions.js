@@ -1,5 +1,6 @@
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+const {REACT_APP_SERVER_URL} = process.env;
 
 function ChooseOptions() {
     const navigate = useNavigate();
@@ -12,7 +13,7 @@ function ChooseOptions() {
             summer = true
         }
         axios.post(
-            "http://localhost:8000/options",
+            `${REACT_APP_SERVER_URL}/options`,
             {
                 "years": options.years,
                 "summer": summer

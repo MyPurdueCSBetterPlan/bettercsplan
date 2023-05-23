@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
 import axios from "axios";
 import LogOut from "../../Components/Auth/LogOut"
+const {REACT_APP_SERVER_URL} = process.env;
 
 function Home() {
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ function Home() {
         //sends post req to see if token is valid and if the user is new and acts accordingly
         // either displays the user's schedule, goes back to login page, or takes them to create page
         axios.post(
-            "http://localhost:8000",
+            `${REACT_APP_SERVER_URL}`,
             {},
             {withCredentials: true}
         )

@@ -5,6 +5,7 @@ import {GoogleAuth} from "./GoogleAuth";
 import {useDispatch} from "react-redux";
 import GoogleButton from "react-google-button";
 import {ErrorAction, SuccessAction} from "../../Redux/Actions/AuthActions";
+const {REACT_APP_SERVER_URL} = process.env;
 
 function Signup() {
     const navigate = useNavigate();
@@ -27,7 +28,7 @@ function Signup() {
 
         //sends username and password to server, goes to "/" on success and displays error message on failure
         axios.post(
-            "http://localhost:8000/signup",
+            `${REACT_APP_SERVER_URL}/signup`,
             {
                 "email": credentials.email,
                 "name": credentials.name,

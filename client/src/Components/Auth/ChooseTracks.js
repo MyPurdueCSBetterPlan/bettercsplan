@@ -1,4 +1,5 @@
 import axios from "axios";
+const {REACT_APP_SERVER_URL} = process.env;
 
 function ChooseTracks(props) {
 
@@ -11,7 +12,7 @@ function ChooseTracks(props) {
             console.log("Select at least one track")
         } else {
             axios.post(
-                "http://localhost:8000/tracks",
+                `${REACT_APP_SERVER_URL}/tracks`,
                 {
                     "tracks": Object.keys(tracks)
                 },

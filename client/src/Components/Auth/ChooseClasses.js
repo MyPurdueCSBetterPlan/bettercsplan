@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
+const {REACT_APP_SERVER_URL} = process.env;
 
 function ChooseClasses(props) {
     const [filter, setFilter] = useState("")
@@ -24,7 +25,7 @@ function ChooseClasses(props) {
     //initializes the unselected class list
     useEffect(() => {
         axios.get(
-            "http://localhost:8000/classes",
+            `${REACT_APP_SERVER_URL}/classes`,
             {withCredentials: true}
         )
             .then((response) => {
@@ -57,7 +58,7 @@ function ChooseClasses(props) {
     //sends array of selected classes to the server and moves on to next page if successful
     function saveClasses() {
         axios.post(
-            "http://localhost:8000/classes",
+            `${REACT_APP_SERVER_URL}/classes`,
             {
                 classes: selected
             },
