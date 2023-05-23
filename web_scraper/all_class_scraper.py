@@ -20,8 +20,8 @@ db_con = sqlite3.connect("../server/classes.db")
 cursor = db_con.cursor()
 cursor.execute("""
             CREATE TABLE classesList(class_id, full_name, description, credit_hours, semesters_offered, prereqs, 
-            core_wc, core_il, core_oc, core_sci, core_sts, core_mqr, core_hum, core_bss, sci_wc, sci_tw, sci_tp,
-            sci_team, sci_lang, sci_lab, sci_math, sci_stat, sci_comp, sci_gis, sci_gen)
+            core_wc, core_il, core_oc, core_sci, core_sts, core_mqr, core_hum, core_bss, sci_tw, sci_tp, sci_lang, 
+            sci_lab, sci_math, sci_stat, sci_sts, sci_gis, sci_gen)
             """)
 
 # open webpage with selenium

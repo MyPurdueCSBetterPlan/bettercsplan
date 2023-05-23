@@ -23,7 +23,6 @@ for index, panel in enumerate(panels):
     # skip matches where there are more css classes than just "panel"
     if len(panel["class"]) != 1:
         continue
-    print(core_req[index])
     for req in panel.children:
         words = req.text.split(" ")
 
@@ -31,7 +30,7 @@ for index, panel in enumerate(panels):
         if len(words) < 2:
             continue
 
-        # removes alphabetic characters from prefix
+        # removes non-alphabetic characters from prefix
         prefix = ''.join([i for i in words[0] if i.isalpha()])
 
         # removes non-numeric characters from number
@@ -40,9 +39,10 @@ for index, panel in enumerate(panels):
         class_id = prefix + " " + number
 
         # updates the table
-        cursor.execute("""
-            UPDATE classesList SET ? = true WHERE class_id = ?
-        """, [core_req[index], class_id])
+        cursor.execute(f"""
+            UPDATE classesList SET {core_req[index]} = "T" WHERE class_id = ?
+        """, [class_id])
+        db_con.commit()
 
 
 
