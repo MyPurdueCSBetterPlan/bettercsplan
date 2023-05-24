@@ -12,7 +12,7 @@ class Course(NamedTuple):
     ucProficiency: str
     semester: str
 
-url = "https://www.purdue.edu/science/Current_Students/general_education_elective_list.php"
+url = "https://selfservice.mypurdue.purdue.edu/prod/bwckctlg.p_disp_cat_term_date"
 
 request = Request(
     url,
@@ -23,7 +23,7 @@ page = urlopen(request)
 page_content_bytes = page.read()
 page_html = page_content_bytes.decode("utf-8")
 
-# print(page_html)
+print(page_html)
 
 soup = BeautifulSoup(page_html, "html.parser")
 
