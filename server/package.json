@@ -21,6 +21,8 @@
     "mongoose": "^7.1.1",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
+    "sqlite": "^4.2.1",
+    "sqlite3": "^5.1.6",
     "validator": "^13.9.0"
   },
   "devDependencies": {

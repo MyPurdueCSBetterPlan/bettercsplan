@@ -32,9 +32,19 @@ function ChooseOptions() {
             })
     }
 
-    //TODO: o mai o mai god
     function generateSchedule() {
-        console.log("o mai o mai god")
+        axios.get(
+            `${REACT_APP_SERVER_URL}/generate`,
+            {withCredentials: true}
+        )
+            .then((response) => {
+                if (response.status === 200) {
+                    console.log("schedule successfully generated")
+                } else {
+                    console.log("error during schedule generation")
+                }
+            })
+            .catch((err) => console.log(err))
         navigate("/")
     }
 

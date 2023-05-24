@@ -1,64 +1,46 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
+import "./ChooseClasses.css"
 import axios from "axios";
 const {REACT_APP_SERVER_URL} = process.env;
 
 function ChooseClasses(props) {
     const [filter, setFilter] = useState("")
     const [showClassList, setShowClassList] = useState(false)
-    const [unselected, setUnselected] = useState([])
+    const [classList, setClassList] = useState([])
     const [selected, setSelected] = useState([])
 
     //updates the filter value
     function handleChange(e) {
-        setFilter(e.target.value)
-    }
-
-    //shows list of filtered classes if the filter is not empty
-    useEffect(() => {
-        if (filter !== "") {
-            setShowClassList(true)
-        } else {
-            setShowClassList(false)
-        }
-    }, [filter])
-
-    //initializes the unselected class list
-    useEffect(() => {
-        axios.get(
+        axios.post(
             `${REACT_APP_SERVER_URL}/classes`,
+            {
+                "filter": e.target.value
+            },
             {withCredentials: true}
         )
-            .then((response) => {
-
+            .then(response => {
                 if (response.status === 200) {
-                    //array containing all the class names
-                    const classes = response.data.classes
-                    setUnselected(classes)
-                } else {
-                    console.log(response.status)
+                    setClassList(response.data.classes)
                 }
             })
-            .catch(() => console.log("connection failed?"))
-        console.log("run")
-    }, [])
-
+    }
 
     //selecting a class moves it from the unselected array to the selected array
     function select(e) {
-        setUnselected(unselected => unselected.filter(option => option !== e.target.textContent))
-        setSelected(selected => [...selected, e.target.textContent])
+        if (!selected.includes(e.target.textContent)) {
+            setSelected(selected => [...selected, e.target.textContent])
+        }
     }
 
     //unselecting a class moves it from the selected array to the unselected array
     function unselect(e) {
         setSelected(selected => selected.filter(option => option !== e.target.textContent))
-        setUnselected(unselected => [...unselected, e.target.textContent])
     }
 
     //sends array of selected classes to the server and moves on to next page if successful
     function saveClasses() {
         axios.post(
-            `${REACT_APP_SERVER_URL}/classes`,
+            `${REACT_APP_SERVER_URL}/taken`,
             {
                 classes: selected
             },
@@ -78,24 +60,23 @@ function ChooseClasses(props) {
 
 
     return (
-        <>
-            <p>Search Filter</p>
-            <input type="text" onChange={handleChange}/>
-            <div>
-                <p>Unselected</p>
-                {unselected.map((option, index) => {
-                    if (option.includes(filter.toUpperCase()) && showClassList) {
-                        return <p key={index} onClick={select}>{option}</p>
-                    }
-                })}
+        <div className="split">
+            <div className="filter">
+                <p>Search Filter</p>
+                <input type="text" onChange={handleChange}/>
+                <div className="filtered-classes">
+                    {classList.map((option, index) =>
+                        <p key={index} onClick={select}>{option}</p>
+                    )}
+                </div>
             </div>
-            <div>
+            <div className="selected">
                 <p>Selected</p>
                 {selected.map((option, index) =>
                     <p key={index} onClick={unselect}>{option}</p>)}
                 <button type="submit" onClick={saveClasses}>Submit</button>
             </div>
-        </>
+        </div>
     )
 }
 
