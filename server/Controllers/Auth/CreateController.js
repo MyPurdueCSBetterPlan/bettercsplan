@@ -115,7 +115,53 @@ module.exports.generate = async (req, res) => {
     PHYS 22000 + PHYS 22100
     PHYS 23300 + PHYS 23400
      */
-    let sci_lab = []
+    let biol1 = {
+        "BIOL 11000": false,
+        "BIOL 11100": false
+    }
+    let biol2 = {
+        "BIOL 12100": false,
+        "BIOL 13100": false,
+        "BIOL 13500": false
+    }
+    let chm1 = {
+        "CHM 11500": false,
+        "CHM 11600": false
+    }
+    let chm2 = {
+        "CHM 11500": false,
+        "CHM 12901": false
+    }
+    let chm3 = {
+        "CHM 12500": false,
+        "CHM 12600": false
+    }
+    let eaps = {
+        "EAPS 11100": false,
+        "EAPS 11200": false
+    }
+    let phys1 = {
+        "PHYS 17200": false,
+        "PHYS 27200": false
+    }
+    let phys2 = {
+        "PHYS 17200": false,
+        "PHYS 24100": false,
+        "PHYS 25200": false
+    }
+    let phys3 = {
+        "PHYS 17200": false,
+        "PHYS 22100": false
+    }
+    let phys4 = {
+        "PHYS 22000": false,
+        "PHYS 22100": false
+    }
+    let phys5 = {
+        "PHYS 23300": false,
+        "PHYS 23400": false
+    }
+    let sci_lab = [biol1, biol2, chm1, chm2, chm3, eaps, phys1, phys2, phys3, phys4, phys5]
 
     /*
     math requirement met be one-year single-variable calc sequence
@@ -181,16 +227,21 @@ module.exports.generate = async (req, res) => {
                     sci_tp = true
                 }
                 if (row.sci_lang === "F T") {
-                    sci_cult.append(classesTaken[i])
+                    sci_cult.push(classesTaken[i])
                 }
                 if (row.sci_lang === "T F") {
-                    sci_lang.append(classesTaken[i])
+                    sci_lang.push(classesTaken[i])
                 }
                 if (row.sci_lab === "T") {
-                    sci_lab.append(classesTaken[i])
+                    // if the sequence has the class, sets that class property to true
+                    sci_lab.forEach(sequence => {
+                        if (sequence.hasOwnProperty(classesTaken[i])) {
+                            sequence[classesTaken[i]] = true
+                        }
+                    })
                 }
                 if (row.sci_math === "T") {
-                    sci_math.append(classesTaken[i])
+                    sci_math.push(classesTaken[i])
                 }
                 if (row.sci_stat === "T") {
                     sci_stat = true
@@ -202,7 +253,7 @@ module.exports.generate = async (req, res) => {
                     sci_gis = true
                 }
                 if (row.gen_ed === "T") {
-                    sci_gen.append(classesTaken[i])
+                    sci_gen.push(classesTaken[i])
                 }
 
             }
@@ -215,44 +266,153 @@ module.exports.generate = async (req, res) => {
     //array to store all classes user must take in the future
     let coursesToTake = []
 
+    //adding courses to meet core requirements
+    if (!core_wc || !core_il) {
+        coursesToTake.push("SCLA 10100")
+    }
+    if (!core_oc || !sci_tp || !sci_tw) {
+        coursesToTake.push("COM 21700")
+    }
+    if (!core_sts || !sci_sts) {
+        coursesToTake.push("EAPS 10600")
+    }
+    if (!core_bss) {
+        coursesToTake.push("POL 13000")
+        //POL 13000 also meets culture req and gen ed
+        sci_cult.push("POL 13000")
+        sci_gen.push("POL 13000")
+    }
+    if (!core_hum) {
+        coursesToTake.push("PHIL 11000")
+        //PHIL 11000 also meets culture req
+        sci_cult.push("PHIL 11000")
+        sci_gen.push("PHIL 11000")
+    }
+
     //list of 3 easy culture classes in case user has already taken first 2
     const easy_cult = ["PHIL 11000", "POL13000", "HIST 10300"]
 
-    //adding courses to meet core requirements
-    if (!core_wc || !core_il) {
-        coursesToTake.append("SCLA 10100")
-    }
-    if (!core_oc || !sci_tp || !sci_tw) {
-        coursesToTake.append("COM 21700")
-    }
-    if (!core_sts || !sci_sts) {
-        coursesToTake.append("EAPS 10600")
-    }
-    if (!core_bss) {
-        coursesToTake.append("POL 13000")
-        //POL 13000 also meets culture req
-        sci_cult.append("POL 13000")
-    }
-    if (!core_hum) {
-        coursesToTake.append("PHIL 11000")
-        //PHIL 11000 also meets culture req
-        sci_cult.append("PHIL 11000")
-    }
+    //TODO: I think this logic needs to be fixed cuz i think the language classes need to be the same language
+    //TODO: so even if the person has 3 language courses taken, i dont think it counts if they are not the same lang
     if (sci_lang.length <= 3 && sci_cult.length <= 3 && ((sci_lang.length <= 2 && sci_cult.length < 1) || (sci_lang.length < 2 && sci_cult.length <= 2))) {
        if(sci_cult.length === 2 || sci_lang.length === 2) {
            //one cult
+           for (let i = 0; i < easy_cult.length; i++) {
+               if (!sci_cult.includes(easy_cult[i])) {
+                   coursesToTake.push(easy_cult[i])
+                   //all courses in easy_cult also meet gen-ed requirements
+                   sci_gen.push(easy_cult[i])
+                   break
+               }
+           }
        }
        else if (sci_cult.length === 1 && sci_lang.length === 1) {
-           //one lang
+           //one lang - assumes that the first language class taken has number 10100
+           const prefix = sci_lang[0].split(" ")[0]
+           coursesToTake.push(prefix + "10200")
        }
        else if (sci_cult.length === 1 && sci_lang.length === 0) {
            //two cult or two lang
+
+           //two cult
+           let numAdded = 0
+           for (let i = 0; i < easy_cult.length; i++) {
+               if (numAdded === 2) {
+                   break
+               }
+               if (!sci_cult.includes(easy_cult[i])) {
+                   coursesToTake.push(easy_cult[i])
+                   //all courses in easy_cult also meet gen-ed requirements
+                   sci_gen.push(easy_cult[i])
+                   numAdded++
+               }
+           }
        }
        else { //sci_cult.length === 0 && sci_lang.length === 1
            //(one lang + one cult) or two lang
-       }
 
+           //one lang + one cult - assumes that the first language class taken has number 10100
+           const prefix = sci_lang[0].split(" ")[0]
+           coursesToTake.push(prefix + "10200")
+           for (let i = 0; i < easy_cult.length; i++) {
+               if (!sci_cult.includes(easy_cult[i])) {
+                   coursesToTake.push(easy_cult[i])
+                   //all courses in easy_cult also meet gen-ed requirements
+                   sci_gen.push(easy_cult[i])
+                   break
+               }
+           }
+       }
     }
+
+    //checks if there exists a lab science sequence where all the classes are met
+    let meet_sci_lab = false
+    sci_lab.forEach(sequence => {
+        if (Object.values(sequence).every(value => (value === true))) {
+            meet_sci_lab = true
+        }
+    })
+
+    // if lab req is not met, sees if there are any sequences where only one class is needed to complete
+    // Otherwise, just adds eaps 11100 and eaps 11200 because they are easy lmao
+    if (!meet_sci_lab) {
+        let added = false
+        for (let i = 0; i < sci_lab.length; i++) {
+            const sequenceArr = Object.entries(sci_lab[i])
+            let falseCount = 0
+            let addClass
+            for (let j = 0; j < sequenceArr.length; j++) {
+                if (sequenceArr[j][1] === false) {
+                    falseCount++
+                    addClass = sequenceArr[j][0]
+                }
+            }
+            if (falseCount === 1) {
+                coursesToTake.push(addClass)
+                added = true
+                break
+            }
+        }
+        if (!added) {
+            coursesToTake.push("EAPS 11100")
+            coursesToTake.push("EAPS 11200")
+        }
+    }
+
+    if (!(sci_math.includes("MA 16100") || sci_math.includes("MA 16500")) ||
+        !(sci_math.includes("MA 16200") || sci_math.includes("MA 16600"))) {
+        if (!(sci_math.includes("MA 16100") || sci_math.includes("MA 16500"))) {
+            coursesToTake.push("MA 16100")
+        }
+        if (!(sci_math.includes("MA 16200") || sci_math.includes("MA 16600"))) {
+            coursesToTake.push("MA 16200")
+        }
+    }
+
+    if (!sci_stat) {
+        coursesToTake.push("STAT 35000")
+    }
+
+    if (!sci_gis) {
+        coursesToTake.push("EAPS 32700")
+    }
+
+    const easy_gen = ["PSY 12000", "PHIL 11000", "HIST 10300"]
+    if (sci_gen.length < 3) {
+        let numNeeded = 3 - sci_gen.length
+        let index = 0
+        while (numNeeded !== 0) {
+            if (!sci_gen.includes(easy_gen[i])) {
+                coursesToTake.push(easy_gen[i])
+                numNeeded--
+            }
+            index++
+        }
+    }
+
+    await User.updateOne({email: email}, {schedule: coursesToTake})
+    return res.status(200).json(coursesToTake)
+
 
 
 
