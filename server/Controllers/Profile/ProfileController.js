@@ -69,6 +69,11 @@ module.exports.ChangePassword = async (req, res) => {
         if (!auth) {
             return res.json({message: "Incorrect password...", status: false});
         }
+
+        if (!validator.isStrongPassword(password)) {
+            return res.json({message: "Ensure that you are writing a valid password.", status: false});
+        }
+
         user.password = password;
         res
             .status(201)
