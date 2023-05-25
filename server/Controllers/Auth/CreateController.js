@@ -84,12 +84,11 @@ module.exports.generate = async (req, res) => {
     let core_wc = false
     let core_il = false
     let core_oc = false
-    let core_sci = false
+    //let core_sci = false (unnecessary b/c College of Science lab science requirement meets this)
     let core_sts = false
 
-    //let core_mqr = false //unneccessary i think b/c calc meets this
+    //let core_mqr = false (unnecessary b/c College of Science math requirement meets this)
     let core_hum = false
-
     let core_bss = false
     let sci_tw = false
     let sci_tp = false
@@ -116,12 +115,21 @@ module.exports.generate = async (req, res) => {
     PHYS 22000 + PHYS 22100
     PHYS 23300 + PHYS 23400
      */
-
     let sci_lab = []
+
+    /*
+    math requirement met be one-year single-variable calc sequence
+    (MA 16100 or MA 16500) + (MA 16200 + MA 16600)
+     */
     let sci_math = []
-    let sci_stat = []
-    let sci_sts = []
-    let sci_gis = []
+
+    //STAT 35000 or STAT 51100
+    let sci_stat = false
+
+    let sci_sts = false
+    let sci_gis = false
+
+    //gen-ed requirement met by three courses from the gen-ed list
     let sci_gen = []
 
     const db = new sqlite3.Database("classes.db")
@@ -132,6 +140,8 @@ module.exports.generate = async (req, res) => {
     //iterates through already taken classes to see what requirements user has already met
     for (let i = 0; i < classesTaken.length; i++) {
         console.log(classesTaken[i])
+
+        //core and college of science requirements
         await db.get(
             "SELECT core_wc, core_il, core_oc, core_sci, core_sts, core_mqr, core_hum, core_bss, " +
             "sci_tw, sci_tp, sci_lang, sci_lab, sci_math, sci_stat, sci_sts, sci_gis, sci_gen FROM classesList WHERE " +
@@ -179,9 +189,71 @@ module.exports.generate = async (req, res) => {
                 if (row.sci_lab === "T") {
                     sci_lab.append(classesTaken[i])
                 }
+                if (row.sci_math === "T") {
+                    sci_math.append(classesTaken[i])
+                }
+                if (row.sci_stat === "T") {
+                    sci_stat = true
+                }
+                if (row.sci_sts === "T") {
+                    sci_sts = true
+                }
+                if (row.sci_gis === "T") {
+                    sci_gis = true
+                }
+                if (row.gen_ed === "T") {
+                    sci_gen.append(classesTaken[i])
+                }
 
             }
         )
+
+        //cs major and track requirements
+        //TODO: ^^
     }
+
+    //array to store all classes user must take in the future
+    let coursesToTake = []
+
+    //list of 3 easy culture classes in case user has already taken first 2
+    const easy_cult = ["PHIL 11000", "POL13000", "HIST 10300"]
+
+    //adding courses to meet core requirements
+    if (!core_wc || !core_il) {
+        coursesToTake.append("SCLA 10100")
+    }
+    if (!core_oc || !sci_tp || !sci_tw) {
+        coursesToTake.append("COM 21700")
+    }
+    if (!core_sts || !sci_sts) {
+        coursesToTake.append("EAPS 10600")
+    }
+    if (!core_bss) {
+        coursesToTake.append("POL 13000")
+        //POL 13000 also meets culture req
+        sci_cult.append("POL 13000")
+    }
+    if (!core_hum) {
+        coursesToTake.append("PHIL 11000")
+        //PHIL 11000 also meets culture req
+        sci_cult.append("PHIL 11000")
+    }
+    if (sci_lang.length <= 3 && sci_cult.length <= 3 && ((sci_lang.length <= 2 && sci_cult.length < 1) || (sci_lang.length < 2 && sci_cult.length <= 2))) {
+       if(sci_cult.length === 2 || sci_lang.length === 2) {
+           //one cult
+       }
+       else if (sci_cult.length === 1 && sci_lang.length === 1) {
+           //one lang
+       }
+       else if (sci_cult.length === 1 && sci_lang.length === 0) {
+           //two cult or two lang
+       }
+       else { //sci_cult.length === 0 && sci_lang.length === 1
+           //(one lang + one cult) or two lang
+       }
+
+    }
+
+
 
 }
