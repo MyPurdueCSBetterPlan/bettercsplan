@@ -57,8 +57,9 @@ function Home() {
                     Welcome <span>{name}</span>
                 </h4>
                 <div>
-                    {displaySchedule[0].map(className =>
-                    <p>{className}</p>)}
+                    {displaySchedule.length !== 0 ? (
+                        displaySchedule[0].map(className =>
+                    <p>{className}</p>)): <p>Empty Schedule</p>}
                 </div>
                 <button onClick={() => navigate("/create")}>Create new</button>
                 <LogOut/>

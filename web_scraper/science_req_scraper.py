@@ -78,7 +78,7 @@ for lang in lang_prefix:
             number = str(i) + "0" + str(j) + "00"
             class_id = lang + " " + number
             # print(class_id)
-            cursor.execute("""UPDATE classesList SET "sci_lang" = "T F F" WHERE class_id = ?""", [class_id])
+            cursor.execute("""UPDATE classesList SET "sci_lang" = "T F" WHERE class_id = ?""", [class_id])
             db_con.commit()
     if lang == "HEBR":
         for i in range(1, 3):
@@ -86,7 +86,7 @@ for lang in lang_prefix:
                 number = str(i) + "2" + str(j) + "00"
                 class_id = lang + " " + number
                 # print(class_id)
-                cursor.execute("""UPDATE classesList SET "sci_lang" = "T F F" WHERE class_id = ?""", [class_id])
+                cursor.execute("""UPDATE classesList SET "sci_lang" = "T F" WHERE class_id = ?""", [class_id])
                 db_con.commit()
 
 

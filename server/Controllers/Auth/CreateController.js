@@ -80,6 +80,9 @@ module.exports.generate = async (req, res) => {
         return res.status(400).json()
     }
 
+    //array to store all classes user must take in the future
+    let coursesToTake = []
+
     //variables to track requirements
     let core_wc = false
     let core_il = false
@@ -94,10 +97,9 @@ module.exports.generate = async (req, res) => {
     let sci_tp = false
 
     /*
-    culture and language requirement can be met in one of three ways:
+    culture and language requirement can be met in three ways but only 2 do not require advisor approval:
     1. 3 language courses
     2. 2 language courses and 1 culture course
-    3. 3 culture courses
      */
     let sci_cult = []
     let sci_lang = []
@@ -163,11 +165,7 @@ module.exports.generate = async (req, res) => {
     }
     let sci_lab = [biol1, biol2, chm1, chm2, chm3, eaps, phys1, phys2, phys3, phys4, phys5]
 
-    /*
-    math requirement met be one-year single-variable calc sequence
-    (MA 16100 or MA 16500) + (MA 16200 + MA 16600)
-     */
-    let sci_math = []
+    //let sci_math = [] will take care of math when considering cs requirements
 
     //STAT 35000 or STAT 51100
     let sci_stat = false
@@ -183,88 +181,120 @@ module.exports.generate = async (req, res) => {
     //gets the classes the user has already taken
     const classesTaken = user.taken
 
+    //tracks user selected
+    const tracks = user.tracks
+
     //iterates through already taken classes to see what requirements user has already met
     for (let i = 0; i < classesTaken.length; i++) {
-        console.log(classesTaken[i])
 
         //core and college of science requirements
-        await db.get(
-            "SELECT core_wc, core_il, core_oc, core_sci, core_sts, core_mqr, core_hum, core_bss, " +
-            "sci_tw, sci_tp, sci_lang, sci_lab, sci_math, sci_stat, sci_sts, sci_gis, sci_gen FROM classesList WHERE " +
-            "class_id = ?",
-            [classesTaken[i]],
-            (err, row) => {
-                if (row.core_wc === "T") {
-                    core_wc = true
+        await new Promise((resolve, reject) => {
+            db.get(
+                "SELECT core_wc, core_il, core_oc, core_sci, core_sts, core_mqr, core_hum, core_bss, " +
+                "sci_tw, sci_tp, sci_lang, sci_lab, sci_math, sci_stat, sci_sts, sci_gis, sci_gen FROM classesList WHERE " +
+                "class_id = ?",
+                [classesTaken[i]],
+                (err, row) => {
+                    if (row.core_wc === "T") {
+                        core_wc = true
+                    }
+                    if (row.core_il === "T") {
+                        core_il = true
+                    }
+                    if (row.core_oc === "T") {
+                        core_oc = true
+                    }
+                    if (row.core_sts === "T") {
+                        core_sts = true
+                    }
+                    /*
+                    if (row.core_mqr === "T") {
+                        core_mqr = true
+                    }
+                     */
+                    if (row.core_hum === "T") {
+                        core_hum = true
+                    }
+                    if (row.core_bss === "T") {
+                        core_bss = true
+                    }
+                    if (row.sci_tw === "T") {
+                        sci_tw = true
+                    }
+                    if (row.sci_tp === "T") {
+                        sci_tp = true
+                    }
+                    if (row.sci_lang === "F T") {
+                        sci_cult.push(classesTaken[i])
+                    }
+                    if (row.sci_lang === "T F") {
+                        sci_lang.push(classesTaken[i])
+                    }
+                    if (row.sci_lab === "T") {
+                        // if the sequence has the class, sets that class property to true
+                        sci_lab.forEach(sequence => {
+                            if (sequence.hasOwnProperty(classesTaken[i])) {
+                                sequence[classesTaken[i]] = true
+                            }
+                        })
+                    }
+                    if (row.sci_stat === "T") {
+                        sci_stat = true
+                    }
+                    if (row.sci_sts === "T") {
+                        sci_sts = true
+                    }
+                    if (row.sci_gis === "T") {
+                        sci_gis = true
+                    }
+                    if (row.gen_ed === "T") {
+                        sci_gen.push(classesTaken[i])
+                    }
+                    resolve()
                 }
-                if (row.core_il === "T") {
-                    core_il = true
-                }
-                if (row.core_oc === "T") {
-                    core_oc = true
-                }
-                if (row.core_sci === "T") {
-                    core_sci = true
-                }
-                if (row.core_sts === "T") {
-                    core_sts = true
-                }
-                /*
-                if (row.core_mqr === "T") {
-                    core_mqr = true
-                }
-                 */
-                if (row.core_hum === "T") {
-                    core_hum = true
-                }
-                if (row.core_bss === "T") {
-                    core_bss = true
-                }
-                if (row.sci_tw === "T") {
-                    sci_tw = true
-                }
-                if (row.sci_tp === "T") {
-                    sci_tp = true
-                }
-                if (row.sci_lang === "F T") {
-                    sci_cult.push(classesTaken[i])
-                }
-                if (row.sci_lang === "T F") {
-                    sci_lang.push(classesTaken[i])
-                }
-                if (row.sci_lab === "T") {
-                    // if the sequence has the class, sets that class property to true
-                    sci_lab.forEach(sequence => {
-                        if (sequence.hasOwnProperty(classesTaken[i])) {
-                            sequence[classesTaken[i]] = true
-                        }
-                    })
-                }
-                if (row.sci_math === "T") {
-                    sci_math.push(classesTaken[i])
-                }
-                if (row.sci_stat === "T") {
-                    sci_stat = true
-                }
-                if (row.sci_sts === "T") {
-                    sci_sts = true
-                }
-                if (row.sci_gis === "T") {
-                    sci_gis = true
-                }
-                if (row.gen_ed === "T") {
-                    sci_gen.push(classesTaken[i])
-                }
-
-            }
-        )
-
-        //cs major and track requirements
-        //TODO: ^^
+            )
+        })
     }
 
-    //array to store all classes user must take in the future
-    let coursesToTake = []
+    //cs math requirements
+    let calc1 = false
+    let calc2 = false
+    let calc3 = false
+    let linear = false
+    for (let i = 0; i < classesTaken.length; i++) {
+        if (classesTaken[i] === "MA 16100" || classesTaken[i] === "MA 16500") {
+            calc1 = true
+        }
+        else if (classesTaken[i] === "MA 16200" || classesTaken[i] === "MA 16600") {
+            calc2 = true
+        }
+        else if (classesTaken[i] === "MA 26100" || classesTaken[i] === "MA 27101") {
+            calc3 = true
+        }
+        else if (classesTaken[i] === "MA 26500" || classesTaken[i] === "MA 35100") {
+            linear = true
+        }
+    }
+
+    //array to store classes to meet all tracks
+    let trackCourses = []
+    for (let i = 0; i < tracks; i++) {
+
+    }
+
+    //adding cs math requirements
+    if (!calc1) {
+        coursesToTake.push("MA 16100")
+    }
+    if (!calc2) {
+        coursesToTake.push("MA 16200")
+    }
+    if (!calc3) {
+        coursesToTake.push("MA 26100")
+    }
+    if (!linear) {
+        coursesToTake.push("MA 26500")
+    }
 
     //adding courses to meet core requirements
     if (!core_wc || !core_il) {
@@ -278,73 +308,14 @@ module.exports.generate = async (req, res) => {
     }
     if (!core_bss) {
         coursesToTake.push("POL 13000")
-        //POL 13000 also meets culture req and gen ed
-        sci_cult.push("POL 13000")
+        //POL 13000 also meets gen ed
         sci_gen.push("POL 13000")
     }
     if (!core_hum) {
         coursesToTake.push("PHIL 11000")
-        //PHIL 11000 also meets culture req
-        sci_cult.push("PHIL 11000")
+        //PHIL 11000 also meets gen ed
         sci_gen.push("PHIL 11000")
     }
-
-    //list of 3 easy culture classes in case user has already taken first 2
-    const easy_cult = ["PHIL 11000", "POL13000", "HIST 10300"]
-
-    //TODO: I think this logic needs to be fixed cuz i think the language classes need to be the same language
-    //TODO: so even if the person has 3 language courses taken, i dont think it counts if they are not the same lang
-    if (sci_lang.length <= 3 && sci_cult.length <= 3 && ((sci_lang.length <= 2 && sci_cult.length < 1) || (sci_lang.length < 2 && sci_cult.length <= 2))) {
-       if(sci_cult.length === 2 || sci_lang.length === 2) {
-           //one cult
-           for (let i = 0; i < easy_cult.length; i++) {
-               if (!sci_cult.includes(easy_cult[i])) {
-                   coursesToTake.push(easy_cult[i])
-                   //all courses in easy_cult also meet gen-ed requirements
-                   sci_gen.push(easy_cult[i])
-                   break
-               }
-           }
-       }
-       else if (sci_cult.length === 1 && sci_lang.length === 1) {
-           //one lang - assumes that the first language class taken has number 10100
-           const prefix = sci_lang[0].split(" ")[0]
-           coursesToTake.push(prefix + "10200")
-       }
-       else if (sci_cult.length === 1 && sci_lang.length === 0) {
-           //two cult or two lang
-
-           //two cult
-           let numAdded = 0
-           for (let i = 0; i < easy_cult.length; i++) {
-               if (numAdded === 2) {
-                   break
-               }
-               if (!sci_cult.includes(easy_cult[i])) {
-                   coursesToTake.push(easy_cult[i])
-                   //all courses in easy_cult also meet gen-ed requirements
-                   sci_gen.push(easy_cult[i])
-                   numAdded++
-               }
-           }
-       }
-       else { //sci_cult.length === 0 && sci_lang.length === 1
-           //(one lang + one cult) or two lang
-
-           //one lang + one cult - assumes that the first language class taken has number 10100
-           const prefix = sci_lang[0].split(" ")[0]
-           coursesToTake.push(prefix + "10200")
-           for (let i = 0; i < easy_cult.length; i++) {
-               if (!sci_cult.includes(easy_cult[i])) {
-                   coursesToTake.push(easy_cult[i])
-                   //all courses in easy_cult also meet gen-ed requirements
-                   sci_gen.push(easy_cult[i])
-                   break
-               }
-           }
-       }
-    }
-
     //checks if there exists a lab science sequence where all the classes are met
     let meet_sci_lab = false
     sci_lab.forEach(sequence => {
@@ -378,42 +349,86 @@ module.exports.generate = async (req, res) => {
             coursesToTake.push("EAPS 11200")
         }
     }
-
-    if (!(sci_math.includes("MA 16100") || sci_math.includes("MA 16500")) ||
-        !(sci_math.includes("MA 16200") || sci_math.includes("MA 16600"))) {
-        if (!(sci_math.includes("MA 16100") || sci_math.includes("MA 16500"))) {
-            coursesToTake.push("MA 16100")
-        }
-        if (!(sci_math.includes("MA 16200") || sci_math.includes("MA 16600"))) {
-            coursesToTake.push("MA 16200")
-        }
-    }
-
     if (!sci_stat) {
         coursesToTake.push("STAT 35000")
     }
-
     if (!sci_gis) {
         coursesToTake.push("EAPS 32700")
     }
-
     const easy_gen = ["PSY 12000", "PHIL 11000", "HIST 10300"]
     if (sci_gen.length < 3) {
         let numNeeded = 3 - sci_gen.length
         let index = 0
         while (numNeeded !== 0) {
-            if (!sci_gen.includes(easy_gen[i])) {
-                coursesToTake.push(easy_gen[i])
+            if (!sci_gen.includes(easy_gen[index])) {
+                coursesToTake.push(easy_gen[index])
                 numNeeded--
             }
             index++
         }
     }
 
+    //deals with the fact that gen eds cannot also count for lang/cult
+    else {
+        let gen_lang_cult_overlap = 0
+        for (let i = 0; i < sci_gen.length; i++) {
+            if (sci_lang.includes(sci_gen[i]) || sci_cult.includes(sci_gen[i])) {
+                gen_lang_cult_overlap++
+            }
+        }
+        let unique_gen = sci_gen.length - gen_lang_cult_overlap
+        let index = 0
+        while (unique_gen !== 3) {
+            if (sci_lang.includes(sci_gen[index])) {
+                sci_lang.splice(index, index)
+                unique_gen++
+            }
+            if (sci_cult.includes(sci_gen[index])) {
+                sci_cult.splice(index, index)
+                unique_gen++
+            }
+            index++
+        }
+    }
+
+    //do language and culture last
+    let language_count = {}
+    for (let i = 0; i < sci_lang.length; i++) {
+        const language = sci_lang[i].split(" ")[0]
+        if (!language_count.hasOwnProperty(language)) {
+            language_count[language] = 1
+        } else {
+            language_count[language]++
+        }
+    }
+    const num_lang = Math.max(...Object.values(language_count))
+    console.log("max: ", num_lang)
+    if (num_lang < 3 && (num_lang !== 2 || sci_cult.length < 1))
+        if (sci_cult.length === 1 && sci_lang.length === 1) {
+            //one lang - assumes that the first language class taken has number 10100
+            const prefix = sci_lang[0].split(" ")[0]
+            coursesToTake.push(prefix + "10200")
+        }
+        else if (sci_cult.length >= 1) {
+            //any two lang
+            coursesToTake.push("SPAN 10100")
+            coursesToTake.push("SPAN 10200")
+        }
+        else if (sci_lang.length === 1 && sci_cult.length === 0) {
+            //two lang same as one already taken - assumes first language class taken is 10100
+            const prefix = sci_lang[0].split(" ")[0]
+            coursesToTake.push(prefix + "10200")
+            coursesToTake.push(prefix + "20100")
+        }
+        else { //sci_cult.length === 0 && sci_lang.length === 0
+            //three lang
+            console.log(sci_cult.length)
+            console.log(sci_lang.length)
+            coursesToTake.push("SPAN 10100")
+            coursesToTake.push("SPAN 10200")
+            coursesToTake.push("SPAN 20100")
+        }
+
     await User.updateOne({email: email}, {schedule: coursesToTake})
     return res.status(200).json(coursesToTake)
-
-
-
-
 }
