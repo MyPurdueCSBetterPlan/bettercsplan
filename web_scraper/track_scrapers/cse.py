@@ -66,7 +66,7 @@ if len(pick_one) != 0:
 print(cse_dict['required'])
 
 # cse electives
-elective_table = cse_soup.find("table", {"summary": "Elective courses: option 1"})
+elective_table = cse_soup.find("table", {"summary": re.compile("Elective")})
 caption = elective_table.find("caption").text
 start_index = caption.index("(") + 1
 end_index = caption.index(")")
