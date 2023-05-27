@@ -7,7 +7,7 @@ import html5lib
 from bs4 import BeautifulSoup
 
 # connecting to mongodb
-uri = "mongodb+srv://bettercsplan:bettercsplan@cluster0.wsc5yxf.mongodb.net/?retryWrites=true&w=majority"
+uri = ""
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client.test
 track_collection = db.tracks

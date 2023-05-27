@@ -7,7 +7,7 @@ import html5lib
 from bs4 import BeautifulSoup
 
 # connecting to mongodb
-uri = "mongodb+srv://bettercsplan:bettercsplan@cluster0.wsc5yxf.mongodb.net/?retryWrites=true&w=majority"
+uri = ""
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client.test
 track_collection = db.tracks
@@ -97,6 +97,7 @@ for row in elective_body.find_all("tr"):
             or_array = []
             for entry in row.find_all("a"):
                 or_array.append(entry.text)
+            # temp solution for EPICS 41100/41200
             db_dict['required'].append(or_array)
 
         # normal entry

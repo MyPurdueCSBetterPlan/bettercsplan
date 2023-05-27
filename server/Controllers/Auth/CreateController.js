@@ -69,7 +69,7 @@ module.exports.setOptions = async (req, res) => {
 }
 
 //generates a user's schedule
-module.exports.generate = async (req, res) => {
+module.exports.coreSciAdd = async (req, res, next) => {
 
     //finds the user
     const email = req.email
@@ -181,9 +181,6 @@ module.exports.generate = async (req, res) => {
     //gets the classes the user has already taken
     const classesTaken = user.taken
 
-    //tracks user selected
-    const tracks = user.tracks
-
     //iterates through already taken classes to see what requirements user has already met
     for (let i = 0; i < classesTaken.length; i++) {
 
@@ -254,46 +251,6 @@ module.exports.generate = async (req, res) => {
                 }
             )
         })
-    }
-
-    //cs math requirements
-    let calc1 = false
-    let calc2 = false
-    let calc3 = false
-    let linear = false
-    for (let i = 0; i < classesTaken.length; i++) {
-        if (classesTaken[i] === "MA 16100" || classesTaken[i] === "MA 16500") {
-            calc1 = true
-        }
-        else if (classesTaken[i] === "MA 16200" || classesTaken[i] === "MA 16600") {
-            calc2 = true
-        }
-        else if (classesTaken[i] === "MA 26100" || classesTaken[i] === "MA 27101") {
-            calc3 = true
-        }
-        else if (classesTaken[i] === "MA 26500" || classesTaken[i] === "MA 35100") {
-            linear = true
-        }
-    }
-
-    //array to store classes to meet all tracks
-    let trackCourses = []
-    for (let i = 0; i < tracks; i++) {
-
-    }
-
-    //adding cs math requirements
-    if (!calc1) {
-        coursesToTake.push("MA 16100")
-    }
-    if (!calc2) {
-        coursesToTake.push("MA 16200")
-    }
-    if (!calc3) {
-        coursesToTake.push("MA 26100")
-    }
-    if (!linear) {
-        coursesToTake.push("MA 26500")
     }
 
     //adding courses to meet core requirements
@@ -430,5 +387,62 @@ module.exports.generate = async (req, res) => {
         }
 
     await User.updateOne({email: email}, {schedule: coursesToTake})
-    return res.status(200).json(coursesToTake)
+    next()
+}
+
+module.exports.csAdd = async (req, res) => {
+
+    //finds the user
+    const email = req.email
+    let user
+    try {
+        user = await User.findOne({email: email})
+    } catch {
+        return res.status(400).json()
+    }
+
+    //gets the classes the user has already taken
+    const classesTaken = user.taken
+
+    //tracks user selected
+    const tracks = user.tracks
+
+    let coursesToTake = []
+
+    //cs math requirements
+    let calc1 = false
+    let calc2 = false
+    let calc3 = false
+    let linear = false
+    for (let i = 0; i < classesTaken.length; i++) {
+        if (classesTaken[i] === "MA 16100" || classesTaken[i] === "MA 16500") {
+            calc1 = true
+        }
+        else if (classesTaken[i] === "MA 16200" || classesTaken[i] === "MA 16600") {
+            calc2 = true
+        }
+        else if (classesTaken[i] === "MA 26100" || classesTaken[i] === "MA 27101") {
+            calc3 = true
+        }
+        else if (classesTaken[i] === "MA 26500" || classesTaken[i] === "MA 35100") {
+            linear = true
+        }
+    }
+
+    for (let i = 0; i < tracks; i++) {
+
+    }
+    //adding cs math requirements
+    if (!calc1) {
+        coursesToTake.push("MA 16100")
+    }
+    if (!calc2) {
+        coursesToTake.push("MA 16200")
+    }
+    if (!calc3) {
+        coursesToTake.push("MA 26100")
+    }
+    if (!linear) {
+        coursesToTake.push("MA 26500")
+    }
 }
