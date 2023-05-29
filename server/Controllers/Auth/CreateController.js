@@ -7,6 +7,7 @@
  */
 
 const User = require("../../Models/UserModel")
+const Track = require("../../Models/TrackModel")
 const sqlite3 = require('sqlite3')
 
 
@@ -391,6 +392,7 @@ module.exports.coreSciAdd = async (req, res, next) => {
 }
 
 module.exports.csAdd = async (req, res) => {
+    console.log("ayo")
 
     //finds the user
     const email = req.email
@@ -429,9 +431,6 @@ module.exports.csAdd = async (req, res) => {
         }
     }
 
-    for (let i = 0; i < tracks; i++) {
-
-    }
     //adding cs math requirements
     if (!calc1) {
         coursesToTake.push("MA 16100")
@@ -445,4 +444,95 @@ module.exports.csAdd = async (req, res) => {
     if (!linear) {
         coursesToTake.push("MA 26500")
     }
+
+    //object to store the # of elective hits each class will have
+    let electiveHits = {
+
+    }
+
+    let trackObjects = []
+
+    //gets the tracks from mongodb and turns them into objects
+    for (let i = 0; i < tracks.length; i++) {
+        const trackObject = await Track.findOne({name: tracks[i]})
+        trackObjects.push(trackObject)
+    }
+
+    //gets all the required classes WITHOUT AN OR CONDITION, adds them to coursesToTake if user has not taken them
+    //and removes them from the required array
+    for (let i = 0; i < trackObjects.length; i++) {
+        const reqCount = trackObjects[i].required.length
+        let trackReqs = trackObjects[i].required
+        for (let j = reqCount - 1; j >= 0; j--) {
+            if (!Array.isArray(trackReqs[j])) {
+                if (!classesTaken.includes(trackReqs[j])) {
+                    coursesToTake.push(trackReqs[j])
+                }
+                trackReqs.splice(j, 1)
+            }
+        }
+    }
+
+    //updates the elective courses and choose count accordingly with the newly added required courses
+    for (let i = 0; i < trackObjects.length; i++) {
+        let trackElect = trackObjects[i].elective
+        for (let j = 0; j < trackElect.length; j++) {
+
+            //if elective is an array (or condition), looks through array to see if it contains a course in
+            //"coursesToTake" and also if the person has already taken any of the classes in the array
+            //removes from elective list and decrements choose count if so
+            if (Array.isArray(trackElect[j])) {
+                for (let k = 0; k < trackElect[j].length; k++) {
+                    if (coursesToTake.includes(trackElect[j][k]) || classesTaken.includes(trackElect[j][k])) {
+                        trackElect.splice(j, 1)
+                        trackObjects[i].choose = trackObjects[i].choose - 1
+                        j--
+                        break
+                    }
+                }
+            }
+
+            //normal elective, if course is in "coursesToTake" or user has already taken the class,
+            //removes from elective list and decrements choose count
+            if (coursesToTake.includes(trackElect[j]) || classesTaken.includes(trackElect[j])) {
+                trackElect.splice(j, 1)
+                trackObjects[i].choose = trackObjects[i].choose - 1
+                j--
+            }
+        }
+    }
+
+    //dealing with required courses WITH an OR condition
+    for (let i = 0; i < trackObjects.length; i++) {
+        let trackReqs = trackObjects[i].required
+        let trackElect = trackObjects[i].elective
+        for (let j = 0; j < trackReqs.length; j++) {
+            for (let k = 0; k < trackReqs[j].length; k++) {
+                //TODO: ayo bruh
+            }
+
+            /*
+            //user has already taken one or one is already in the "classes to take" list
+            if (classesTaken.includes(trackReqs[j]) || coursesToTake.includes()) {
+                //removing from elective array b/c classes cannot double count for required & elective
+                if (trackElect.includes(trackReqs[j])) {
+                    const index = trackElect.indexOf(trackReqs[j])
+                    trackElect.splice(index, 1)
+                }
+                //removing from required array
+                trackObjects[i].required.splice(j, 1)
+
+            }
+
+             */
+        }
+    }
+
+    //or condition
+    //user has already taken one
+    //already in classes to take list
+    //choose one with highest # of hits
+
+    console.log("classes to take: ", coursesToTake)
+    console.log("track objects: ", trackObjects)
 }
