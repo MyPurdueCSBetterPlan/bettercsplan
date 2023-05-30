@@ -10,6 +10,111 @@ const User = require("../../Models/UserModel")
 const Track = require("../../Models/TrackModel")
 const sqlite3 = require('sqlite3')
 
+//returns a "hit" list that encompasses both required and elective courses
+function getHitList(trackObjects) {
+    //makes the elective "hit" list
+    let classHits = {}
+    for (let i = 0; i < trackObjects.length; i++) {
+        let trackReqs = trackObjects[i].required
+        let trackElect = trackObjects[i].elective
+
+        //iterating through required (assumed to be all or conditions)
+        for (let j = 0; j < trackReqs.length; j++) {
+            for (let k = 0; k < trackReqs[j].length; k++) {
+                if (!classHits.hasOwnProperty(trackReqs[j][k])) {
+                    classHits[trackReqs[j][k]] = 1
+                }
+                else {
+                    classHits[trackReqs[j][k]] += 1
+                }
+            }
+        }
+
+        //iterating through electives
+        for (let j = 0; j < trackElect.length; j++) {
+            //for or conditions, adds one to each elective's "hit" count
+            if (Array.isArray(trackElect[j])) {
+                for (let k = 0; k < trackElect[j].length; k++) {
+                    if (!classHits.hasOwnProperty(trackElect[j][k])) {
+                        classHits[trackElect[j][k]] = 1
+                    }
+                    else {
+                        classHits[trackElect[j][k]] += 1
+                    }
+                }
+            }
+            else {
+                if (!classHits.hasOwnProperty(trackElect[j])) {
+                    classHits[trackElect[j]] = 1
+                }
+                else {
+                    classHits[trackElect[j]] += 1
+                }
+            }
+        }
+    }
+    return classHits
+}
+
+//returns a hit list that encompasses only required courses (required courses are assumed to be all OR conditions)
+function getRequiredHitList(trackObjects) {
+    let classHits = {}
+    for (let i = 0; i < trackObjects.length; i++) {
+        let trackReqs = trackObjects[i].required
+        for (let j = 0; j < trackReqs.length; j++) {
+            for (let k = 0; k < trackReqs[j].length; k++) {
+                if (!classHits.hasOwnProperty(trackReqs[j][k])) {
+                    classHits[trackReqs[j][k]] = 1
+                }
+                else {
+                    classHits[trackReqs[j][k]] += 1
+                }
+            }
+        }
+    }
+    return classHits
+}
+
+function updateRequired(trackObjects, classesTaken, coursesToTake) {
+    for (let i = 0; i < trackObjects.length; i++) {
+        let trackReqs = trackObjects[i].required
+        let trackElect = trackObjects[i].elective
+        for (let j = 0; j < trackReqs.length; j++) {
+            for (let k = 0; k < trackReqs[j].length; k++) {
+                if (classesTaken.includes(trackReqs[j][k]) || coursesToTake.includes(trackReqs[j][k])) {
+                    //user has already taken one or one is already in coursesToTake ->
+                    // remove from required & elective array
+                    const name = trackReqs[j][k]
+                    const index = trackElect.indexOf(name)
+                    if (index !== -1) {
+                        trackElect.splice(index, 1)
+                    }
+                    trackReqs.splice(j, 1)
+
+                    //also remove from all other track's elective arrays and update their choose counts
+                    for (let l = 0; l < trackObjects.length; l++) {
+                        let trackElect2 = trackObjects[l].elective
+                        for (let m = 0; m < trackElect2.length; m++) {
+                            if (Array.isArray(trackElect2[m]) && trackElect2[m].includes(name)) {
+                                trackElect2.splice(m, 1)
+                                trackObjects[l].choose -= 1
+                                m--
+                            }
+                            else if (trackElect2[m] === name) {
+                                trackElect2.splice(m, 1)
+                                trackObjects[l].choose -= 1
+                                m--
+                            }
+                        }
+                    }
+
+                    //break goes to next or condition
+                    break
+                }
+            }
+        }
+    }
+}
 
 //sets a user's tracks
 module.exports.setTracks = async (req, res) => {
@@ -392,7 +497,6 @@ module.exports.coreSciAdd = async (req, res, next) => {
 }
 
 module.exports.csAdd = async (req, res) => {
-    console.log("ayo")
 
     //finds the user
     const email = req.email
@@ -443,11 +547,6 @@ module.exports.csAdd = async (req, res) => {
     }
     if (!linear) {
         coursesToTake.push("MA 26500")
-    }
-
-    //object to store the # of elective hits each class will have
-    let electiveHits = {
-
     }
 
     let trackObjects = []
@@ -502,37 +601,46 @@ module.exports.csAdd = async (req, res) => {
         }
     }
 
-    //dealing with required courses WITH an OR condition
+    //iterates through the OR conditions in the required array
+    //removes any unnecessary OR conditions:
+    //user has already taken one of the classes or one is already in the list of classes to take
+    updateRequired(trackObjects, classesTaken, coursesToTake)
+
+    //iterate through required arrays and choose remaining or conditions based on highest # of class hits
     for (let i = 0; i < trackObjects.length; i++) {
         let trackReqs = trackObjects[i].required
-        let trackElect = trackObjects[i].elective
         for (let j = 0; j < trackReqs.length; j++) {
+            const classHits = getHitList(trackObjects)
+
+            //finding the class to choose within the OR condition
+            let highestHits = 0
+            let choose = ""
             for (let k = 0; k < trackReqs[j].length; k++) {
-                //TODO: ayo bruh
-            }
-
-            /*
-            //user has already taken one or one is already in the "classes to take" list
-            if (classesTaken.includes(trackReqs[j]) || coursesToTake.includes()) {
-                //removing from elective array b/c classes cannot double count for required & elective
-                if (trackElect.includes(trackReqs[j])) {
-                    const index = trackElect.indexOf(trackReqs[j])
-                    trackElect.splice(index, 1)
+                const hits = classHits[trackReqs[j][k]]
+                if (hits > highestHits) {
+                    highestHits = hits
+                    choose = trackReqs[j][k]
                 }
-                //removing from required array
-                trackObjects[i].required.splice(j, 1)
 
+                //when hits are the same, you want to choose the class that "hits" the most required OR conditions
+                else if (hits === highestHits) {
+                    const challenger = trackReqs[j][k]
+                    const reqHits = getRequiredHitList(trackObjects)
+                    if (reqHits[challenger] > reqHits[choose]) {
+                        choose = challenger
+                    }
+                }
             }
 
-             */
+            //adding to list of courses to take and updating track objects
+            coursesToTake.push(choose)
+            updateRequired(trackObjects, classesTaken, coursesToTake)
         }
     }
+    console.log(trackObjects)
 
-    //or condition
-    //user has already taken one
-    //already in classes to take list
-    //choose one with highest # of hits
+    //pick electives
 
-    console.log("classes to take: ", coursesToTake)
-    console.log("track objects: ", trackObjects)
+    //console.log("classes to take: ", coursesToTake)
+    //console.log("track objects: ", trackObjects)
 }
