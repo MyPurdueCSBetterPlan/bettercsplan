@@ -564,7 +564,7 @@ module.exports.csAdd = async (req, res) => {
         let trackReqs = trackObjects[i].required
         for (let j = reqCount - 1; j >= 0; j--) {
             if (!Array.isArray(trackReqs[j])) {
-                if (!classesTaken.includes(trackReqs[j])) {
+                if (!classesTaken.includes(trackReqs[j]) && !coursesToTake.includes(trackReqs[j])) {
                     coursesToTake.push(trackReqs[j])
                 }
                 trackReqs.splice(j, 1)
@@ -594,6 +594,7 @@ module.exports.csAdd = async (req, res) => {
             //normal elective, if course is in "coursesToTake" or user has already taken the class,
             //removes from elective list and decrements choose count
             if (coursesToTake.includes(trackElect[j]) || classesTaken.includes(trackElect[j])) {
+                console.log(trackElect[j])
                 trackElect.splice(j, 1)
                 trackObjects[i].choose = trackObjects[i].choose - 1
                 j--
@@ -640,7 +641,8 @@ module.exports.csAdd = async (req, res) => {
     console.log(trackObjects)
 
     //pick electives
+    //NEED TO CONSIDER PREREQS BECAUSE PREREQS MAY ADD 1 ADDITIONAL CLASS
 
-    //console.log("classes to take: ", coursesToTake)
-    //console.log("track objects: ", trackObjects)
+    console.log("classes to take: ", coursesToTake)
+    console.log("track objects: ", trackObjects)
 }
