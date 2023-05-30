@@ -18,6 +18,9 @@ function getHitList(trackObjects) {
         let trackReqs = trackObjects[i].required
         let trackElect = trackObjects[i].elective
 
+        //used to keep track of "hit" classes to not double count them when looking at electives after required
+        let alreadyHit = []
+
         //iterating through required (assumed to be all or conditions)
         for (let j = 0; j < trackReqs.length; j++) {
             for (let k = 0; k < trackReqs[j].length; k++) {
@@ -27,6 +30,7 @@ function getHitList(trackObjects) {
                 else {
                     classHits[trackReqs[j][k]] += 1
                 }
+                alreadyHit.push(trackReqs[j][k])
             }
         }
 
@@ -35,19 +39,19 @@ function getHitList(trackObjects) {
             //for or conditions, adds one to each elective's "hit" count
             if (Array.isArray(trackElect[j])) {
                 for (let k = 0; k < trackElect[j].length; k++) {
-                    if (!classHits.hasOwnProperty(trackElect[j][k])) {
+                    if (!classHits.hasOwnProperty(trackElect[j][k]) && !alreadyHit.includes(trackElect[j][k])) {
                         classHits[trackElect[j][k]] = 1
                     }
-                    else {
+                    else if (!alreadyHit.includes(trackElect[j][k])){
                         classHits[trackElect[j][k]] += 1
                     }
                 }
             }
             else {
-                if (!classHits.hasOwnProperty(trackElect[j])) {
+                if (!classHits.hasOwnProperty(trackElect[j]) && !alreadyHit.includes(trackElect[j])) {
                     classHits[trackElect[j]] = 1
                 }
-                else {
+                else if (!alreadyHit.includes(trackElect[j])) {
                     classHits[trackElect[j]] += 1
                 }
             }
@@ -638,7 +642,6 @@ module.exports.csAdd = async (req, res) => {
             updateRequired(trackObjects, classesTaken, coursesToTake)
         }
     }
-    console.log(trackObjects)
 
     //pick electives
     //NEED TO CONSIDER PREREQS BECAUSE PREREQS MAY ADD 1 ADDITIONAL CLASS
