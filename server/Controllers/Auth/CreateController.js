@@ -34,25 +34,27 @@ function getHitList(trackObjects) {
             }
         }
 
-        //iterating through electives
-        for (let j = 0; j < trackElect.length; j++) {
-            //for or conditions, adds one to each elective's "hit" count
-            if (Array.isArray(trackElect[j])) {
-                for (let k = 0; k < trackElect[j].length; k++) {
-                    if (!classHits.hasOwnProperty(trackElect[j][k]) && !alreadyHit.includes(trackElect[j][k])) {
-                        classHits[trackElect[j][k]] = 1
-                    }
-                    else if (!alreadyHit.includes(trackElect[j][k])){
-                        classHits[trackElect[j][k]] += 1
+        //iterating through electives ONLY if the choose count is > 0
+        if (trackObjects[i].choose > 0) {
+            for (let j = 0; j < trackElect.length; j++) {
+                //for or conditions, adds one to each elective's "hit" count
+                if (Array.isArray(trackElect[j])) {
+                    for (let k = 0; k < trackElect[j].length; k++) {
+                        if (!classHits.hasOwnProperty(trackElect[j][k]) && !alreadyHit.includes(trackElect[j][k])) {
+                            classHits[trackElect[j][k]] = 1
+                        }
+                        else if (!alreadyHit.includes(trackElect[j][k])){
+                            classHits[trackElect[j][k]] += 1
+                        }
                     }
                 }
-            }
-            else {
-                if (!classHits.hasOwnProperty(trackElect[j]) && !alreadyHit.includes(trackElect[j])) {
-                    classHits[trackElect[j]] = 1
-                }
-                else if (!alreadyHit.includes(trackElect[j])) {
-                    classHits[trackElect[j]] += 1
+                else {
+                    if (!classHits.hasOwnProperty(trackElect[j]) && !alreadyHit.includes(trackElect[j])) {
+                        classHits[trackElect[j]] = 1
+                    }
+                    else if (!alreadyHit.includes(trackElect[j])) {
+                        classHits[trackElect[j]] += 1
+                    }
                 }
             }
         }
@@ -116,6 +118,37 @@ function updateRequired(trackObjects, classesTaken, coursesToTake) {
                     break
                 }
             }
+        }
+    }
+}
+
+function updateElective(trackObjects, coursesToTake) {
+    for (let i = 0; i < trackObjects.length; i++) {
+        let trackElect = trackObjects[i].elective
+        for (let j = 0; j < trackElect.length; j++) {
+            if (Array.isArray(trackElect[j])) {
+                for (let k = 0; k < trackElect[j].length; k++) {
+                    if (coursesToTake.includes(trackElect[j][k])) {
+                        trackElect.splice(j, 1)
+                        trackObjects[i].choose -= 1
+                        j--
+                        break
+                    }
+                }
+            }
+            else if (coursesToTake.includes(trackElect[j])) {
+                trackElect.splice(j, 1)
+                trackObjects[i].choose -= 1
+                j--
+            }
+        }
+    }
+}
+
+function updatePreReqs(prereqs, coursesToTake, classesTaken) {
+    for (const upperClass in prereqs) {
+        if (coursesToTake.includes(prereqs[upperClass]) || classesTaken.includes(prereqs[upperClass])) {
+            delete prereqs[upperClass]
         }
     }
 }
@@ -646,6 +679,65 @@ module.exports.csAdd = async (req, res) => {
     //pick electives
     //NEED TO CONSIDER PREREQS BECAUSE PREREQS MAY ADD 1 ADDITIONAL CLASS
 
-    console.log("classes to take: ", coursesToTake)
-    console.log("track objects: ", trackObjects)
+    //even if a class has a prereq, we should consider it to not have any prereqs if the prereqs are already met
+    //we need to keep track of this somewhere
+
+    //the class with the highest hit count either has no prereqs OR
+    //there is a tie for the highest hit count between a class with no prereqs and a class with a prereq
+    //this is because for any given track, if a class with a prereq is listed as an elective...
+    //the prereq is also listed as an elective
+
+    let prereqs = {
+        "CS 40700": "CS 30700",
+        "CS 42200": "CS 35400",
+        "CS 42600": "CS 35400",
+        "CS 45600": "CS 35200",
+        "CS 35300": "CS 35200",
+        "CS 48300": "CS 38100",
+        "CS 43400": "CS 33400",
+    }
+    updatePreReqs(prereqs, coursesToTake, classesTaken)
+
+    let hitList = getHitList(trackObjects)
+
+    //iterates until there are not "hits" left, meaning no more electives needed
+    while (Object.keys(hitList).length !== 0) {
+
+        console.log(hitList)
+
+        //getting the elective with the highest hit count
+        let highestHits = 0
+        let choose = ""
+        for (const elective in hitList) {
+            if (hitList[elective] > highestHits) {
+                highestHits = hitList[elective]
+                choose = elective
+            }
+            else if (hitList[elective] === highestHits) {
+                //check if the current choose or the "challenger" has a prereq
+                //if only one of them does not have a prereq, choose that one
+                if (prereqs.hasOwnProperty(choose) && !prereqs.hasOwnProperty(elective)) {
+                    highestHits = hitList[elective]
+                    choose = elective
+                }
+            }
+        }
+        if (prereqs.hasOwnProperty(choose)) {
+            console.log("oops what do we do now :(")
+            break
+        }
+
+        //adding the chosen course to list of courses to take, updating "hit" list for next iteration
+        coursesToTake.push(choose)
+        console.log("chose ", choose)
+        updateElective(trackObjects, coursesToTake)
+        hitList = getHitList(trackObjects)
+        updatePreReqs(prereqs, coursesToTake, classesTaken)
+    }
+
+    console.log(coursesToTake)
+
+
+    //console.log("classes to take: ", coursesToTake)
+    //console.log("track objects: ", trackObjects)
 }
