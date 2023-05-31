@@ -1,16 +1,19 @@
-/*
- * CreateController.js
- *
- * This class will...
- *
- * @bettercsplan, 2023
- */
-
 const User = require("../../Models/UserModel")
 const Track = require("../../Models/TrackModel")
 const sqlite3 = require('sqlite3')
 
-//returns a "hit" list that encompasses both required and elective courses
+/**
+ * This function returns a "hit" list that encompasses both required and elective courses for certain cs tracks
+ *
+ * The "hit" list is an object whose properties are class names. The values that the properties have represents
+ * the number of conditions ("hits") it fulfills (for example: if the user selects the SWE and ML track, then CS381 would
+ * have a value of 2 because CS 381 is a required course for both the SWE and ML tracks). Note that if a class
+ * counts as an elective course for a track, that also counts as a "hit".
+ *
+ * @param trackObjects - array of objects storing information for user's selected tracks
+ * @returns {{}} - "hit" list as an object
+ *
+ */
 function getHitList(trackObjects) {
     //makes the elective "hit" list
     let classHits = {}
@@ -62,7 +65,17 @@ function getHitList(trackObjects) {
     return classHits
 }
 
-//returns a hit list that encompasses only required courses (required courses are assumed to be all OR conditions)
+/**
+ * This function serves the same purpose as the getHitList() function except that if a CS course counts for an elective
+ * course for a CS track, this does not count as a "hit". Thus, the only "hits" are when a CS course counts for a
+ * required course for a CS track.
+ *
+ * NOTE: required courses are assumed to be all OR conditions. This means that each entry in a track object's
+ * required array will be an array itself
+ *
+ * @param trackObjects - array of objects storing information for user's selected tracks.
+ * @returns {{}} - "hit" list encompassing only required courses
+ */
 function getRequiredHitList(trackObjects) {
     let classHits = {}
     for (let i = 0; i < trackObjects.length; i++) {
@@ -81,54 +94,72 @@ function getRequiredHitList(trackObjects) {
     return classHits
 }
 
-function updateRequired(trackObjects, classesTaken, coursesToTake) {
+/**
+ * For each track object in trackObjects, this function removes any required courses in the track object's required
+ * array that have either already been taken or that the user will take in the future (in the coursesToTake array).
+ * Upon removal, if the removed course is also listed as an elective course for the same track, it is removed
+ * from the elective array without updating the choose count because no course can count for both a required
+ * and elective course for the same CS track.
+ * Then, the function iterates again through all the track objects, but this time, it removes any elective courses
+ * in the track object's elective array that have either already been taken or that the user will take in the future.
+ * Upon removal, the choose count (# of electives left to pick from the track) in the track object is decremented
+ *
+ * NOTE: this function expects that each track object's required array consists only of arrays
+ * (meaning only OR conditions)
+ *
+ * @param trackObjects - array of objects storing information for user's selected tracks.
+ * @param classesTaken - array of class names that the user has already taken
+ * @param coursesToTake - array of class names that the user will take
+ */
+function updateTracks(trackObjects, classesTaken, coursesToTake) {
     for (let i = 0; i < trackObjects.length; i++) {
         let trackReqs = trackObjects[i].required
         let trackElect = trackObjects[i].elective
+
+        //course in trackReqs found in classesTaken or coursesToTake ->
+        //remove entire OR condition from trackReqs + remove course from trackElect
         for (let j = 0; j < trackReqs.length; j++) {
             for (let k = 0; k < trackReqs[j].length; k++) {
                 if (classesTaken.includes(trackReqs[j][k]) || coursesToTake.includes(trackReqs[j][k])) {
-                    //user has already taken one or one is already in coursesToTake ->
-                    // remove from required & elective array
                     const name = trackReqs[j][k]
-                    const index = trackElect.indexOf(name)
-                    if (index !== -1) {
-                        trackElect.splice(index, 1)
-                    }
-                    trackReqs.splice(j, 1)
 
-                    //also remove from all other track's elective arrays and update their choose counts
-                    for (let l = 0; l < trackObjects.length; l++) {
-                        let trackElect2 = trackObjects[l].elective
-                        for (let m = 0; m < trackElect2.length; m++) {
-                            if (Array.isArray(trackElect2[m]) && trackElect2[m].includes(name)) {
-                                trackElect2.splice(m, 1)
-                                trackObjects[l].choose -= 1
-                                m--
+                    //removing from elective array
+                    for (let l = 0; l < trackElect.length; l++) {
+                        if (Array.isArray(trackElect[l])) {
+                            for (let m = 0; m < trackElect[l].length; m++) {
+                                if (trackElect[l][m] === name) {
+                                    trackElect[l].splice(m, 1)
+                                }
                             }
-                            else if (trackElect2[m] === name) {
-                                trackElect2.splice(m, 1)
-                                trackObjects[l].choose -= 1
-                                m--
+                        }
+                        else {
+                            if (trackElect[l] === name) {
+                                trackElect.splice(l, 1)
                             }
                         }
                     }
 
+                    //removing from required array
+                    trackReqs.splice(j, 1)
+                    j--
+                    
                     //break goes to next or condition
                     break
                 }
             }
         }
     }
-}
-
-function updateElective(trackObjects, coursesToTake) {
+    
     for (let i = 0; i < trackObjects.length; i++) {
         let trackElect = trackObjects[i].elective
+        
+        //course in trackElect found in classesTaken or coursesToTake ->
+        //if course is in or condition, remove entire or condition; otherwise just remove the course
+        //decrement the elective choose count
         for (let j = 0; j < trackElect.length; j++) {
             if (Array.isArray(trackElect[j])) {
                 for (let k = 0; k < trackElect[j].length; k++) {
-                    if (coursesToTake.includes(trackElect[j][k])) {
+                    if (coursesToTake.includes(trackElect[j][k]) || classesTaken.includes(trackElect[j][k])) {
                         trackElect.splice(j, 1)
                         trackObjects[i].choose -= 1
                         j--
@@ -136,7 +167,7 @@ function updateElective(trackObjects, coursesToTake) {
                     }
                 }
             }
-            else if (coursesToTake.includes(trackElect[j])) {
+            else if (coursesToTake.includes(trackElect[j]) || classesTaken.includes(trackElect[j])) {
                 trackElect.splice(j, 1)
                 trackObjects[i].choose -= 1
                 j--
@@ -145,6 +176,17 @@ function updateElective(trackObjects, coursesToTake) {
     }
 }
 
+/**
+ *
+ * This function updates the prereqs object when a prereq has been fulfilled (the prereq is either in the
+ * coursesToTake array or in the classesTaken array). This is done by removing the property and value of
+ * the class whose prereq is now fulfilled.
+ *
+ * @param prereqs - object whose properties are classes with a prereq (beyond cs core and math) and
+ *                  whose values are the prereqs (there should only be one)
+ * @param coursesToTake - array of courses that the user will take in the future
+ * @param classesTaken - array of courses that the user has already taken
+ */
 function updatePreReqs(prereqs, coursesToTake, classesTaken) {
     for (const upperClass in prereqs) {
         if (coursesToTake.includes(prereqs[upperClass]) || classesTaken.includes(prereqs[upperClass])) {
@@ -153,7 +195,13 @@ function updatePreReqs(prereqs, coursesToTake, classesTaken) {
     }
 }
 
-//sets a user's tracks
+/**
+ * This function updates the given user's tracks in mongodb based on the request from the client
+ *
+ * @param req - incoming request from the client to the server
+ * @param res - outgoing response from the server to the client
+ * @return {Promise<*>} - sends either a status 200 or status 400 to the client based on success/failure
+ */
 module.exports.setTracks = async (req, res) => {
     const email = req.email
     const {tracks} = req.body
@@ -166,7 +214,14 @@ module.exports.setTracks = async (req, res) => {
     }
 }
 
-//gives a list of all classes back to the client
+/**
+ * This function gets a list of all classes in the sqlite3 database containing all class data that match the
+ * filter string given by the client and returns that list back to the client
+ *
+ * @param req - incoming request from the client to the server
+ * @param res - outgoing response from the server to the client
+ * @return {Promise<*>} - sends either a status 200 or status 400 to the client based on success/failure
+ */
 module.exports.getClasses = async (req, res) => {
     try {
         const {filter} = req.body
@@ -187,7 +242,13 @@ module.exports.getClasses = async (req, res) => {
     }
 }
 
-//sets a user's already taken classes
+/**
+ * This function updates the user's taken array (array of classes that the user has already taken) in mongodb
+ *
+ * @param req - incoming request from the client to the server
+ * @param res - outgoing response from the server to the client
+ * @return {Promise<*>} - sends either a status 200 or status 400 back to the client based on success/failure
+ */
 module.exports.setTaken = async (req, res) => {
     const email = req.email
     const {classes} = req.body
@@ -199,7 +260,15 @@ module.exports.setTaken = async (req, res) => {
     }
 }
 
-//sets options for the user (years to graduate and summer classes)
+/**
+ * This function updates the user's "years" and "openToSummer" values in mongodb.
+ * "years" refers to the # of years that the user plans to graduate in, and
+ * openToSummer refers to whether or not the user is open to summer classes
+ *
+ * @param req - incoming request from the client to the server
+ * @param res - outgoing response from the server to the client
+ * @return {Promise<*>} - sends either a status 200 or a status 400 message back to the client based on success/failure
+ */
 module.exports.setOptions = async (req, res) => {
     const email = req.email
     const {years, summer} = req.body
@@ -211,7 +280,15 @@ module.exports.setOptions = async (req, res) => {
     }
 }
 
-//generates a user's schedule
+/**
+ * This function is the first step in getting the list of classes that a user needs to take (coursesToTake).
+ * This function takes care of university core and college of science requirements. If any requirements are not
+ * met, the function adds courses to the coursesToTake array so that these requirements are met.
+ *
+ * @param req - incoming request from the client to the server
+ * @param res - outgoing response from the server to the client
+ * @param next - csAdd function that is called after this function
+ */
 module.exports.coreSciAdd = async (req, res, next) => {
 
     //finds the user
@@ -502,7 +579,6 @@ module.exports.coreSciAdd = async (req, res, next) => {
         }
     }
     const num_lang = Math.max(...Object.values(language_count))
-    console.log("max: ", num_lang)
     if (num_lang < 3 && (num_lang !== 2 || sci_cult.length < 1))
         if (sci_cult.length === 1 && sci_lang.length === 1) {
             //one lang - assumes that the first language class taken has number 10100
@@ -522,17 +598,22 @@ module.exports.coreSciAdd = async (req, res, next) => {
         }
         else { //sci_cult.length === 0 && sci_lang.length === 0
             //three lang
-            console.log(sci_cult.length)
-            console.log(sci_lang.length)
             coursesToTake.push("SPAN 10100")
             coursesToTake.push("SPAN 10200")
             coursesToTake.push("SPAN 20100")
         }
-
-    await User.updateOne({email: email}, {schedule: coursesToTake})
+    req.schedule = coursesToTake
+    //await User.updateOne({email: email}, {schedule: coursesToTake})
     next()
 }
 
+/**
+ * This function continues adding to the coursesToTake array from the coreSciAdd function by adding classes
+ * to fulfill CS Core and the user's selected CS tracks.
+ *
+ * @param req - incoming request from the client to the server
+ * @param res - outgoing response from the server to the client
+ */
 module.exports.csAdd = async (req, res) => {
 
     //finds the user
@@ -550,40 +631,40 @@ module.exports.csAdd = async (req, res) => {
     //tracks user selected
     const tracks = user.tracks
 
-    let coursesToTake = []
-
-    //cs math requirements
-    let calc1 = false
-    let calc2 = false
-    let calc3 = false
-    let linear = false
-    for (let i = 0; i < classesTaken.length; i++) {
-        if (classesTaken[i] === "MA 16100" || classesTaken[i] === "MA 16500") {
-            calc1 = true
-        }
-        else if (classesTaken[i] === "MA 16200" || classesTaken[i] === "MA 16600") {
-            calc2 = true
-        }
-        else if (classesTaken[i] === "MA 26100" || classesTaken[i] === "MA 27101") {
-            calc3 = true
-        }
-        else if (classesTaken[i] === "MA 26500" || classesTaken[i] === "MA 35100") {
-            linear = true
-        }
-    }
+    let coursesToTake = req.schedule
 
     //adding cs math requirements
-    if (!calc1) {
+    if (!classesTaken.includes("MA 16100") && !classesTaken.includes("MA 16500")) {
         coursesToTake.push("MA 16100")
     }
-    if (!calc2) {
+    if (!classesTaken.includes("MA 16200") && !classesTaken.includes("MA 16600")) {
         coursesToTake.push("MA 16200")
     }
-    if (!calc3) {
+    if (!classesTaken.includes("MA 26100") && !classesTaken.includes("MA 27101")) {
         coursesToTake.push("MA 26100")
     }
-    if (!linear) {
+    if (!classesTaken.includes("MA26500") && !classesTaken.includes("MA 35100")) {
         coursesToTake.push("MA 26500")
+    }
+
+    //adding cs degree core requirements
+    if (!classesTaken.includes("CS 18000")) {
+        coursesToTake.push("CS 18000")
+    }
+    if (!classesTaken.includes("CS 24000")) {
+        coursesToTake.push("CS 24000")
+    }
+    if (!classesTaken.includes("CS 18200")) {
+        coursesToTake.push("CS 18200")
+    }
+    if (!classesTaken.includes("CS 25000")) {
+        coursesToTake.push("CS 25000")
+    }
+    if (!classesTaken.includes("CS 25100")) {
+        coursesToTake.push("CS 25100")
+    }
+    if (!classesTaken.includes("CS 25200")) {
+        coursesToTake.push("CS 25200")
     }
 
     let trackObjects = []
@@ -631,7 +712,6 @@ module.exports.csAdd = async (req, res) => {
             //normal elective, if course is in "coursesToTake" or user has already taken the class,
             //removes from elective list and decrements choose count
             if (coursesToTake.includes(trackElect[j]) || classesTaken.includes(trackElect[j])) {
-                console.log(trackElect[j])
                 trackElect.splice(j, 1)
                 trackObjects[i].choose = trackObjects[i].choose - 1
                 j--
@@ -642,7 +722,7 @@ module.exports.csAdd = async (req, res) => {
     //iterates through the OR conditions in the required array
     //removes any unnecessary OR conditions:
     //user has already taken one of the classes or one is already in the list of classes to take
-    updateRequired(trackObjects, classesTaken, coursesToTake)
+    updateTracks(trackObjects, classesTaken, coursesToTake)
 
     //iterate through required arrays and choose remaining or conditions based on highest # of class hits
     for (let i = 0; i < trackObjects.length; i++) {
@@ -672,7 +752,8 @@ module.exports.csAdd = async (req, res) => {
 
             //adding to list of courses to take and updating track objects
             coursesToTake.push(choose)
-            updateRequired(trackObjects, classesTaken, coursesToTake)
+            updateTracks(trackObjects, classesTaken, coursesToTake)
+            j--
         }
     }
 
@@ -680,12 +761,6 @@ module.exports.csAdd = async (req, res) => {
     //NEED TO CONSIDER PREREQS BECAUSE PREREQS MAY ADD 1 ADDITIONAL CLASS
 
     //even if a class has a prereq, we should consider it to not have any prereqs if the prereqs are already met
-    //we need to keep track of this somewhere
-
-    //the class with the highest hit count either has no prereqs OR
-    //there is a tie for the highest hit count between a class with no prereqs and a class with a prereq
-    //this is because for any given track, if a class with a prereq is listed as an elective...
-    //the prereq is also listed as an elective
 
     let prereqs = {
         "CS 40700": "CS 30700",
@@ -722,22 +797,22 @@ module.exports.csAdd = async (req, res) => {
                 }
             }
         }
+        //this means that the class w/ the highest # of hits has a prereq
         if (prereqs.hasOwnProperty(choose)) {
             console.log("oops what do we do now :(")
-            break
+            return
         }
 
         //adding the chosen course to list of courses to take, updating "hit" list for next iteration
         coursesToTake.push(choose)
         console.log("chose ", choose)
-        updateElective(trackObjects, coursesToTake)
+        updateTracks(trackObjects, classesTaken, coursesToTake)
         hitList = getHitList(trackObjects)
         updatePreReqs(prereqs, coursesToTake, classesTaken)
     }
 
-    console.log(coursesToTake)
+    await User.updateOne({email: email}, {schedule: coursesToTake})
+    console.log("success")
 
-
-    //console.log("classes to take: ", coursesToTake)
-    //console.log("track objects: ", trackObjects)
+    return res.json({status: true})
 }
