@@ -5,7 +5,9 @@ import {GoogleAuth} from "./GoogleAuth";
 import GoogleButton from 'react-google-button'
 import {useDispatch} from "react-redux";
 import {ErrorAction, SuccessAction} from "../../Redux/Actions/AuthActions";
+import "./Login.css"
 const {REACT_APP_SERVER_URL} = process.env;
+
 
 
 function Login() {
@@ -50,37 +52,46 @@ function Login() {
 
     return (
         <div>
-            <h2>Login Account</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="text"
-                        id="email"
-                        name="email"
-                        placeholder="Enter your email"
+            <p className="title">BetterCSPlan</p>
+            <div className="two-split">
+                <div className="explanation-box">
+                    <p>Explanation of our program</p>
+                </div>
+                <div className="login-box">
+                    <h2>Login Account</h2>
+                    <form onSubmit={handleSubmit}>
+                        <div>
+                            <label htmlFor="email">Email</label>
+                            <input
+                                type="text"
+                                id="email"
+                                name="email"
+                                placeholder="Enter your email"
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="password">Password</label>
+                            <input
+                                type="password"
+                                name="password"
+                                id="password"
+                                placeholder="Enter your password"
+                            />
+                        </div>
+                        <button type="submit">Submit</button>
+                        <span>Don't have an account? <Link to={"/signup"}>Signup</Link></span>
+                    </form>
+                    <GoogleButton
+                        label='Login with Google'
+                        type="light"
+                        onClick={() => {
+                            handleGoogleLogin()
+                        }}
                     />
                 </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        name="password"
-                        id="password"
-                        placeholder="Enter your password"
-                    />
-                </div>
-                <button type="submit">Submit</button>
-                <span>Don't have an account? <Link to={"/signup"}>Signup</Link></span>
-            </form>
-            <GoogleButton
-                label='Login with Google'
-                type="light"
-                onClick={() => {
-                    handleGoogleLogin()
-                }}
-            />
+            </div>
         </div>
+
     );
 }
 

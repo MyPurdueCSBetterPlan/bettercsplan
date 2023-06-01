@@ -56,55 +56,66 @@ function Signup() {
 
     return (
         <div>
-            <h2>Signup Account</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="name">Nickname</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        placeholder="Enter your Nickname"
-                    />
+            <p className="title">BetterCSPlan</p>
+            <div className="two-split">
+                <div className="explanation-box">
+                    <p>What data is saved?</p>
                 </div>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="text"
-                        id="email"
-                        name="email"
-                        placeholder="Enter your email"
-                    />
+                <div className="login-box">
+                    <div>
+                        <h2>Signup Account</h2>
+                        <form onSubmit={handleSubmit}>
+                            <div>
+                                <label htmlFor="name">Nickname</label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    placeholder="Enter your Nickname"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="email">Email</label>
+                                <input
+                                    type="text"
+                                    id="email"
+                                    name="email"
+                                    placeholder="Enter your email"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="password">Password</label>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    placeholder="Enter your password"
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="confirmPassword">Confirm Password</label>
+                                <input
+                                    type="password"
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    placeholder="Confirm your password"
+                                />
+                            </div>
+                            <button type="submit">Submit</button>
+                            <span>Already have an account? <Link to={"/login"}>Login</Link></span>
+                        </form>
+                        <GoogleButton
+                            label='Sign up with Google'
+                            type="light"
+                            onClick={() => {
+                                handleGoogleLogin()
+                            }}
+                        />
+                    </div>
                 </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Enter your password"
-                    />
-                </div>
-                <div>
-                    <label htmlFor="confirmPassword">Confirm Password</label>
-                    <input
-                        type="password"
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        placeholder="Confirm your password"
-                    />
-                </div>
-                <button type="submit">Submit</button>
-                <span>Already have an account? <Link to={"/login"}>Login</Link></span>
-            </form>
-            <GoogleButton
-                label='Sign up with Google'
-                type="light"
-                onClick={() => {
-                    handleGoogleLogin()
-                }}
-            />
+            </div>
         </div>
+
     )
 }
 

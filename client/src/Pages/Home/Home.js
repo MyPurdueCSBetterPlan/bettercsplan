@@ -9,6 +9,7 @@ function Home() {
     const navigate = useNavigate();
     const [cookies, removeCookie] = useCookies([]);
     const [name, setName] = useState("");
+    const [displaySchedule, setDisplaySchedule] = useState([])
 
     //Checks if the user is logged in or not
     useEffect(() => {
@@ -33,6 +34,8 @@ function Home() {
                     //set boolean variable depending on whether the user is new or not
                     if (schedule.length !== 0) {
                         console.log("existing user")
+                        console.log(schedule)
+                        setDisplaySchedule(schedule)
                     } else {
                         console.log("new user")
                         navigate("/create")
@@ -53,6 +56,12 @@ function Home() {
                 <h4>
                     Welcome <span>{name}</span>
                 </h4>
+                <div>
+                    {displaySchedule.length !== 0 ? (
+                        displaySchedule[0].map(className =>
+                    <p>{className}</p>)): <p>Empty Schedule</p>}
+                </div>
+                <button onClick={() => navigate("/create")}>Create new</button>
                 <LogOut/>
             </div>
         </>

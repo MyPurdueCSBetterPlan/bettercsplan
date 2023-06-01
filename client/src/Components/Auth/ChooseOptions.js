@@ -40,12 +40,15 @@ function ChooseOptions() {
             .then((response) => {
                 if (response.status === 200) {
                     console.log("schedule successfully generated")
+                    console.log(response.data)
+                    navigate("/")
                 } else {
                     console.log("error during schedule generation")
+                    navigate("/")
                 }
             })
             .catch((err) => console.log(err))
-        navigate("/")
+
     }
 
     return (
