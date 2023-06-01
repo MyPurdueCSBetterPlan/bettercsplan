@@ -1,0 +1,27 @@
+.title {
+    text-align: center;
+    font-size: 5vw;
+    margin: 0;
+}
+
+.two-split {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.explanation-box {
+    flex: 0 0 auto;
+    border: 2px solid black;
+    aspect-ratio: 1 / 1;
+    width: 300px;
+    text-align: center;
+}
+
+.login-box {
+    flex: 0 0 auto;
+    border: 2px solid black;
+    aspect-ratio: 1 / 1;
+    width: 300px;
+    text-align: center;
+}
