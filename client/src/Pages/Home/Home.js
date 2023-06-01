@@ -9,7 +9,7 @@ function Home() {
     const navigate = useNavigate();
     const [cookies, removeCookie] = useCookies([]);
     const [name, setName] = useState("");
-    const [displaySchedule, setDisplaySchedule] = useState([])
+    const [coursesToTake, setCoursesToTake] = useState([])
 
     //Checks if the user is logged in or not
     useEffect(() => {
@@ -28,14 +28,14 @@ function Home() {
             {withCredentials: true}
         )
             .then((response) => {
-                const {status, name, schedule} = response.data
+                const {status, name, coursesToTake} = response.data
                 setName(name)
                 if (status) {
                     //set boolean variable depending on whether the user is new or not
-                    if (schedule.length !== 0) {
+                    if (coursesToTake.length !== 0) {
                         console.log("existing user")
-                        console.log(schedule)
-                        setDisplaySchedule(schedule)
+                        console.log(coursesToTake)
+                        setCoursesToTake(coursesToTake)
                     } else {
                         console.log("new user")
                         navigate("/create")
@@ -57,8 +57,8 @@ function Home() {
                     Welcome <span>{name}</span>
                 </h4>
                 <div>
-                    {displaySchedule.length !== 0 ? (
-                        displaySchedule[0].map(className =>
+                    {coursesToTake.length !== 0 ? (
+                        coursesToTake.map(className =>
                     <p>{className}</p>)): <p>Empty Schedule</p>}
                 </div>
                 <button onClick={() => navigate("/create")}>Create new</button>

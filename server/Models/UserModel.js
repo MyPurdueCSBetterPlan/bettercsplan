@@ -41,7 +41,9 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    //Each subarray contains the class names for a particular semester
+    coursesToTake: {
+        type: [String]
+    },
     schedule: {
         type: [[String]]
     }
