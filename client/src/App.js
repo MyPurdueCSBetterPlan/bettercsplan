@@ -4,6 +4,7 @@ import Create from "./Pages/Auth/Create";
 import Signup from "./Pages/Auth/Signup";
 import Home from "./Pages/Home/Home";
 import NotFound from "./Pages/NotFound/NotFound";
+import Profile from "./Pages/Profile/Profile";
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
                 <Route path={"/login"} element={<Login/>}/>
                 <Route path={"/signup"} element={<Signup/>}/>
                 <Route path={"/create"} element={<Create/>}/>
+                <Route path={"/profile"} element={<Profile/>}/>
                 <Route path={'*'} element={<NotFound/>}/>
             </Routes>
         </div>

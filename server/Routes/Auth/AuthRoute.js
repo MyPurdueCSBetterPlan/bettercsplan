@@ -15,7 +15,7 @@ const {GoogleUserLogin, GoogleUserSignUp} = require("../../Controllers/Auth/Goog
 router.post('/signup', Signup);
 router.post('/login', Login);
 
-///Use the 'google' authentication strategy provided by Passport.js (Google Login)
+//Use the 'google' authentication strategy provided by Passport.js (Google Login)
 router.get(
     '/google/login',
     passport.authenticate('login', {
