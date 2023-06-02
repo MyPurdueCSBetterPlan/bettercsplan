@@ -1,7 +1,10 @@
 import React from "react";
+import {useNavigate} from "react-router-dom";
 
 
 function NotFound() {
+    const navigate = useNavigate();
+
     return (
         <div>
             <div>
@@ -9,11 +12,7 @@ function NotFound() {
                 <h4>
                     Page not found
                 </h4>
-                <button type="button" onClick={() => {
-                    window.location.href = "/";
-                }}>
-                    Return to homepage
-                </button>
+                <button onClick={() => navigate("/")}>Go home</button>
             </div>
         </div>
     )

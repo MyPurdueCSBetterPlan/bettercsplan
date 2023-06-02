@@ -77,7 +77,8 @@ function Home() {
                 }
             })
             .catch(() => {
-                window.location.href = "*";
+                removeCookie("token", []);
+                navigate("*");
             })
     }, [cookies, navigate, removeCookie]);
 
@@ -94,8 +95,9 @@ function Home() {
                     </div>
                 </div>
             </DndProvider>
-            <button onClick={() => navigate("/create")}>Create new</button>
-            <LogOut/>
+                <button onClick={() => navigate("/create")}>Create new</button>
+                <button onClick={() => navigate("/profile")}>Profile Settings</button>
+                <LogOut/>
         </>
     )
 }
