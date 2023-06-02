@@ -1,8 +1,15 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
+
+import {DndProvider} from "react-dnd";
+import {HTML5Backend} from "react-dnd-html5-backend";
+
 import axios from "axios";
 import LogOut from "../../Components/Auth/LogOut"
+import SemesterTable from "../../Components/Home/SemesterTable";
+import "./Home.css"
+import CoursesTable from "../../Components/Home/CoursesTable";
 const {REACT_APP_SERVER_URL} = process.env;
 
 function Home() {
@@ -10,6 +17,7 @@ function Home() {
     const [cookies, removeCookie] = useCookies([]);
     const [name, setName] = useState("");
     const [coursesToTake, setCoursesToTake] = useState([])
+    const [semesters, setSemesters] = useState([])
 
     //Checks if the user is logged in or not
     useEffect(() => {
@@ -28,14 +36,37 @@ function Home() {
             {withCredentials: true}
         )
             .then((response) => {
-                const {status, name, coursesToTake} = response.data
+                const {status, name, coursesToTake, schedule, summer} = response.data
                 setName(name)
                 if (status) {
                     //set boolean variable depending on whether the user is new or not
                     if (coursesToTake.length !== 0) {
                         console.log("existing user")
-                        console.log(coursesToTake)
                         setCoursesToTake(coursesToTake)
+                        setSemesters([])
+                        if (summer) {
+                            for (let i = 0; i < schedule.length; i++) {
+                                if (i % 3 === 0) {
+                                    setSemesters(semesters => [...semesters, "fall " + (Math.floor(i / 3) + 1)])
+                                }
+                                else if (i % 3 === 1) {
+                                    setSemesters(semesters => [...semesters, "spring " + (Math.floor(i / 3) + 1)])
+                                }
+                                else {
+                                    setSemesters(semesters => [...semesters, "summer " + (Math.floor(i / 3) + 1)])
+                                }
+                            }
+                        }
+                        else {
+                            for (let i = 0; i < schedule.length; i++) {
+                                if (i % 2 === 0) {
+                                    setSemesters(semesters => [...semesters, "fall " + (Math.floor(i / 2) + 1)])
+                                }
+                                else {
+                                    setSemesters(semesters => [...semesters, "spring " + (Math.floor(i / 2) + 1)])
+                                }
+                            }
+                        }
                     } else {
                         console.log("new user")
                         navigate("/create")
@@ -52,18 +83,19 @@ function Home() {
 
     return (
         <>
-            <div>
-                <h4>
-                    Welcome <span>{name}</span>
-                </h4>
-                <div>
-                    {coursesToTake.length !== 0 ? (
-                        coursesToTake.map(className =>
-                    <p>{className}</p>)): <p>Empty Schedule</p>}
+            <h4>
+                Welcome <span>{name}</span>
+            </h4>
+            <DndProvider backend={HTML5Backend}>
+                <div className="two-split">
+                    <CoursesTable courses={coursesToTake} />
+                    <div>
+                        {semesters.map(name => <SemesterTable semester={name}/>)}
+                    </div>
                 </div>
-                <button onClick={() => navigate("/create")}>Create new</button>
-                <LogOut/>
-            </div>
+            </DndProvider>
+            <button onClick={() => navigate("/create")}>Create new</button>
+            <LogOut/>
         </>
     )
 }

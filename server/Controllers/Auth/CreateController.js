@@ -613,7 +613,7 @@ module.exports.coreSciAdd = async (req, res, next) => {
  * @param req - incoming request from the client to the server
  * @param res - outgoing response from the server to the client
  */
-module.exports.csAdd = async (req, res) => {
+module.exports.csAdd = async (req, res, next) => {
 
     //finds the user
     const email = req.email
@@ -813,7 +813,7 @@ module.exports.csAdd = async (req, res) => {
     await User.updateOne({email: email}, {coursesToTake: coursesToTake})
     console.log("success")
 
-    return res.json({status: true})
+    next()
 }
 
 /**
@@ -823,7 +823,7 @@ module.exports.csAdd = async (req, res) => {
  * Otherwise, the schedule is pre-populated with the CS core and math classes.
  */
 
-module.exports.buildScheduleTemplate = async (req, res) => {
+module.exports.buildEmptySchedule = async (req, res) => {
 
     //finds the user
     const email = req.email
@@ -834,57 +834,9 @@ module.exports.buildScheduleTemplate = async (req, res) => {
         return res.status(400).json()
     }
 
-    let coursesToTake = user.coursesToTake
-    let schedule = user.schedule
-    let openToSummer = user.openToSummer
+    let schedule = []
     let years = user.years
-
-    //calculate min. semesters needed to fit cs core and math and see if possible to fit within user's wanted timeline
-    //this is the number of semesters needed to finish cs core and math + one fall or spring semester for track classes
-    let minYears
-    if (coursesToTake.includes("CS 18000")) {
-        //open to summer - Fall, Spring, Summer, Fall, Spring
-        //not open to summer - Fall, Spring, Fall, Spring, Fall
-        if (openToSummer) {
-            minYears = 2
-        } else {
-            minYears = 2.5
-        }
-    }
-    else if (coursesToTake.includes("CS 18200") || coursesToTake.includes("CS 24000")) {
-        //open to summer - Fall, Spring, Summer, Fall
-        //not open to summer - Fall, Spring, Fall, Spring
-        if (openToSummer) {
-            minYears = 1.5
-        } else {
-            minYears = 2
-        }
-    }
-    else if (coursesToTake.includes("CS 25000") || coursesToTake.includes("CS 25100") ||
-             coursesToTake.includes("MA 16100")) {
-        //open to summer - Fall, Spring, Fall (because last semester needs to be fall/spring for track classes)
-        //not open to summer - Fall, Spring, Fall
-        if (openToSummer) {
-            minYears = 1.5
-        } else {
-            minYears = 1.5
-        }
-    }
-    else if (coursesToTake.includes("CS 25200") || coursesToTake.includes("MA 16200")) {
-        //open to summer - Fall, Spring
-        //not open to summer - Fall, Spring
-        minYears = 1
-    }
-    else {
-        //open to summer - Fall
-        //not open to summer - Fall
-        minYears = 0.5
-    }
-
-    //return error if not possible to fit cs core and math
-    if (minYears > years) {
-        return res.status(400).json()
-    }
+    let openToSummer = user.openToSummer
 
     //creates empty semester arrays
     for (let i = 0; i < years; i += 0.5) {
@@ -893,6 +845,10 @@ module.exports.buildScheduleTemplate = async (req, res) => {
             schedule.push([])
         }
     }
+
+    await User.updateOne({email: email}, {schedule: schedule})
+
+    return res.status(200).json({status: true})
 
 
 
