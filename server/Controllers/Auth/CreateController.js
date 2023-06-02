@@ -238,7 +238,7 @@ module.exports.getClasses = async (req, res) => {
                 }
         })
     } catch {
-        return res.status(400).json()
+        return res.status(400).json("Something went wrong...")
     }
 }
 
