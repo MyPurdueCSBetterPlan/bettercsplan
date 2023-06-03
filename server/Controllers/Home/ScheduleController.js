@@ -11,8 +11,7 @@ module.exports.UpdateSchedule = async (req, res) => {
 
         await User.updateOne({email: req.email}, {schedule: schedule})
         return res.status(200).json("Successfully updated schedule")
-    }
-    catch {
+    } catch {
         return res.status(400).json("Schedule was not able to be updated")
     }
 }

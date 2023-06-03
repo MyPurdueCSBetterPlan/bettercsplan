@@ -6,7 +6,15 @@
  * @bettercsplan, 2023
  */
 
-const {setTracks, getClasses, setTaken, setOptions, coreSciAdd, csAdd, buildEmptySchedule} = require("../../Controllers/Auth/CreateController")
+const {
+    setTracks,
+    getClasses,
+    setTaken,
+    setOptions,
+    coreSciAdd,
+    csAdd,
+    buildEmptySchedule
+} = require("../../Controllers/Auth/CreateController")
 const {userVerification} = require("../../Middleware/UserVerification")
 const router = require("express").Router()
 

@@ -29,8 +29,7 @@ function getHitList(trackObjects) {
             for (let k = 0; k < trackReqs[j].length; k++) {
                 if (!classHits.hasOwnProperty(trackReqs[j][k])) {
                     classHits[trackReqs[j][k]] = 1
-                }
-                else {
+                } else {
                     classHits[trackReqs[j][k]] += 1
                 }
                 alreadyHit.push(trackReqs[j][k])
@@ -45,17 +44,14 @@ function getHitList(trackObjects) {
                     for (let k = 0; k < trackElect[j].length; k++) {
                         if (!classHits.hasOwnProperty(trackElect[j][k]) && !alreadyHit.includes(trackElect[j][k])) {
                             classHits[trackElect[j][k]] = 1
-                        }
-                        else if (!alreadyHit.includes(trackElect[j][k])){
+                        } else if (!alreadyHit.includes(trackElect[j][k])) {
                             classHits[trackElect[j][k]] += 1
                         }
                     }
-                }
-                else {
+                } else {
                     if (!classHits.hasOwnProperty(trackElect[j]) && !alreadyHit.includes(trackElect[j])) {
                         classHits[trackElect[j]] = 1
-                    }
-                    else if (!alreadyHit.includes(trackElect[j])) {
+                    } else if (!alreadyHit.includes(trackElect[j])) {
                         classHits[trackElect[j]] += 1
                     }
                 }
@@ -84,8 +80,7 @@ function getRequiredHitList(trackObjects) {
             for (let k = 0; k < trackReqs[j].length; k++) {
                 if (!classHits.hasOwnProperty(trackReqs[j][k])) {
                     classHits[trackReqs[j][k]] = 1
-                }
-                else {
+                } else {
                     classHits[trackReqs[j][k]] += 1
                 }
             }
@@ -131,8 +126,7 @@ function updateTracks(trackObjects, classesTaken, coursesToTake) {
                                     trackElect[l].splice(m, 1)
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             if (trackElect[l] === name) {
                                 trackElect.splice(l, 1)
                             }
@@ -142,17 +136,17 @@ function updateTracks(trackObjects, classesTaken, coursesToTake) {
                     //removing from required array
                     trackReqs.splice(j, 1)
                     j--
-                    
+
                     //break goes to next or condition
                     break
                 }
             }
         }
     }
-    
+
     for (let i = 0; i < trackObjects.length; i++) {
         let trackElect = trackObjects[i].elective
-        
+
         //course in trackElect found in classesTaken or coursesToTake ->
         //if course is in or condition, remove entire or condition; otherwise just remove the course
         //decrement the elective choose count
@@ -166,8 +160,7 @@ function updateTracks(trackObjects, classesTaken, coursesToTake) {
                         break
                     }
                 }
-            }
-            else if (coursesToTake.includes(trackElect[j]) || classesTaken.includes(trackElect[j])) {
+            } else if (coursesToTake.includes(trackElect[j]) || classesTaken.includes(trackElect[j])) {
                 trackElect.splice(j, 1)
                 trackObjects[i].choose -= 1
                 j--
@@ -227,15 +220,15 @@ module.exports.getClasses = async (req, res) => {
         const {filter} = req.body
         const db = new sqlite3.Database("classes.db")
         await db.all("SELECT class_id FROM classesList WHERE class_id LIKE ?", ['%' + filter + '%'], (err, rows) => {
-                if(err) {
-                    db.close()
-                    return res.status(400).json()
-                }
-                if(rows) {
-                    db.close()
-                    const classes = rows.map(obj => obj.class_id)
-                    return res.status(200).json({classes: classes})
-                }
+            if (err) {
+                db.close()
+                return res.status(400).json()
+            }
+            if (rows) {
+                db.close()
+                const classes = rows.map(obj => obj.class_id)
+                return res.status(200).json({classes: classes})
+            }
         })
     } catch {
         return res.status(400).json("Something went wrong...")
@@ -584,19 +577,16 @@ module.exports.coreSciAdd = async (req, res, next) => {
             //one lang - assumes that the first language class taken has number 10100
             const prefix = sci_lang[0].split(" ")[0]
             coursesToTake.push(prefix + "10200")
-        }
-        else if (sci_cult.length >= 1) {
+        } else if (sci_cult.length >= 1) {
             //any two lang
             coursesToTake.push("SPAN 10100")
             coursesToTake.push("SPAN 10200")
-        }
-        else if (sci_lang.length === 1 && sci_cult.length === 0) {
+        } else if (sci_lang.length === 1 && sci_cult.length === 0) {
             //two lang same as one already taken - assumes first language class taken is 10100
             const prefix = sci_lang[0].split(" ")[0]
             coursesToTake.push(prefix + "10200")
             coursesToTake.push(prefix + "20100")
-        }
-        else { //sci_cult.length === 0 && sci_lang.length === 0
+        } else { //sci_cult.length === 0 && sci_lang.length === 0
             //three lang
             coursesToTake.push("SPAN 10100")
             coursesToTake.push("SPAN 10200")
@@ -786,8 +776,7 @@ module.exports.csAdd = async (req, res, next) => {
             if (hitList[elective] > highestHits) {
                 highestHits = hitList[elective]
                 choose = elective
-            }
-            else if (hitList[elective] === highestHits) {
+            } else if (hitList[elective] === highestHits) {
                 //check if the current choose or the "challenger" has a prereq
                 //if only one of them does not have a prereq, choose that one
                 if (prereqs.hasOwnProperty(choose) && !prereqs.hasOwnProperty(elective)) {
@@ -849,12 +838,6 @@ module.exports.buildEmptySchedule = async (req, res) => {
     await User.updateOne({email: email}, {schedule: schedule})
 
     return res.status(200).json({status: true})
-
-
-
-
-
-
 
 
 }

@@ -4,6 +4,7 @@ import {useCookies} from "react-cookie";
 import axios from "axios";
 import LogOut from "../../Components/Auth/LogOut"
 import DeleteAccount from "../../Components/Profile/DeleteAccount";
+import ChangePassword from "../../Components/Profile/ChangePassword";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -23,10 +24,9 @@ function Profile() {
         {withCredentials: true}
     )
         .then((response) => {
-            const {status, googleID, email, name, verified} = response.data
+            const {status, googleID, email, name, verified} = response.data;
             console.log(status);
             if (status) {
-                console.log()
                 //set boolean variable depending on whether the user is new or not
                 if (verified) {
                     setName(name);
@@ -66,7 +66,7 @@ function Profile() {
 
                 <div>
                     {!googleID && (
-                        <h1>Change password</h1>
+                        <ChangePassword/>
                     )}
                 </div>
                 <button onClick={() => navigate("/")}>Go home</button>

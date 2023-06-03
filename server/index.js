@@ -15,7 +15,7 @@ const cookieParser = require("cookie-parser")
 const authRoute = require("./Routes/Auth/AuthRoute")
 const createRoute = require("./Routes/Auth/CreateRoute")
 const homeRoute = require("./Routes/Home/HomeRoute")
-const ProfileRoute = require("./Routes/Profile/ProfileRoute")
+const profileRoute = require("./Routes/Profile/ProfileRoute")
 const passport = require("passport");
 const {MONGO_URL, PORT} = process.env
 
@@ -57,4 +57,4 @@ app.use("/", authRoute)
 app.use("/", createRoute)
 
 app.use("/", homeRoute)
-app.use("/", ProfileRoute)
+app.use("/", profileRoute)

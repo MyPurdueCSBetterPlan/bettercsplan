@@ -4,7 +4,8 @@ import axios from "axios";
 import {GoogleAuth} from "./GoogleAuth";
 import {useDispatch} from "react-redux";
 import GoogleButton from "react-google-button";
-import {ErrorAction, SuccessAction} from "../../Redux/Actions/AuthActions";
+import {ErrorAction, InvalidPassword, SuccessActionLogin} from "../../Redux/Actions/GlobalActions";
+
 const {REACT_APP_SERVER_URL} = process.env;
 
 function Signup() {
@@ -39,11 +40,11 @@ function Signup() {
             .then((response) => {
                 const {message, success, name} = response.data
                 if (success) {
-                    SuccessAction(message, name);
+                    SuccessActionLogin(message, name);
                     navigate("/")
                 } else {
                     navigate("/signup")
-                    ErrorAction(message);
+                    InvalidPassword(message);
                 }
             })
             .catch(() => window.location.href = "*")

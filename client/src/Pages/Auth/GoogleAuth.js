@@ -1,5 +1,7 @@
 import {googleUserAction} from "../../Redux/Actions/googleAction";
 import alert from "sweetalert2";
+import {ErrorAction} from "../../Redux/Actions/GlobalActions";
+
 const {REACT_APP_SERVER_URL} = process.env;
 
 //It will handle the Google interaction with the server
@@ -31,6 +33,9 @@ export function GoogleAuth(dispatch, navigate, mode) {
                 timer: 10000
             })
             navigate('/login')
+        } else if (event.data.type === 'AUTH_ERROR_USER_EXIST') {
+            navigate('/login')
+            ErrorAction("This user already exist. Use Google Login instead.");
         }
     })
 }
