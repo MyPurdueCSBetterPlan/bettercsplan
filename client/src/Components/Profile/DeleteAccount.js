@@ -2,7 +2,7 @@ import {useNavigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
 import alert from "sweetalert2";
 import axios from "axios";
-import {ErrorAction} from "../../Redux/Actions/AuthActions";
+import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -49,4 +49,4 @@ function DeleteAccount() {
     )
 }
 
-export default DeleteAccount
+export default DeleteAccount;

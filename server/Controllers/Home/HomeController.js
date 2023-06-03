@@ -54,7 +54,6 @@ module.exports.Home = async (req, res) => {
     db.close()
 
 
-
     return res.json({
         status: true, name: req.name, coursesToTake: coursesWithCredits,
         schedule: scheduleWithCredits, summer: user.openToSummer

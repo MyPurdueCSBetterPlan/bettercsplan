@@ -4,10 +4,10 @@ import axios from "axios";
 import {GoogleAuth} from "./GoogleAuth";
 import GoogleButton from 'react-google-button'
 import {useDispatch} from "react-redux";
-import {ErrorAction, SuccessAction} from "../../Redux/Actions/AuthActions";
+import {ErrorAction, InvalidPassword, SuccessActionLogin} from "../../Redux/Actions/GlobalActions";
 import "./Login.css"
-const {REACT_APP_SERVER_URL} = process.env;
 
+const {REACT_APP_SERVER_URL} = process.env;
 
 
 function Login() {
@@ -36,13 +36,13 @@ function Login() {
                 const {message, success, name} = response.data
                 if (success) {
                     navigate("/")
-                    SuccessAction(message, name);
+                    SuccessActionLogin(message, name);
                 } else {
                     navigate("/login")
                     ErrorAction(message);
                 }
             })
-            .catch(() => window.location.href = "*")
+            .catch(() => navigate("*"))
     }
 
     // called when the user clicks on the Google sign-in button

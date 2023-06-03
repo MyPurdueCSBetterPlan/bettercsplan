@@ -11,7 +11,13 @@ const {createSecretToken} = require("../../util/SecretToken");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
 
-// called when post request is sent to "/signup"
+/**
+ * Handle user signup.
+ *
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ */
+
 module.exports.Signup = async (req, res) => {
     let token;
     try {
@@ -67,7 +73,12 @@ module.exports.Signup = async (req, res) => {
 };
 
 
-// called when post request is sent to "/login"
+/**
+ * Handle user login.
+ *
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ */
 module.exports.Login = async (req, res) => {
     let token;
     try {
