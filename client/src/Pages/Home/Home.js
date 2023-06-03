@@ -18,6 +18,7 @@ function Home() {
     const [name, setName] = useState("");
     const [coursesToTake, setCoursesToTake] = useState([])
     const [semesters, setSemesters] = useState([])
+    const [schedule, setSchedule] = useState([])
 
     //Checks if the user is logged in or not
     useEffect(() => {
@@ -43,6 +44,7 @@ function Home() {
                     if (coursesToTake.length !== 0) {
                         console.log("existing user")
                         setCoursesToTake(coursesToTake)
+                        setSchedule(schedule)
                         setSemesters([])
                         if (summer) {
                             for (let i = 0; i < schedule.length; i++) {
@@ -82,6 +84,20 @@ function Home() {
             })
     }, [cookies, navigate, removeCookie]);
 
+
+    //called whenever there is a change in a semester table
+    function updateUserSchedule(semIndex, classNames) {
+        axios.post(
+            `${REACT_APP_SERVER_URL}/schedule`,
+            {
+                semIndex: semIndex,
+                classNames: classNames
+            },
+            {withCredentials: true}
+        )
+            .then(() => {console.log("ayo")})
+    }
+
     return (
         <>
             <h4>
@@ -91,7 +107,9 @@ function Home() {
                 <div className="two-split">
                     <CoursesTable courses={coursesToTake} />
                     <div>
-                        {semesters.map(name => <SemesterTable semester={name}/>)}
+                        {semesters.map((name, index) => <SemesterTable index={index} semester={name}
+                                                                       courses={schedule[index]}
+                                                                       update={updateUserSchedule}/>)}
                     </div>
                 </div>
             </DndProvider>
