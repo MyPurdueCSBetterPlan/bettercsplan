@@ -8,7 +8,7 @@ const {REACT_APP_SERVER_URL} = process.env;
 
 function ChangePassword() {
     const navigate = useNavigate();
-    const [cookies, removeCookie] = useCookies(["token"]);
+    const [cookies, setCookie, removeCookie] = useCookies(["token"]);
 
     async function handleClick() {
         const {value: formValues} = await alert.fire({

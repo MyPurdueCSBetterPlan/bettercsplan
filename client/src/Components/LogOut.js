@@ -4,7 +4,7 @@ import {LogOutAction} from "../Redux/Actions/GlobalActions";
 
 function LogOut() {
     const navigate = useNavigate();
-    const [cookies, removeCookie] = useCookies(["token"]);
+    const [cookies, setCookie, removeCookie] = useCookies(["token"]);
 
     function handleClick() {
         LogOutAction(removeCookie, navigate);

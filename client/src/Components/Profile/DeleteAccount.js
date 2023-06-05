@@ -8,7 +8,7 @@ const {REACT_APP_SERVER_URL} = process.env;
 
 function DeleteAccount() {
     const navigate = useNavigate();
-    const [cookies, removeCookie] = useCookies(["token"]);
+    const [cookies, setCookie, removeCookie] = useCookies(["token"]);
 
     function handleClick() {
         alert.fire({
