@@ -15,6 +15,21 @@ const SuccessActionLogin = (message, name) => {
     }
 };
 
+//Handle success Action
+const SuccessAction = (title, message) => {
+    try {
+        alert.fire({
+            title: `${title}`,
+            text: `${message}`,
+            icon: 'success',
+            showConfirmButton: false,
+            timer: 1500,
+        });
+    } catch (error) {
+        console.log(error)
+    }
+};
+
 
 // Handle the Error action (data send by the server)
 const ErrorAction = (message) => {
@@ -86,4 +101,5 @@ export {
     SuccessActionLogin,
     ErrorAction,
     InvalidPassword,
+    SuccessAction,
 };

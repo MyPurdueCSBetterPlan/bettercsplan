@@ -38,11 +38,11 @@ function Login() {
                     navigate("/")
                     SuccessActionLogin(message, name);
                 } else {
-                    navigate("/login")
+                    navigate("/login");
                     ErrorAction(message);
                 }
             })
-            .catch(() => navigate("*"))
+            .catch(() => navigate("/login"));
     }
 
     // called when the user clicks on the Google sign-in button

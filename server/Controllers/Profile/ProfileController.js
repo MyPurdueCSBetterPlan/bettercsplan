@@ -46,7 +46,7 @@ module.exports.ProfileInformation = async (req, res) => {
             }
         } else {
             res
-                .status(201)
+                .status(200)
                 .json({
                     status: true,
                     googleID: true,
@@ -56,7 +56,7 @@ module.exports.ProfileInformation = async (req, res) => {
                 });
         }
     } catch (error) {
-        res.status(401).json({status: false});
+        res.status(400).json({status: false});
         console.error(error);
     }
 }
@@ -73,11 +73,11 @@ module.exports.DeleteAccount = async (req, res) => {
         const user = await User.findOne({email: req.email});
         await User.deleteOne(user);
         res
-            .status(201)
+            .status(200)
             .json({success: true});
 
     } catch (error) {
-        res.status(401).json({success: false});
+        res.status(400).json({success: false});
         console.error(error);
     }
 }
@@ -108,10 +108,10 @@ module.exports.ChangePassword = async (req, res) => {
 
         await User.updateOne({email: req.email}, {password: hashedPassword})
         res
-            .status(201)
+            .status(200)
             .json({message: "Password changed... Logging out!", status: true});
     } catch (error) {
-        res.status(401).json({message: "Something went wrong...", status: false});
+        res.status(400).json({message: "Something went wrong...", status: false});
         console.error(error);
     }
 }

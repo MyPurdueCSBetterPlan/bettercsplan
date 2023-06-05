@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
 import axios from "axios";
-import LogOut from "../../Components/Auth/LogOut"
+import LogOut from "../../Components/LogOut"
 import DeleteAccount from "../../Components/Profile/DeleteAccount";
 import ChangePassword from "../../Components/Profile/ChangePassword";
 
@@ -11,7 +11,7 @@ const {REACT_APP_SERVER_URL} = process.env;
 function Profile() {
     const navigate = useNavigate();
     const [name, setName] = useState("");
-    const [cookies, removeCookie] = useCookies([]);
+    const [cookies, removeCookie] = useCookies(["token"]);
     const [email, setEmail] = useState("");
     const [googleID, setGoogleID] = useState(false);
 
@@ -25,7 +25,6 @@ function Profile() {
     )
         .then((response) => {
             const {status, googleID, email, name, verified} = response.data;
-            console.log(status);
             if (status) {
                 //set boolean variable depending on whether the user is new or not
                 if (verified) {
@@ -37,13 +36,13 @@ function Profile() {
                     navigate("/create");
                 }
             } else {
-                console.log("Here?");
                 removeCookie("token", [])
                 navigate("/login")
             }
         })
         .catch(() => {
-            navigate("/login")
+            removeCookie("token", []);
+            navigate("/login");
         })
 
     return (

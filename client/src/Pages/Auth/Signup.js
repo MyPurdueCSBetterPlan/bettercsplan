@@ -47,7 +47,7 @@ function Signup() {
                     InvalidPassword(message);
                 }
             })
-            .catch(() => window.location.href = "*")
+            .catch(() => navigate("/login"));
     }
 
     // called when the user clicks on the Google sign-in button

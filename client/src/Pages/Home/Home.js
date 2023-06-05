@@ -6,17 +6,18 @@ import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 
 import axios from "axios";
-import LogOut from "../../Components/Auth/LogOut"
+import LogOut from "../../Components/LogOut"
 import SemesterTable from "../../Components/Home/SemesterTable";
 import "./Home.css"
 import CoursesTable from "../../Components/Home/CoursesTable";
 import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 import {v4} from 'uuid'
+
 const {REACT_APP_SERVER_URL} = process.env;
 
 function Home() {
     const navigate = useNavigate();
-    const [cookies, removeCookie] = useCookies([]);
+    const [cookies, removeCookie] = useCookies(["token"]);
     const [name, setName] = useState("");
     const [coursesToTake, setCoursesToTake] = useState([])
     const [semesters, setSemesters] = useState([])
@@ -52,21 +53,17 @@ function Home() {
                             for (let i = 0; i < schedule.length; i++) {
                                 if (i % 3 === 0) {
                                     setSemesters(semesters => [...semesters, "fall " + (Math.floor(i / 3) + 1)])
-                                }
-                                else if (i % 3 === 1) {
+                                } else if (i % 3 === 1) {
                                     setSemesters(semesters => [...semesters, "spring " + (Math.floor(i / 3) + 1)])
-                                }
-                                else {
+                                } else {
                                     setSemesters(semesters => [...semesters, "summer " + (Math.floor(i / 3) + 1)])
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             for (let i = 0; i < schedule.length; i++) {
                                 if (i % 2 === 0) {
                                     setSemesters(semesters => [...semesters, "fall " + (Math.floor(i / 2) + 1)])
-                                }
-                                else {
+                                } else {
                                     setSemesters(semesters => [...semesters, "spring " + (Math.floor(i / 2) + 1)])
                                 }
                             }
@@ -76,13 +73,16 @@ function Home() {
                         navigate("/create")
                     }
                 } else {
+                    if (message !== null && message !== undefined) {
+                        ErrorAction(message);
+                    }
                     removeCookie("token", [])
                     navigate("/login")
                 }
             })
             .catch(() => {
                 removeCookie("token", []);
-                navigate("*");
+                navigate("/login");
             })
     }, [cookies, navigate, removeCookie]);
 
@@ -134,15 +134,15 @@ function Home() {
                 <div className="two-split">
                     <CoursesTable courses={coursesToTake} update={removeClass}/>
                     <div>
-                        {semesters.map((name, index) => <SemesterTable key ={v4()} index={index} semester={name}
+                        {semesters.map((name, index) => <SemesterTable key={v4()} index={index} semester={name}
                                                                        courses={schedule[index]}
                                                                        update={addClass}/>)}
                     </div>
                 </div>
             </DndProvider>
-                <button onClick={() => navigate("/create")}>Create new</button>
-                <button onClick={() => navigate("/profile")}>Profile Settings</button>
-                <LogOut/>
+            <button onClick={() => navigate("/create")}>Create new</button>
+            <button onClick={() => navigate("/profile")}>Profile Settings</button>
+            <LogOut/>
         </>
     )
 }

@@ -47,13 +47,13 @@ function SemesterTable(props) {
             <p className="table-title">{props.semester}</p>
             <table>
                 <tbody>
-                    <tr>
-                        <th>Class</th>
-                        <th>Credits</th>
-                    </tr>
-                    {}
-                    {rows.map(row =>
-                        <TableRow key={v4()} index={index} name={row.name} credits={row.credits} delete={removeRow}/>)}
+                <tr>
+                    <th>Class</th>
+                    <th>Credits</th>
+                </tr>
+                {}
+                {rows.map(row =>
+                    <TableRow key={v4()} index={index} name={row.name} credits={row.credits} delete={removeRow}/>)}
                 </tbody>
             </table>
         </div>

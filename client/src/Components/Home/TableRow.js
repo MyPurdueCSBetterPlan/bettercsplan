@@ -5,7 +5,7 @@ function TableRow(props) {
     const credits = props.credits
     const index = props.index
     const removeMyself = props.delete
-    const [,drag] = useDrag(() => ({
+    const [, drag] = useDrag(() => ({
         type: 'TABLE_ROW',
         item: {name, credits, index},
         end: (item, monitor) => {

@@ -8,7 +8,7 @@ const {REACT_APP_SERVER_URL} = process.env;
 
 function DeleteAccount() {
     const navigate = useNavigate();
-    const [cookies, removeCookie] = useCookies([]);
+    const [cookies, removeCookie] = useCookies(["token"]);
 
     function handleClick() {
         alert.fire({
@@ -37,7 +37,7 @@ function DeleteAccount() {
                     })
                     .catch(() => {
                         removeCookie("token", []);
-                        navigate("*");
+                        navigate("/login");
                     })
             }
         })

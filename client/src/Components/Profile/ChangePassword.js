@@ -8,7 +8,7 @@ const {REACT_APP_SERVER_URL} = process.env;
 
 function ChangePassword() {
     const navigate = useNavigate();
-    const [cookies, removeCookie] = useCookies([]);
+    const [cookies, removeCookie] = useCookies(["token"]);
 
     async function handleClick() {
         const {value: formValues} = await alert.fire({
@@ -64,7 +64,7 @@ function ChangePassword() {
                     })
                     .catch(() => {
                         removeCookie("token", []);
-                        navigate("*");
+                        navigate("/login");
                     })
             } else {
                 ErrorAction("Passwords field is required.");
