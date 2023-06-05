@@ -2,6 +2,7 @@ import "./Table.css"
 import TableRow from "./TableRow";
 import {useDrop} from "react-dnd";
 import {useEffect, useState} from "react";
+import {v4} from 'uuid'
 
 function SemesterTable(props) {
     const index = props.index
@@ -18,23 +19,17 @@ function SemesterTable(props) {
         accept: 'TABLE_ROW',
         drop: (draggedRow) => {
             updateRows(rows => [...rows, {name: draggedRow.name, credits: draggedRow.credits}])
+            update(index, draggedRow.name, draggedRow.credits)
         },
         collect: monitor => ({
             isOver: !!monitor.isOver()
         })
     }))
 
-    //calls the update in Home.js whenever the table is changed
-    useEffect(() => {
-        const classNames = rows.map(row => row.name)
-        update(index, classNames)
-    }, [rows, index, update])
-
     //reloads the page whenever the props are fully loaded
     useEffect(() => {
         updateRows(courses)
-        console.log(courses)
-    }, [props])
+    }, [props, courses])
 
     return (
         <div className="table-box" ref={drop}>
@@ -47,7 +42,7 @@ function SemesterTable(props) {
                     </tr>
                     {}
                     {rows.map(row =>
-                        <TableRow key={row.name} name={row.name} credits={row.credits} delete={removeRow}/>)}
+                        <TableRow key={v4()} name={row.name} credits={row.credits} delete={removeRow}/>)}
                 </tbody>
             </table>
         </div>

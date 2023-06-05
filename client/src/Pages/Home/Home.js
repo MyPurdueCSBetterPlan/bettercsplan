@@ -10,6 +10,8 @@ import LogOut from "../../Components/Auth/LogOut"
 import SemesterTable from "../../Components/Home/SemesterTable";
 import "./Home.css"
 import CoursesTable from "../../Components/Home/CoursesTable";
+import {ErrorAction, SuccessAction} from "../../Redux/Actions/AuthActions";
+import {v4} from 'uuid'
 const {REACT_APP_SERVER_URL} = process.env;
 
 function Home() {
@@ -19,6 +21,7 @@ function Home() {
     const [coursesToTake, setCoursesToTake] = useState([])
     const [semesters, setSemesters] = useState([])
     const [schedule, setSchedule] = useState([])
+    const [refresh, setRefresh] = useState(false)
 
     //Checks if the user is logged in or not
     useEffect(() => {
@@ -85,17 +88,47 @@ function Home() {
     }, [cookies, navigate, removeCookie]);
 
 
-    //called whenever there is a change in a semester table
-    function updateUserSchedule(semIndex, classNames) {
+    //called whenever a class is added from the courses table to a semester table
+    function addClass(semIndex, className, credits) {
         axios.post(
-            `${REACT_APP_SERVER_URL}/schedule`,
+            `${REACT_APP_SERVER_URL}/schedule-add`,
             {
                 semIndex: semIndex,
-                classNames: classNames
+                className: className
             },
             {withCredentials: true}
         )
-            .then(() => {console.log("ayo")})
+            .then((response) => {
+                const {message, success} = response.data
+                if (success) {
+                    console.log("success")
+                }
+                else {
+                    ErrorAction(message)
+                    setRefresh(!refresh)
+                }
+            })
+    }
+
+    //called whenever a class is moved from a semester table back to the courses table
+    function removeClass(className) {
+        axios.post(
+            `${REACT_APP_SERVER_URL}/schedule-remove`,
+            {
+                className: className
+            },
+            {withCredentials: true}
+        )
+            .then((response) => {
+                const {message, success} = response.data
+                if (success) {
+                    console.log("success")
+                }
+                else {
+                    ErrorAction(message)
+                    setRefresh(!refresh)
+                }
+            })
     }
 
     return (
@@ -105,11 +138,11 @@ function Home() {
             </h4>
             <DndProvider backend={HTML5Backend}>
                 <div className="two-split">
-                    <CoursesTable courses={coursesToTake} />
+                    <CoursesTable courses={coursesToTake} update={removeClass}/>
                     <div>
-                        {semesters.map((name, index) => <SemesterTable index={index} semester={name}
+                        {semesters.map((name, index) => <SemesterTable key ={v4()} index={index} semester={name}
                                                                        courses={schedule[index]}
-                                                                       update={updateUserSchedule}/>)}
+                                                                       update={addClass}/>)}
                     </div>
                 </div>
             </DndProvider>

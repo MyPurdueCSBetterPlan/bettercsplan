@@ -7,11 +7,12 @@
  */
 
 const {Home} = require("../../Controllers/Home/HomeController");
-const {UpdateSchedule} = require("../../Controllers/Home/ScheduleController")
+const {AddClass, RemoveClass} = require("../../Controllers/Home/ScheduleController")
 const {userVerification} = require("../../Middleware/UserVerification");
 const router = require("express").Router()
 
 router.post("/", userVerification, Home)
-router.post("/schedule", userVerification, UpdateSchedule)
+router.post("/schedule-add", userVerification, AddClass)
+router.post("/schedule-remove", userVerification, RemoveClass)
 
 module.exports = router
