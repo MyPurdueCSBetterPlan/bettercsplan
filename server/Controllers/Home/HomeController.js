@@ -12,7 +12,7 @@ const sqlite3 = require("sqlite3")
  *                  * a list of courses the user must take (course name + credit hours)
  *                  * the user's schedule (each semester is an array; each object in an array has a name and credits)
  *                  * boolean value indicating whether the user is open to taking summer classes or not
- * @constructor
+ *
  */
 module.exports.Home = async (req, res) => {
     const user = await User.findOne({email: req.email})

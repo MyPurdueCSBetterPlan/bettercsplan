@@ -354,35 +354,37 @@ module.exports.coreSciAdd = async (req, res, next) => {
         "EAPS 11100": false,
         "EAPS 11200": false
     }
-
-    //TODO: update physics sequences
-    //TODO: https://catalog.purdue.edu/preview_program.php?catoid=16&poid=25609
-    //TODO: you have to actually look at the course prereqs to see if the sequence is allowed
-    //TODO: because some of the sequence II classes do not list the sequence I classes as prereqs
     let phys1 = {
+        "PHYS 22000": false,
+        "PHYS 22100": false
+    }
+    let phys2 = {
+        "PHYS 17200": false,
+        "PHYS 22100": false
+    }
+    let phys3 = {
         "PHYS 17200": false,
         "PHYS 27200": false
     }
-    let phys2 = {
+    let phys4 = {
+        "PHYS 17200": false,
+        "PHYS 23400": false
+    }
+    let phys5 = {
+        "PHYS 22000": false,
+        "PHYS 23400": false
+    }
+    let phys6 = {
+        "PHYS 23300": false,
+        "PHYS 23400": false
+    }
+    let phys7 = {
         "PHYS 17200": false,
         "PHYS 24100": false,
         "PHYS 25200": false
     }
-    let phys3 = {
-        "PHYS 17200": false,
-        "PHYS 22100": false
-    }
-    let phys4 = {
-        "PHYS 22000": false,
-        "PHYS 22100": false
-    }
-    let phys5 = {
-        "PHYS 23300": false,
-        "PHYS 23400": false
-    }
-
     //chm2 is placed at the end so that it has the least priority (it is 5 credit hours)
-    let sci_lab = [biol1, biol2, chm1, chm3, eaps, phys1, phys2, phys3, phys4, phys5, chm2]
+    let sci_lab = [biol1, biol2, chm1, chm3, eaps, phys1, phys2, phys3, phys4, phys5, phys6, phys7, chm2]
 
     //let sci_math = [] will take care of math when considering cs requirements
 
@@ -605,6 +607,7 @@ module.exports.coreSciAdd = async (req, res, next) => {
  *
  * @param req - incoming request from the client to the server
  * @param res - outgoing response from the server to the client
+ * @param next - next function that is called: buildEmptySchedule()
  */
 module.exports.csAdd = async (req, res, next) => {
 
@@ -813,6 +816,9 @@ module.exports.csAdd = async (req, res, next) => {
  * on the user's options and whether the user is open to taking summer classes. If it is impossible to fit
  * the CS core classes and math classes into this initial template schedule, an error is sent back to the client.
  * Otherwise, the schedule is pre-populated with the CS core and math classes.
+ *
+ * @param req - request sent from the client to the server
+ * @param res - response sent from the server to the client
  */
 
 module.exports.buildEmptySchedule = async (req, res) => {
@@ -838,6 +844,7 @@ module.exports.buildEmptySchedule = async (req, res) => {
         }
     }
 
+    //updates the user's schedule on mongoDB
     await User.updateOne({email: email}, {schedule: schedule})
 
     return res.status(200).json({status: true})
