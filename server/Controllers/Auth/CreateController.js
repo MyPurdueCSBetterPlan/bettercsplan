@@ -344,7 +344,6 @@ module.exports.coreSciAdd = async (req, res, next) => {
         "CHM 11600": false
     }
     let chm2 = {
-        "CHM 11500": false,
         "CHM 12901": false
     }
     let chm3 = {
@@ -355,6 +354,11 @@ module.exports.coreSciAdd = async (req, res, next) => {
         "EAPS 11100": false,
         "EAPS 11200": false
     }
+
+    //TODO: update physics sequences
+    //TODO: https://catalog.purdue.edu/preview_program.php?catoid=16&poid=25609
+    //TODO: you have to actually look at the course prereqs to see if the sequence is allowed
+    //TODO: because some of the sequence II classes do not list the sequence I classes as prereqs
     let phys1 = {
         "PHYS 17200": false,
         "PHYS 27200": false
@@ -376,7 +380,9 @@ module.exports.coreSciAdd = async (req, res, next) => {
         "PHYS 23300": false,
         "PHYS 23400": false
     }
-    let sci_lab = [biol1, biol2, chm1, chm2, chm3, eaps, phys1, phys2, phys3, phys4, phys5]
+
+    //chm2 is placed at the end so that it has the least priority (it is 5 credit hours)
+    let sci_lab = [biol1, biol2, chm1, chm3, eaps, phys1, phys2, phys3, phys4, phys5, chm2]
 
     //let sci_math = [] will take care of math when considering cs requirements
 
@@ -495,7 +501,8 @@ module.exports.coreSciAdd = async (req, res, next) => {
     })
 
     // if lab req is not met, sees if there are any sequences where only one class is needed to complete
-    // Otherwise, just adds eaps 11100 and eaps 11200 because they are easy lmao
+    // there is guaranteed to be at least one sequence to have one class: CHM 12091
+    //TODO: deciding how to prioritize which class gets chosen when there are multiple sequences with only one left
     if (!meet_sci_lab) {
         let added = false
         for (let i = 0; i < sci_lab.length; i++) {
@@ -513,10 +520,6 @@ module.exports.coreSciAdd = async (req, res, next) => {
                 added = true
                 break
             }
-        }
-        if (!added) {
-            coursesToTake.push("EAPS 11100")
-            coursesToTake.push("EAPS 11200")
         }
     }
     if (!sci_stat) {

@@ -21,7 +21,6 @@ function Home() {
     const [coursesToTake, setCoursesToTake] = useState([])
     const [semesters, setSemesters] = useState([])
     const [schedule, setSchedule] = useState([])
-    const [refresh, setRefresh] = useState(false)
 
     //Checks if the user is logged in or not
     useEffect(() => {
@@ -40,9 +39,9 @@ function Home() {
             {withCredentials: true}
         )
             .then((response) => {
-                const {status, name, coursesToTake, schedule, summer} = response.data
+                const {success, message, name, coursesToTake, schedule, summer} = response.data
                 setName(name)
-                if (status) {
+                if (success) {
                     //set boolean variable depending on whether the user is new or not
                     if (coursesToTake.length !== 0) {
                         console.log("existing user")
@@ -77,6 +76,7 @@ function Home() {
                         navigate("/create")
                     }
                 } else {
+                    ErrorAction(message)
                     removeCookie("token", [])
                     navigate("/login")
                 }
@@ -89,7 +89,7 @@ function Home() {
 
 
     //called whenever a class is added from the courses table to a semester table
-    function addClass(semIndex, className, credits) {
+    function addClass(semIndex, className) {
         axios.post(
             `${REACT_APP_SERVER_URL}/schedule-add`,
             {
@@ -99,25 +99,18 @@ function Home() {
             {withCredentials: true}
         )
             .then((response) => {
-                const {message, success} = response.data
-                if (success) {
-                    console.log("success")
-                    const newSchedule = [...schedule]
-                    newSchedule[semIndex].push({name: className, credits: credits})
-                    const newCoursesToTake = coursesToTake.filter(course => course.name !== className)
-
-                    setSchedule(newSchedule)
-                    setCoursesToTake(newCoursesToTake)
-                }
-                else {
+                const {message, success, coursesToTake, schedule} = response.data
+                if (!success) {
                     ErrorAction(message)
-                    setRefresh(!refresh)
+                    setCoursesToTake(coursesToTake)
+                    setSchedule(schedule)
                 }
             })
     }
 
     //called whenever a class is moved from a semester table back to the courses table
-    function removeClass(semIndex, className, credits) {
+    function removeClass(className) {
+        console.log("remove called")
         axios.post(
             `${REACT_APP_SERVER_URL}/schedule-remove`,
             {
@@ -127,26 +120,7 @@ function Home() {
         )
             .then((response) => {
                 const {message, success} = response.data
-                if (success) {
-
-                    //TODO: BRUH WHATTTT IS WRONG WITH THIS
-                    console.log(schedule)
-                    /*
-                    console.log("success")
-                    console.log(schedule)
-                    const newSchedule = [...schedule]
-                    console.log(refresh)
-                    newSchedule[semIndex] = (newSchedule[semIndex]).filter(course => course.name !== className)
-                    const newCoursesToTake = [...coursesToTake]
-                    newCoursesToTake.push({name: className, credits: credits})
-
-                    setSchedule(newSchedule)
-                    setCoursesToTake(newCoursesToTake)
-
-
-                     */
-                }
-                else {
+                if (!success) {
                     ErrorAction(message)
                 }
             })

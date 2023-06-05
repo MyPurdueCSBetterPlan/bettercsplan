@@ -7,24 +7,40 @@ import {v4} from 'uuid'
 function SemesterTable(props) {
     const index = props.index
     const update = props.update
-    const courses = props.courses
 
-    const [rows, updateRows] = useState([])
+    const [rows, setRows] = useState([])
 
     const [, drop] = useDrop(() => ({
         accept: 'TABLE_ROW',
         drop: (draggedRow) => {
-            update(index, draggedRow.name, draggedRow.credits)
+            setRows(rows => [...rows, {name: draggedRow.name, credits: draggedRow.credits}])
+            if (draggedRow.index !== index) {
+                update(index, draggedRow.name, draggedRow.credits)
+            }
         },
         collect: monitor => ({
             isOver: !!monitor.isOver()
         })
     }))
 
+    //removes only THE FIRST OCCURRENCE of the row that has the given name
+    function removeRow(name) {
+        setRows((rows) => {
+            for (let i = 0; i < rows.length; i++) {
+                if (rows[i].name === name) {
+                    rows.splice(i, 1)
+                    break
+                }
+            }
+            return rows
+        })
+    }
+
     //reloads the page whenever the props are fully loaded
     useEffect(() => {
-        updateRows(courses)
-    }, [props, courses])
+        setRows(props.courses)
+        console.log(props.courses)
+    }, [props.courses])
 
     return (
         <div className="table-box" ref={drop}>
@@ -37,7 +53,7 @@ function SemesterTable(props) {
                     </tr>
                     {}
                     {rows.map(row =>
-                        <TableRow key={v4()} index={index} name={row.name} credits={row.credits} />)}
+                        <TableRow key={v4()} index={index} name={row.name} credits={row.credits} delete={removeRow}/>)}
                 </tbody>
             </table>
         </div>

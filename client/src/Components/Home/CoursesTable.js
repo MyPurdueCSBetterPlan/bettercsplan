@@ -5,15 +5,31 @@ import {useDrop} from "react-dnd";
 import {v4} from 'uuid'
 function CoursesTable(props) {
     const [rows, setRows] = useState(props.courses)
-    const [{isOver}, drop] = useDrop(() => ({
+    const [, drop] = useDrop(() => ({
         accept: 'TABLE_ROW',
         drop: (draggedRow) => {
-            props.update(draggedRow.index, draggedRow.name, draggedRow.credits)
+            setRows(rows => [...rows, {name: draggedRow.name, credits: draggedRow.credits}])
+            if (draggedRow.index !== -1) {
+                props.update(draggedRow.name)
+            }
+            console.log('after update')
         },
         collect: monitor => ({
             isOver: !!monitor.isOver()
         })
     }))
+
+    function removeRow(name) {
+        setRows((rows) => {
+            for (let i = 0; i < rows.length; i++) {
+                if (rows[i].name === name) {
+                    rows.splice(i, 1)
+                    break
+                }
+            }
+            return rows
+        })
+    }
 
     //reloads the page when courses are given from the server
     useEffect(() => {
@@ -29,7 +45,7 @@ function CoursesTable(props) {
                     <th>Credits</th>
                 </tr>
                 {rows.map(row =>
-                    <TableRow key={v4()} index={-1} name={row.name} credits={row.credits} />)}
+                    <TableRow key={v4()} index={-1} name={row.name} credits={row.credits} delete={removeRow}/>)}
                 </tbody>
             </table>
         </div>
