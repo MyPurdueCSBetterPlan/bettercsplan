@@ -1,6 +1,6 @@
 import {useNavigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
-import {LogOutAction} from "../../Redux/Actions/AuthActions";
+import {LogOutAction} from "../../Redux/Actions/GlobalActions";
 
 function LogOut() {
     const navigate = useNavigate();

@@ -11,7 +11,6 @@ module.exports.AddClass = async (req, res) => {
         let taken = user.taken
         let coursesToTake = user.coursesToTake
 
-
         //array to store all the classes that the user has listed on their schedule for the previous semesters
         let previousSemClasses = []
         for (let i = 0; i < semIndex; i++) {
@@ -213,7 +212,8 @@ module.exports.AddClass = async (req, res) => {
         })
     }
     catch {
-        return res.status(400).json("Schedule was not able to be updated")
+        await User.updateOne({email: req.email}, {schedule: schedule})
+        return res.status(200).json("Successfully updated schedule")
     }
 }
 
@@ -232,6 +232,7 @@ module.exports.RemoveClass = async (req, res) => {
                 break
             }
         }
+        console.log(schedule)
         coursesToTake.push(className)
         await User.updateOne({email: req.email}, {schedule: schedule, coursesToTake: coursesToTake})
         return res.status(200).json({message: "schedule was successfully updated", success: true})

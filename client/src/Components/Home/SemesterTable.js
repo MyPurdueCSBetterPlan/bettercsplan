@@ -11,14 +11,9 @@ function SemesterTable(props) {
 
     const [rows, updateRows] = useState([])
 
-    function removeRow(name) {
-        updateRows(rows => rows.filter(row => (row.name !== name)))
-    }
-
     const [, drop] = useDrop(() => ({
         accept: 'TABLE_ROW',
         drop: (draggedRow) => {
-            updateRows(rows => [...rows, {name: draggedRow.name, credits: draggedRow.credits}])
             update(index, draggedRow.name, draggedRow.credits)
         },
         collect: monitor => ({
@@ -42,7 +37,7 @@ function SemesterTable(props) {
                     </tr>
                     {}
                     {rows.map(row =>
-                        <TableRow key={v4()} name={row.name} credits={row.credits} delete={removeRow}/>)}
+                        <TableRow key={v4()} index={index} name={row.name} credits={row.credits} />)}
                 </tbody>
             </table>
         </div>

@@ -12,11 +12,13 @@ const validator = require("validator");
 
 
 /**
- * This function will send the basic information to the client.
- * It will send user email, name and some other booleans for
- * display reasons.
+ * Get user profile information.
+ * This function sends basic user information to the client, including email, name,
+ * and some other booleans for display purposes.
+ *
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
  */
-
 module.exports.ProfileInformation = async (req, res) => {
     try {
         const user = await User.findOne({email: req.email});
@@ -60,9 +62,12 @@ module.exports.ProfileInformation = async (req, res) => {
 }
 
 /**
- * This function will delete an account from our database.
+ * Delete user account.
+ * This function deletes a user account from the database.
+ *
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
  */
-
 module.exports.DeleteAccount = async (req, res) => {
     try {
         const user = await User.findOne({email: req.email});
@@ -78,32 +83,35 @@ module.exports.DeleteAccount = async (req, res) => {
 }
 
 /**
- * This function will change the users password sent by the client to a
- * new password. It will check if it's a valid password as well.
+ * Change user password.
+ * This function changes the user's password to a new password provided by the client.
+ * It also performs validation to ensure the new password is valid.
+ *
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
  */
-
 module.exports.ChangePassword = async (req, res) => {
     try {
         const user = await User.findOne({email: req.email});
-        const {password} = req.body;
-        if (password === null) { //Empty password field
-            return res.json({message: "All fields are required.", status: false});
-        }
-        const auth = await bcrypt.compare(password, user.password);
+        const {oldPassword, newPassword} = req.body;
+
+        const auth = await bcrypt.compare(oldPassword, user.password);
         if (!auth) { //Password provided by the client is not valid.
             return res.json({message: "Incorrect password...", status: false});
         }
 
-        if (!validator.isStrongPassword(password)) { //Password is not valid
+        if (!validator.isStrongPassword(newPassword)) { //Password is not valid
             return res.json({message: "Ensure that you are writing a valid password.", status: false});
         }
 
-        user.password = password;
+        const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+        await User.updateOne({email: req.email}, {password: hashedPassword})
         res
             .status(201)
-            .json({message: "Password changed... Logging out!", logOut: true});
+            .json({message: "Password changed... Logging out!", status: true});
     } catch (error) {
-        res.status(401).json({message: "Something went wrong...", logOut: false});
+        res.status(401).json({message: "Something went wrong...", status: false});
         console.error(error);
     }
 }

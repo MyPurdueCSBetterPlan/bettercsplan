@@ -1,7 +1,7 @@
 import alert from "sweetalert2";
 
 // Handle the Success action (data send by the server)
-const SuccessAction = (message, name) => {
+const SuccessActionLogin = (message, name) => {
     try {
         alert.fire({
             title: `Hello ${name}!`,
@@ -26,6 +26,25 @@ const ErrorAction = (message) => {
             icon: 'error',
             showConfirmButton: false,
             timer: 1500,
+        });
+    } catch (error) {
+        console.log(error)
+    }
+};
+
+
+const InvalidPassword = (message) => {
+    try {
+        // Show a success message using alert (a library for pop-up messages)
+        alert.fire({
+            title: `Oops...`,
+            html:
+                'Ensure that you are following the format:<br>' +
+                'test<br>' +
+                'test<br><br>' +
+                'Invalid password... <br>',
+            icon: 'error',
+            showConfirmButton: true,
         });
     } catch (error) {
         console.log(error)
@@ -64,6 +83,7 @@ const LogOutAction = (removeCookie, navigate) => {
 
 export {
     LogOutAction,
-    SuccessAction,
+    SuccessActionLogin,
     ErrorAction,
+    InvalidPassword,
 };

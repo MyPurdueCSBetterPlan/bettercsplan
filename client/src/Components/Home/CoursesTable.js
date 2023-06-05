@@ -8,21 +8,15 @@ function CoursesTable(props) {
     const [{isOver}, drop] = useDrop(() => ({
         accept: 'TABLE_ROW',
         drop: (draggedRow) => {
-            setRows(rows => [...rows, {name: draggedRow.name, credits: draggedRow.credits}])
-            props.update(draggedRow.name)
+            props.update(draggedRow.index, draggedRow.name, draggedRow.credits)
         },
         collect: monitor => ({
             isOver: !!monitor.isOver()
         })
     }))
 
-    function removeRow(name) {
-        setRows(rows => rows.filter(row => (row.name !== name)))
-    }
-
     //reloads the page when courses are given from the server
     useEffect(() => {
-        console.log("courses: ", props.courses)
         setRows(props.courses)
     }, [props.courses])
 
@@ -35,7 +29,7 @@ function CoursesTable(props) {
                     <th>Credits</th>
                 </tr>
                 {rows.map(row =>
-                    <TableRow key={v4()} name={row.name} credits={row.credits} delete={removeRow}/>)}
+                    <TableRow key={v4()} index={-1} name={row.name} credits={row.credits} />)}
                 </tbody>
             </table>
         </div>

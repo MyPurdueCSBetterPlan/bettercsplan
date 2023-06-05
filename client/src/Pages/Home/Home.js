@@ -10,7 +10,7 @@ import LogOut from "../../Components/Auth/LogOut"
 import SemesterTable from "../../Components/Home/SemesterTable";
 import "./Home.css"
 import CoursesTable from "../../Components/Home/CoursesTable";
-import {ErrorAction, SuccessAction} from "../../Redux/Actions/AuthActions";
+import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 import {v4} from 'uuid'
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -102,6 +102,12 @@ function Home() {
                 const {message, success} = response.data
                 if (success) {
                     console.log("success")
+                    const newSchedule = [...schedule]
+                    newSchedule[semIndex].push({name: className, credits: credits})
+                    const newCoursesToTake = coursesToTake.filter(course => course.name !== className)
+
+                    setSchedule(newSchedule)
+                    setCoursesToTake(newCoursesToTake)
                 }
                 else {
                     ErrorAction(message)
@@ -111,7 +117,7 @@ function Home() {
     }
 
     //called whenever a class is moved from a semester table back to the courses table
-    function removeClass(className) {
+    function removeClass(semIndex, className, credits) {
         axios.post(
             `${REACT_APP_SERVER_URL}/schedule-remove`,
             {
@@ -122,11 +128,26 @@ function Home() {
             .then((response) => {
                 const {message, success} = response.data
                 if (success) {
+
+                    //TODO: BRUH WHATTTT IS WRONG WITH THIS
+                    console.log(schedule)
+                    /*
                     console.log("success")
+                    console.log(schedule)
+                    const newSchedule = [...schedule]
+                    console.log(refresh)
+                    newSchedule[semIndex] = (newSchedule[semIndex]).filter(course => course.name !== className)
+                    const newCoursesToTake = [...coursesToTake]
+                    newCoursesToTake.push({name: className, credits: credits})
+
+                    setSchedule(newSchedule)
+                    setCoursesToTake(newCoursesToTake)
+
+
+                     */
                 }
                 else {
                     ErrorAction(message)
-                    setRefresh(!refresh)
                 }
             })
     }

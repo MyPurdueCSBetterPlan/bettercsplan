@@ -1,6 +1,7 @@
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
-import {ErrorAction} from "../../Redux/Actions/AuthActions";
+import {ErrorAction} from "../../Redux/Actions/GlobalActions";
+
 const {REACT_APP_SERVER_URL} = process.env;
 
 function ChooseOptions() {

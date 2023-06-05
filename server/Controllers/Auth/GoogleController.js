@@ -16,7 +16,9 @@ require("dotenv").config();
 const {CLIENT_ID, CLIENT_SECRET} = process.env;
 
 
-// Serialize user
+/**
+ * This will serialize the user.
+ */
 passport.serializeUser((user, done) => {
     done(null, user._id);
 });
@@ -48,7 +50,13 @@ passport.use('signup',
     )
 );
 
-//This function will create a Google account for the database.
+/**
+ * Login a Google account into the website.
+ *
+ * @param {object} profile - User profile from Google authentication.
+ * @returns {object|null} - Returns an object containing user data if the login is successful, null otherwise.
+ */
+
 const GoogleUserLogin = async (profile) => {
     let existingUser = await User.findOne({googleID: profile.id});
     if (existingUser === null) {
@@ -69,6 +77,13 @@ const GoogleUserLogin = async (profile) => {
     }
 }
 
+/**
+ * Sign up a Google account into the website.
+ *
+ * @param {object} profile - User profile from Google authentication.
+ * @returns {object|null} - Returns an object containing user data if the signup is successful, null otherwise.
+ */
+
 const GoogleUserSignUp = async (profile) => {
     try {
         let existingUser = await User.findOne({googleID: profile.id});
@@ -81,19 +96,21 @@ const GoogleUserSignUp = async (profile) => {
                 googleID: profile.id,
                 password: hashedPassword,
             });
-        }
-        const token = createSecretToken(existingUser._id);
-        //Returns the data of the user created
-        return {
-            error: null,
-            authenticated: true,
-            token: token,
-            user: {
-                id: existingUser._id,
-                name: existingUser.name,
-                googleId: existingUser.googleID,
-                email: existingUser.email,
+            const token = createSecretToken(existingUser._id);
+            //Returns the data of the user created
+            return {
+                error: null,
+                authenticated: true,
+                token: token,
+                user: {
+                    id: existingUser._id,
+                    name: existingUser.name,
+                    googleId: existingUser.googleID,
+                    email: existingUser.email,
+                }
             }
+        } else {
+            return null; // User already exist.
         }
     } catch (error) {
         console.log(error);
