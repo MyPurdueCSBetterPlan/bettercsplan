@@ -4,7 +4,7 @@ import {
 import alert from "sweetalert2";
 
 // Handle the Google user action (data send by the server)
-const googleUserAction = (payload, mode) => {
+const googleUserAction = (payload, mode, isLogin) => {
     return async function (dispatch) {
         try {
             if (payload !== null) {
@@ -28,7 +28,9 @@ const googleUserAction = (payload, mode) => {
                         timer: 1500,
                     });
                 }
+                isLogin.value = true;
             } else {
+                isLogin.value = false;
                 //Show an error message if the account does not exist.
                 await alert.fire({
                     title: `Oops...`,
@@ -39,7 +41,8 @@ const googleUserAction = (payload, mode) => {
                 });
             }
         } catch (error) {
-            console.log(error)
+            isLogin = false;
+            console.log(error);
         }
     };
 };

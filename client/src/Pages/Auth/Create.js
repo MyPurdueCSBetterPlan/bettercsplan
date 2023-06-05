@@ -1,5 +1,5 @@
 import {useState} from "react";
-import LogOut from "../../Components/Auth/LogOut";
+import LogOut from "../../Components/LogOut";
 import ChooseClasses from "../../Components/Auth/ChooseClasses";
 import ChooseTracks from "../../Components/Auth/ChooseTracks";
 import ChooseOptions from "../../Components/Auth/ChooseOptions";

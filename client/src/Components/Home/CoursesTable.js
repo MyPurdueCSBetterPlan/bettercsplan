@@ -3,6 +3,7 @@ import "./Table.css"
 import {useEffect, useState} from "react";
 import {useDrop} from "react-dnd";
 import {v4} from 'uuid'
+
 function CoursesTable(props) {
     const [rows, setRows] = useState(props.courses)
     const [, drop] = useDrop(() => ({
