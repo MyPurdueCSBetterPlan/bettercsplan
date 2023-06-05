@@ -76,7 +76,6 @@ function Home() {
                         navigate("/create")
                     }
                 } else {
-                    ErrorAction(message)
                     removeCookie("token", [])
                     navigate("/login")
                 }

@@ -67,6 +67,7 @@ module.exports.Home = async (req, res) => {
         return res.json({
             success: true,
             message: "Successfully got user data",
+            name: user.name,
             coursesToTake: coursesWithCredits,
             schedule: scheduleWithCredits,
             summer: user.openToSummer
@@ -74,7 +75,6 @@ module.exports.Home = async (req, res) => {
     }
     catch {
         db.close()
-
         return res.json({
             success: false,
             message: "Your user token is no longer valid. Please login again"
