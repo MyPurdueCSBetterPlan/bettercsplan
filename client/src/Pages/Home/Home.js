@@ -17,7 +17,7 @@ const {REACT_APP_SERVER_URL} = process.env;
 
 function Home() {
     const navigate = useNavigate();
-    const [cookies, removeCookie] = useCookies(["token"]);
+    const [cookies, setCookie, removeCookie] = useCookies(["token"]);
     const [name, setName] = useState("");
     const [coursesToTake, setCoursesToTake] = useState([])
     const [semesters, setSemesters] = useState([])
@@ -27,9 +27,9 @@ function Home() {
     useEffect(() => {
 
         //if no token exists, go to login page
-        if (cookies.token === null) {
-            navigate("/login")
-            return
+        if (cookies.token === undefined || !cookies.token) {
+            navigate("/login");
+            return;
         }
 
         //sends post req to see if token is valid and if the user is new and acts accordingly
@@ -77,7 +77,7 @@ function Home() {
                         ErrorAction(message);
                     }
                     removeCookie("token", [])
-                    navigate("/login")
+                    navigate("/signup")
                 }
             })
             .catch(() => {
