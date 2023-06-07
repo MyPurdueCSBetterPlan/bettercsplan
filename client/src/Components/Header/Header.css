@@ -93,6 +93,7 @@ body {
         cursor: pointer;
     }
 
+    .account-icon,
     .thmode-icon {
         display: none;
     }
