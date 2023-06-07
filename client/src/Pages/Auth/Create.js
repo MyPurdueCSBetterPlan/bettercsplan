@@ -5,6 +5,7 @@ import ChooseTracks from "../../Components/Auth/ChooseTracks";
 import ChooseOptions from "../../Components/Auth/ChooseOptions";
 import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
+import {Step, StepLabel, Stepper} from "@mui/material";
 
 function Create() {
 
@@ -12,6 +13,7 @@ function Create() {
     const [classInput, setClassInput] = useState(false);
     const [cookies, setCookie, removeCookie] = useCookies(["token"]);
     const navigate = useNavigate();
+    const steps = ["Choose Tracks", "List Classes Taken", "Choose Options"]
 
     //Checks if the user is logged in or not
     useEffect(() => {
@@ -24,6 +26,11 @@ function Create() {
     if (tracksInput === false) {
         return (
             <div>
+                <Stepper activeStep={0} alternativeLabel>
+                    {steps.map(step => <Step>
+                        <StepLabel key={step}>{step}</StepLabel>
+                    </Step>)}
+                </Stepper>
                 Choose your tracks
                 <ChooseTracks next={() => setTracksInput(true)}/>
                 <LogOut/>
@@ -32,6 +39,12 @@ function Create() {
     } else if (classInput === false) {
         return (
             <div>
+                <Stepper activeStep={1} alternativeLabel>
+                    {steps.map(step => <Step>
+                        <StepLabel key={step}>
+                            {step}</StepLabel>
+                    </Step>)}
+                </Stepper>
                 Choose your already taken courses
                 <ChooseClasses next={() => setClassInput(true)}/>
                 <LogOut/>
@@ -40,6 +53,11 @@ function Create() {
     } else {
         return (
             <div>
+                <Stepper activeStep={2} alternativeLabel>
+                    {steps.map(step => <Step>
+                        <StepLabel key={step}>{step}</StepLabel>
+                    </Step>)}
+                </Stepper>
                 <ChooseOptions/>
                 <LogOut/>
             </div>
