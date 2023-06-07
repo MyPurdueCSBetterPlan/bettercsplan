@@ -1,4 +1,4 @@
-import {googleUserAction} from "../../Redux/Actions/googleAction";
+import {googleUserAction} from "../../Redux/Actions/GoogleAction";
 import alert from "sweetalert2";
 import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 

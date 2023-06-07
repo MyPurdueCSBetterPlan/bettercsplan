@@ -5,7 +5,10 @@ import {GoogleAuth} from "./GoogleAuth";
 import GoogleButton from 'react-google-button'
 import {useDispatch} from "react-redux";
 import {ErrorAction, InvalidPassword, SuccessActionLogin} from "../../Redux/Actions/GlobalActions";
-import "./Login.css"
+import "./AuthForm.css"
+import ChooseTracks from "../../Components/Auth/ChooseTracks";
+import Header from "../../Components/Header/Header";
+import Footer from "../../Components/Footer/Footer";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -52,12 +55,14 @@ function Login() {
 
     return (
         <div>
-            <p className="title">BetterCSPlan</p>
+            <div className="header">
+                <Header mode={"NOT_USER_LOGIN"}/>
+            </div>
             <div className="two-split">
                 <div className="explanation-box">
                     <p>Explanation of our program</p>
                 </div>
-                <div className="login-box">
+                <div className="Auth-box">
                     <h2>Login Account</h2>
                     <form onSubmit={handleSubmit}>
                         <div>
@@ -90,6 +95,7 @@ function Login() {
                     />
                 </div>
             </div>
+            <Footer/>
         </div>
 
     );
