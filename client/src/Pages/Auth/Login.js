@@ -8,7 +8,6 @@ import {ErrorAction, InvalidPassword, SuccessActionLogin} from "../../Redux/Acti
 import "./AuthForm.css"
 import ChooseTracks from "../../Components/Auth/ChooseTracks";
 import Header from "../../Components/Header/Header";
-import Footer from "../../Components/Footer/Footer";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -95,7 +94,6 @@ function Login() {
                     />
                 </div>
             </div>
-            <Footer/>
         </div>
 
     );
