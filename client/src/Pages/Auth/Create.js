@@ -16,6 +16,49 @@ function Create() {
     const navigate = useNavigate();
     const steps = ["Choose Tracks", "List Classes Taken", "Choose Options"]
 
+    const stepperStyle = {
+        padding: 2,
+        "& .Mui-active": {
+            "&.MuiStepIcon-root": {
+                color: "warning.main",
+                fontSize: "2rem",
+            },
+            "&.MuiStepLabel-alternativeLabel": {
+              fontSize: '2vw',
+              color: "warning.main"
+            },
+            "& .MuiStepConnector-line": {
+                borderColor: "#2f234f"
+            }
+        },
+        "& .Mui-completed": {
+            "&.MuiStepIcon-root": {
+                color: "#2f234f",
+                fontSize: "2rem",
+            },
+            "&.MuiStepLabel-alternativeLabel": {
+                fontSize: '2vw',
+                color: "#2f234f"
+            },
+            "& .MuiStepConnector-line": {
+                borderColor: "#2f234f"
+            }
+        },
+        "& .Mui-disabled": {
+            ".MuiStepIcon-root": {
+                color: "#2f234f",
+                fontSize: '2rem'
+            },
+            "&.MuiStepLabel-alternativeLabel": {
+                fontSize: '2vw',
+                color: "#2f234f"
+            },
+            "& .MuiStepConnector-line": {
+                borderColor: '#2f234f'
+            }
+        }
+    }
+
     //Checks if the user is logged in or not
     useEffect(() => {
         //if no token exists, go to login page
@@ -31,7 +74,7 @@ function Create() {
                     <Header mode={"USER_CREATE_PROMPS"}/>
                 </div>
                 <div>
-                    <Stepper activeStep={0} alternativeLabel>
+                    <Stepper activeStep={0} alternativeLabel sx={stepperStyle}>
                         {steps.map(step => <Step>
                             <StepLabel key={step}>{step}</StepLabel>
                         </Step>)}
@@ -49,7 +92,7 @@ function Create() {
                     <Header mode={"USER_CREATE_PROMPS"}/>
                 </div>
                 <div>
-                    <Stepper activeStep={1} alternativeLabel>
+                    <Stepper activeStep={1} alternativeLabel sx={stepperStyle}>
                         {steps.map(step => <Step>
                             <StepLabel key={step}>
                                 {step}</StepLabel>
@@ -69,7 +112,7 @@ function Create() {
                     <Header mode={"USER_CREATE_PROMPS"}/>
                 </div>
                 <div>
-                    <Stepper activeStep={2} alternativeLabel>
+                    <Stepper activeStep={2} alternativeLabel sx={stepperStyle}>
                         {steps.map(step => <Step>
                             <StepLabel key={step}>{step}</StepLabel>
                         </Step>)}
