@@ -11,25 +11,26 @@ function CoursesTable(props) {
         drop: (draggedRow) => {
             setRows(rows => [...rows, {name: draggedRow.name, credits: draggedRow.credits}])
             if (draggedRow.index !== -1) {
-                props.update(draggedRow.name)
+                props.add(draggedRow.name)
             }
-            console.log('after update')
         },
         collect: monitor => ({
             isOver: !!monitor.isOver()
         })
     }))
 
+    //removes only THE FIRST OCCURRENCE of the row that has the given name
     function removeRow(name) {
         setRows((rows) => {
-            for (let i = 0; i < rows.length; i++) {
-                if (rows[i].name === name) {
-                    rows.splice(i, 1)
-                    break
+            let matchDeleted = false;
+            return rows.filter((row) => {
+                if (!matchDeleted && row.name === name) {
+                    matchDeleted = true;
+                    return false;
                 }
-            }
-            return rows
-        })
+                return true;
+            });
+        });
     }
 
     //reloads the page when courses are given from the server

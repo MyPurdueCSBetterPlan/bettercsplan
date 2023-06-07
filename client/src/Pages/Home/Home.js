@@ -45,7 +45,6 @@ function Home() {
                 if (success) {
                     //set boolean variable depending on whether the user is new or not
                     if (coursesToTake.length !== 0) {
-                        console.log("existing user")
                         setCoursesToTake(coursesToTake)
                         setSchedule(schedule)
                         setSemesters([])
@@ -69,7 +68,6 @@ function Home() {
                             }
                         }
                     } else {
-                        console.log("new user")
                         navigate("/create")
                     }
                 } else {
@@ -109,7 +107,6 @@ function Home() {
 
     //called whenever a class is moved from a semester table back to the courses table
     function removeClass(className) {
-        console.log("remove called")
         axios.post(
             `${REACT_APP_SERVER_URL}/schedule-remove`,
             {
@@ -125,6 +122,39 @@ function Home() {
             })
     }
 
+    async function moveClass(semIndex, className) {
+        axios.post(
+            `${REACT_APP_SERVER_URL}/schedule-remove`,
+            {
+                className: className
+            },
+            {withCredentials: true}
+        )
+            .then((response) => {
+                const {message, success} = response.data
+                if (!success) {
+                    ErrorAction(message)
+                }
+                axios.post(
+                    `${REACT_APP_SERVER_URL}/schedule-add`,
+                    {
+                        semIndex: semIndex,
+                        className: className
+                    },
+                    {withCredentials: true}
+                )
+                    .then((response) => {
+                        const {message, success, coursesToTake, schedule} = response.data
+                        if (!success) {
+                            ErrorAction(message)
+                            setCoursesToTake(coursesToTake)
+                            setSchedule(schedule)
+                        }
+                    })
+            })
+    }
+
+
     return (
         <>
             <h4>
@@ -132,11 +162,11 @@ function Home() {
             </h4>
             <DndProvider backend={HTML5Backend}>
                 <div className="two-split">
-                    <CoursesTable courses={coursesToTake} update={removeClass}/>
+                    <CoursesTable courses={coursesToTake} add={removeClass}/>
                     <div>
                         {semesters.map((name, index) => <SemesterTable key={v4()} index={index} semester={name}
                                                                        courses={schedule[index]}
-                                                                       update={addClass}/>)}
+                                                                       add={addClass} move={moveClass}/>)}
                     </div>
                 </div>
             </DndProvider>

@@ -9,6 +9,7 @@ function TableRow(props) {
         type: 'TABLE_ROW',
         item: {name, credits, index},
         end: (item, monitor) => {
+            console.log(monitor.getDropResult())
             if (monitor.getDropResult()) {
                 removeMyself(name)
             }
