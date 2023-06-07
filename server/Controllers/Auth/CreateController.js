@@ -278,6 +278,57 @@ module.exports.setOptions = async (req, res) => {
  * This function takes care of university core and college of science requirements. If any requirements are not
  * met, the function adds courses to the coursesToTake array so that these requirements are met.
  *
+ * Some requirements are not considered because they are met by other requirements. The following is a list of all
+ * requirements and how they are considered in the algorithm:
+ * UNIVERSITY CORE: https://www.purdue.edu/provost/students/s-initiatives/curriculum/courses.html
+ * - Behavioral/Social Sciences (1 class) - stored as a t/f value in core_bss
+ * - Humanities (1 class) - stored as a t/f value in core_hum
+ * - Information Literacy (1 class) - stored as a t/f value in core_il
+ * - Oral Communication (1 class) - stored as a t/f value in core_oc
+ * - Quantitative Reasoning (1 class)- met by CS requirements
+ * - Science (2 classes) - met by College of Science Lab Science requirement
+ * - Science, Technology, Society (1 class) - met by College of Science Multidisplinary Experience requirement
+ * - Written Communication (1 class) - stored as a t/f value in core_wc
+ * COLLEGE OF SCIENCE: https://www.purdue.edu/science/Current_Students/curriculum_and_degree_requirements/college-of-science-core-requirements.html
+ * - First Year Composition (1 class) - identical to UNIVERSITY CORE Written communication
+ * - Technical Writing & Presentation (1-2 classes) - stored as t/f values in sci_tw and sci_tp, respectively
+ * - Computing - met by CS requirements
+ * - Culture and Diversity (2 lang classes + 1 cult class OR 3 lang classes) - stored as sci_lang and sci_cult arrays
+ * - General Education (3 classes) - stored as sci_gen array
+ * - Great Issues in Science (1 class) - stored as t/f value in sci_gis
+ * - Lab Science (2-3 classes) - sequences stored in sci_lab array, each sequence in the array is an object where
+ *                               the properties are the sequence classes and the values are t/f
+ * - Mathematics (Calc I + Calc II) - met by CS requirements
+ * - Statistics (1 class) - stored as t/f value in sci_stat
+ * - Team Building and Collaboration (1 class) - met by CS requirements
+ * - Multidisplinary Experience - stored as a t/f value in sci_sts
+ *
+ * Notes about double-counting requirements:
+ * First Year Composition = Written Communication
+ * Lab Science automatically fulfills Science
+ * Multidisciplinary Experience meets Science, Technology, Society
+ * COM 217 fulfills Technical Writing, Technical Presentation, and Oral Communication
+ * Some Culture classes can fulfill Behavioral/Social Science
+ * General Education courses cannot double count for Culture and Diversity courses NOR Great Issues courses
+ * Some General Education courses can fulfill one or more University Core requirements
+ *
+ * Other Notes:
+ * Only STAT35000 or STAT 51100 can be used to fulfill Statistics Requirement for CS Degree
+ * Only 1 class w/ prefix MGMT, ECON, OBHR, AGEC, ENTR can be used towards General Education
+ *
+ * Valid Lab Science Sequences (not counting CHM 12901 b/c it is not 2 classes so it does not fill UC Science):
+ * BIOL 11000 + BIOL 11100
+ * BIOL 12100 + BIOL 13100 + BIOL 13500
+ * CHM 11500 + (CHM 11600 or CHM 12901)
+ * CHM 12500 + CHM 12600
+ * EAPS 11100 + EAPS 11200
+ * PHYS 17200 + PHYS 27200
+ * PHYS 17200 + PHYS 24100 + PHYS 25200
+ * PHYS 17200 + PHYS 22100
+ * PHYS 22000 + PHYS 22100
+ * PHYS 23300 + PHYS 23400
+ *
+ *
  * @param req - incoming request from the client to the server
  * @param res - outgoing response from the server to the client
  * @param next - csAdd function that is called after this function
@@ -300,36 +351,12 @@ module.exports.coreSciAdd = async (req, res, next) => {
     let core_wc = false
     let core_il = false
     let core_oc = false
-    //let core_sci = false (unnecessary b/c College of Science lab science requirement meets this)
-    let core_sts = false
-
-    //let core_mqr = false (unnecessary b/c College of Science math requirement meets this)
     let core_hum = false
     let core_bss = false
     let sci_tw = false
     let sci_tp = false
-
-    /*
-    culture and language requirement can be met in three ways but only 2 do not require advisor approval:
-    1. 3 language courses
-    2. 2 language courses and 1 culture course
-     */
     let sci_cult = []
     let sci_lang = []
-
-    /*
-    lab science requirement met by completion of two/three course sequence:
-    BIOL 11000 + BIOL 11100
-    BIOL 12100 + BIOL 13100 + BIOL 13500
-    CHM 11500 + (CHM 11600 or CHM 12901)
-    CHM 12500 + CHM 12600
-    EAPS 11100 + EAPS 11200
-    PHYS 17200 + PHYS 27200
-    PHYS 17200 + PHYS 24100 + PHYS 25200
-    PHYS 17200 + PHYS 22100
-    PHYS 22000 + PHYS 22100
-    PHYS 23300 + PHYS 23400
-     */
     let biol1 = {
         "BIOL 11000": false,
         "BIOL 11100": false
@@ -344,9 +371,6 @@ module.exports.coreSciAdd = async (req, res, next) => {
         "CHM 11600": false
     }
     let chm2 = {
-        "CHM 12901": false
-    }
-    let chm3 = {
         "CHM 12500": false,
         "CHM 12600": false
     }
@@ -383,18 +407,10 @@ module.exports.coreSciAdd = async (req, res, next) => {
         "PHYS 24100": false,
         "PHYS 25200": false
     }
-    //chm2 is placed at the end so that it has the least priority (it is 5 credit hours)
-    let sci_lab = [biol1, biol2, chm1, chm3, eaps, phys1, phys2, phys3, phys4, phys5, phys6, phys7, chm2]
-
-    //let sci_math = [] will take care of math when considering cs requirements
-
-    //STAT 35000 or STAT 51100
+    let sci_lab = [biol1, biol2, chm1, chm2, eaps, phys1, phys2, phys3, phys4, phys5, phys6, phys7]
     let sci_stat = false
-
     let sci_sts = false
     let sci_gis = false
-
-    //gen-ed requirement met by three courses from the gen-ed list
     let sci_gen = []
 
     const db = new sqlite3.Database("classes.db")
@@ -408,7 +424,7 @@ module.exports.coreSciAdd = async (req, res, next) => {
         //core and college of science requirements
         await new Promise((resolve, reject) => {
             db.get(
-                "SELECT core_wc, core_il, core_oc, core_sci, core_sts, core_mqr, core_hum, core_bss, " +
+                "SELECT core_wc, core_il, core_oc, core_sci, core_hum, core_bss, " +
                 "sci_tw, sci_tp, sci_lang, sci_lab, sci_math, sci_stat, sci_sts, sci_gis, sci_gen FROM classesList WHERE " +
                 "class_id = ?",
                 [classesTaken[i]],
@@ -422,14 +438,6 @@ module.exports.coreSciAdd = async (req, res, next) => {
                     if (row.core_oc === "T" && core_oc === false) {
                         core_oc = true
                     }
-                    if (row.core_sts === "T" && core_sts === false) {
-                        core_sts = true
-                    }
-                    /*
-                    if (row.core_mqr === "T") {
-                        core_mqr = true
-                    }
-                     */
                     if (row.core_hum === "T" && core_hum === false) {
                         core_hum = true
                     }
@@ -475,32 +483,34 @@ module.exports.coreSciAdd = async (req, res, next) => {
         })
     }
 
-    //adding courses to meet core requirements
-    if (!core_wc || !core_il) {
-        console.log("core_wc and/or core_il not met")
+    //WRITTEN COMMUNICATION
+    if (!core_wc) {
+        console.log("core_wc not met")
+
         coursesToTake.push("SCLA 10100")
+        core_wc = true
+        core_il = true
     }
+
+    //ORAL COMMUNICATION - TECHNICAL PRESENTATION - TECHNICAL WRITING
     if (!core_oc || !sci_tp || !sci_tw) {
         console.log("core_oc and/or sci_tp and/or sci_tw not met")
+
         coursesToTake.push("COM 21700")
+        core_oc = true
+        sci_tp = true
+        sci_tw = true
     }
-    if (!core_sts || !sci_sts) {
-        console.log("core_sts and/or sci_sts not met")
+
+    //MULTIDISCIPLINARY EXPERIENCE (SCIENCE TECHNOLOGY SOCIETY)
+    if (!sci_sts) {
+        console.log("sci_sts not met")
+
         coursesToTake.push("EAPS 10600")
+        sci_sts = true
     }
-    if (!core_bss) {
-        console.log("core_bss not met")
-        coursesToTake.push("POL 13000")
-        //POL 13000 also meets gen ed
-        sci_gen.push("POL 13000")
-    }
-    //TODO: core_hum can also meet either gen-ed or culture
-    if (!core_hum) {
-        console.log("core_hum not met")
-        coursesToTake.push("PHIL 11000")
-        //PHIL 11000 also meets gen ed
-        sci_gen.push("PHIL 11000")
-    }
+
+    //LAB SCIENCE
     //checks if there exists a lab science sequence where all the classes are met
     let meet_sci_lab = false
     sci_lab.forEach(sequence => {
@@ -508,10 +518,8 @@ module.exports.coreSciAdd = async (req, res, next) => {
             meet_sci_lab = true
         }
     })
-
     // if lab req is not met, sees if there are any sequences where only one class is needed to complete
-    // there is guaranteed to be at least one sequence to have one class: CHM 12091
-    //TODO: deciding how to prioritize which class gets chosen when there are multiple sequences with only one left
+    // otherwise adds EAPS 11100 and EAPS 11200
     if (!meet_sci_lab) {
         console.log("sci_lab not met")
         let added = false
@@ -531,17 +539,29 @@ module.exports.coreSciAdd = async (req, res, next) => {
                 break
             }
         }
-    }
-    if (!sci_stat) {
-        console.log("sci_stat not met")
-        coursesToTake.push("STAT 35000")
-    }
-    if (!sci_gis) {
-        console.log("sci_gis notm et")
-        coursesToTake.push("EAPS 32700")
+        if (!added) {
+            coursesToTake.push("EAPS 11100")
+            coursesToTake.push("EAPS 11200")
+        }
     }
 
-    //language requirement
+    //STATISTICS
+    if (!sci_stat) {
+        console.log("sci_stat not met")
+
+        coursesToTake.push("STAT 35000")
+        sci_stat = true
+    }
+
+    //GREAT ISSUES IN SCIENCE
+    if (!sci_gis) {
+        console.log("sci_gis not met")
+
+        coursesToTake.push("EAPS 32700")
+        sci_gis = true
+    }
+
+    //LANGUAGE AND CULTURE
     let language_count = {}
     for (let i = 0; i < sci_lang.length; i++) {
         const language = sci_lang[i].split(" ")[0]
@@ -554,8 +574,8 @@ module.exports.coreSciAdd = async (req, res, next) => {
     const num_lang = Math.max(...Object.values(language_count))
     if (num_lang < 3 && (num_lang !== 2 || sci_cult.length < 1)) {
         console.log("sci_lang/cult not met")
-        if (sci_cult.length === 1 && sci_lang.length === 1) {
-            //one lang - assumes that the first language class taken has number 10100
+        if (sci_cult.length >= 1 && sci_lang.length === 1) {
+            //adds one lang - assumes that the first language class taken has number 10100
             const prefix = sci_lang[0].split(" ")[0]
             coursesToTake.push(prefix + "10200")
 
@@ -564,10 +584,11 @@ module.exports.coreSciAdd = async (req, res, next) => {
                 console.log("removing gen-ed", sci_gen[i])
                 sci_gen.splice(sci_gen.indexOf(sci_cult[0]), 1)
             }
-        } else if (sci_cult.length >= 1) {
-            //any two lang
+        } else if (sci_cult.length >= 1 && sci_lang.length === 0) {
+            //adds any two lang
             coursesToTake.push("SPAN 10100")
             coursesToTake.push("SPAN 10200")
+            core_hum = true
 
             //removing single culture class from gen-ed list
             for (let i = 0; i < sci_gen.length; i++) {
@@ -578,15 +599,28 @@ module.exports.coreSciAdd = async (req, res, next) => {
                 }
             }
         } else if (sci_lang.length === 1 && sci_cult.length === 0) {
-            //two lang same as one already taken - assumes first language class taken is 10100
+            //adds one lang same as one already taken and one cult - assumes first language class taken is 10100
             const prefix = sci_lang[0].split(" ")[0]
+            sci_lang.push(prefix + "10200")
             coursesToTake.push(prefix + "10200")
-            coursesToTake.push(prefix + "20100")
+            core_hum = true
+
+            //POL 13000 meets cult requirement and core_bss
+            sci_cult.push("POL 13000")
+            coursesToTake.push("POL 13000")
+            core_bss = true
         } else { //sci_cult.length === 0 && sci_lang.length === 0
-            //three lang
+            //adds two lang one cult
+            sci_lang.push("SPAN 10100")
             coursesToTake.push("SPAN 10100")
+            sci_lang.push("SPAN 10200")
             coursesToTake.push("SPAN 10200")
-            coursesToTake.push("SPAN 20100")
+            core_hum = true
+
+            //POL 13000 meets cult requirement and core_bss
+            sci_cult.push("POL 13000")
+            coursesToTake.push("POL 13000")
+            core_bss = true
         }
     }
     //if user has 2 lang and 1 (or more) cult, removes one cult from the gen-ed list
@@ -600,10 +634,31 @@ module.exports.coreSciAdd = async (req, res, next) => {
         }
     }
 
+    //the only requirements besides gen-ed that may not be filled at this point are: core_il and core_bss
+    //PSY 12000 and PHIL 12000 also count as gen-eds
 
+    //BEHAVIOR SOCIAL SCIENCE (also gen-ed possibly)
+    if (!core_bss) {
+        console.log("core_bss not met")
+        coursesToTake.push("PSY 12000")
+        core_bss = true
+
+        sci_gen.push("PSY 12000")
+    }
+
+    //INFORMATION LITERACY (also gen-ed possibly)
+    if (!core_il) {
+        console.log("core_il not met")
+        coursesToTake.push("PHIL 12000")
+        core_il = true
+
+        sci_gen.push("PHIL 12000")
+    }
+
+
+
+    //GENERAL EDUCATION
     const easy_gen = ["PSY 12000", "PHIL 11000", "HIST 10300"]
-
-    //Students may use only ONE course (3 credits) from the following subjects: AGEC, MGMT, OBHR, ECON, or ENTR
     let usedPrefix = false
     for (let i = 0; i < sci_gen.length; i++) {
         const prefix = sci_gen[i].split(" ")[0]
@@ -624,6 +679,7 @@ module.exports.coreSciAdd = async (req, res, next) => {
         let index = 0
         while (numNeeded !== 0) {
             if (!sci_gen.includes(easy_gen[index])) {
+                sci_gen.push(easy_gen[index])
                 coursesToTake.push(easy_gen[index])
                 numNeeded--
             }
