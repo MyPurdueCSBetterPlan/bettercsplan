@@ -1,7 +1,5 @@
-.title {
-    text-align: center;
-    font-size: 5vw;
-    margin: 0;
+.header {
+    margin-bottom: 20px;
 }
 
 .two-split {
@@ -18,7 +16,7 @@
     text-align: center;
 }
 
-.login-box {
+.Auth-box {
     flex: 0 0 auto;
     border: 2px solid black;
     aspect-ratio: 1 / 1;
