@@ -574,17 +574,17 @@ module.exports.coreSciAdd = async (req, res, next) => {
     const num_lang = Math.max(...Object.values(language_count))
     if (num_lang < 3 && (num_lang !== 2 || sci_cult.length < 1)) {
         console.log("sci_lang/cult not met")
-        if (sci_cult.length >= 1 && sci_lang.length === 1) {
+        if (sci_cult.length >= 1 && num_lang === 1) {
             //adds one lang - assumes that the first language class taken has number 10100
             const prefix = sci_lang[0].split(" ")[0]
-            coursesToTake.push(prefix + "10200")
+            coursesToTake.push(prefix + " 10200")
 
             //removing single culture class from gen-ed list
             if (sci_gen.includes(sci_cult[0])) {
-                console.log("removing gen-ed", sci_gen[i])
+                console.log("removing gen-ed", sci_gen[0])
                 sci_gen.splice(sci_gen.indexOf(sci_cult[0]), 1)
             }
-        } else if (sci_cult.length >= 1 && sci_lang.length === 0) {
+        } else if (sci_cult.length >= 1 && num_lang === 0) {
             //adds any two lang
             coursesToTake.push("SPAN 10100")
             coursesToTake.push("SPAN 10200")
@@ -598,18 +598,18 @@ module.exports.coreSciAdd = async (req, res, next) => {
                     break
                 }
             }
-        } else if (sci_lang.length === 1 && sci_cult.length === 0) {
+        } else if (num_lang === 1 && sci_cult.length === 0) {
             //adds one lang same as one already taken and one cult - assumes first language class taken is 10100
             const prefix = sci_lang[0].split(" ")[0]
-            sci_lang.push(prefix + "10200")
-            coursesToTake.push(prefix + "10200")
+            sci_lang.push(prefix + " 10200")
+            coursesToTake.push(prefix + " 10200")
             core_hum = true
 
             //POL 13000 meets cult requirement and core_bss
             sci_cult.push("POL 13000")
             coursesToTake.push("POL 13000")
             core_bss = true
-        } else { //sci_cult.length === 0 && sci_lang.length === 0
+        } else { //sci_cult.length === 0 && num_lang === 0
             //adds two lang one cult
             sci_lang.push("SPAN 10100")
             coursesToTake.push("SPAN 10100")
@@ -863,6 +863,8 @@ module.exports.csAdd = async (req, res, next) => {
     //iterates until there are not "hits" left, meaning no more electives needed
     while (Object.keys(hitList).length !== 0) {
 
+        console.log(hitList)
+
         //getting the elective with the highest hit count
         let highestHits = 0
         let choose = ""
@@ -887,6 +889,7 @@ module.exports.csAdd = async (req, res, next) => {
 
         //adding the chosen course to list of courses to take, updating "hit" list for next iteration
         coursesToTake.push(choose)
+        console.log("choose ", choose)
         updateTracks(trackObjects, classesTaken, coursesToTake)
         hitList = getHitList(trackObjects)
         updatePreReqs(prereqs, coursesToTake, classesTaken)
