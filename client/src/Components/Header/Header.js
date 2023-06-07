@@ -88,7 +88,7 @@ const Header = ({mode}) => {
                                 <NavLink to="/contact"><FontAwesomeIcon icon={faEnvelope}/> Contact</NavLink>
                             </li>
                             <li>
-                                <div onClick={handleMenu} style={{cursor: 'pointer'}}>
+                                <div onClick={handleMenu} className="account-icon" style={{cursor: 'pointer'}}>
                                     <a><FontAwesomeIcon icon={faUser}/> Account</a>
                                 </div>
                                 <Menu sx={
