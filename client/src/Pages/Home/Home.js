@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
 
@@ -12,6 +12,7 @@ import "./Home.css"
 import CoursesTable from "../../Components/Home/CoursesTable";
 import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 import {v4} from 'uuid'
+import Header from "../../Components/Header/Header";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -156,7 +157,10 @@ function Home() {
 
 
     return (
-        <>
+        <div>
+            <div className="header">
+                <Header mode={"USER_VERIFIED"}/>
+            </div>
             <h4>
                 Welcome <span>{name}</span>
             </h4>
@@ -171,9 +175,7 @@ function Home() {
                 </div>
             </DndProvider>
             <button onClick={() => navigate("/create")}>Create new</button>
-            <button onClick={() => navigate("/profile")}>Profile Settings</button>
-            <LogOut/>
-        </>
+        </div>
     )
 }
 

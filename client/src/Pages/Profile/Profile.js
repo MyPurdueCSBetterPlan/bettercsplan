@@ -5,6 +5,7 @@ import axios from "axios";
 import LogOut from "../../Components/LogOut"
 import DeleteAccount from "../../Components/Profile/DeleteAccount";
 import ChangePassword from "../../Components/Profile/ChangePassword";
+import Header from "../../Components/Header/Header";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -57,7 +58,10 @@ function Profile() {
     }, [cookies, navigate, removeCookie]);
 
     return (
-        <>
+        <div>
+            <div className="header">
+                <Header mode={"USER_VERIFIED"}/>
+            </div>
             <div>
                 <h1>Profile Information</h1>
                 <h4>
@@ -79,11 +83,9 @@ function Profile() {
                         <ChangePassword/>
                     )}
                 </div>
-                <button onClick={() => navigate("/")}>Go home</button>
                 <DeleteAccount/>
-                <LogOut/>
             </div>
-        </>
+        </div>
     )
 }
 

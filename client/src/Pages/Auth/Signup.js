@@ -5,6 +5,7 @@ import {GoogleAuth} from "./GoogleAuth";
 import {useDispatch} from "react-redux";
 import GoogleButton from "react-google-button";
 import {ErrorAction, InvalidPassword, SuccessActionLogin} from "../../Redux/Actions/GlobalActions";
+import Header from "../../Components/Header/Header";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -57,12 +58,14 @@ function Signup() {
 
     return (
         <div>
-            <p className="title">BetterCSPlan</p>
+            <div className="header">
+                <Header mode={"NOT_USER_SIGNUP"}/>
+            </div>
             <div className="two-split">
                 <div className="explanation-box">
                     <p>What data is saved?</p>
                 </div>
-                <div className="login-box">
+                <div className="Auth-box">
                     <div>
                         <h2>Signup Account</h2>
                         <form onSubmit={handleSubmit}>
