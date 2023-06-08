@@ -509,3 +509,26 @@ module.exports.RemoveClass = async (req, res) => {
         return res.status(400).json({message: "Schedule was not able to be updated", success: false})
     }
 }
+
+/**
+ * This function will return any alternatives available for the given course back to the client
+ */
+module.exports.getAlternatives = async(req, res) => {
+    try {
+
+        const {course} = req.body
+
+        //gets user data from MongoDB
+        const user = await User.findOne({email: req.email})
+
+        //arrays that store alternatives
+        const core_wc_il = ["SCLA 10100", "ENGL 10600", "ENGL 10800", "ENGL 30400"]
+        const alternatives = [core_wc_il]
+
+
+    }
+    catch {
+
+    }
+
+}

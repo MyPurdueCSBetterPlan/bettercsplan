@@ -4,6 +4,8 @@ import {useCookies} from "react-cookie";
 
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
+import {TouchBackend} from 'react-dnd-touch-backend'
+import {isMobile} from "react-device-detect"
 
 import axios from "axios";
 import LogOut from "../../Components/LogOut"
@@ -155,7 +157,6 @@ function Home() {
             })
     }
 
-
     return (
         <div>
             <div className="header">
@@ -164,7 +165,7 @@ function Home() {
             <h4>
                 Welcome <span>{name}</span>
             </h4>
-            <DndProvider backend={HTML5Backend}>
+            <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
                 <div className="two-split">
                     <CoursesTable courses={coursesToTake} add={removeClass}/>
                     <div>
