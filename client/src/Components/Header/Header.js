@@ -49,16 +49,15 @@ const Header = ({mode}) => {
                                 <div onClick={handleMenu}>
                                     <FontAwesomeIcon icon={faUser}/>
                                 </div>
-                                <Menu sx={
-                                    {
+                                <Menu
+                                    sx={{
                                         mt: "1px", "& .MuiMenu-paper":
                                             {backgroundColor: '#f8d588',},
-                                    }
-                                }
-                                      anchorEl={anchorEl}
-                                      open={open}
-                                      onClose={handleCloseMenu}
-                                      TransitionComponent={Fade}
+                                    }}
+                                    anchorEl={anchorEl}
+                                    open={open}
+                                    onClose={handleCloseMenu}
+                                    TransitionComponent={Fade}
                                 >
                                     <MenuItem className="MenuItem" onClick={() => navigate("/profile")}><FontAwesomeIcon
                                         icon={faUserEdit}/>{String.fromCharCode(160)}Profile</MenuItem>
@@ -91,16 +90,15 @@ const Header = ({mode}) => {
                                 <div onClick={handleMenu} className="account-icon" style={{cursor: 'pointer'}}>
                                     <a><FontAwesomeIcon icon={faUser}/> Account</a>
                                 </div>
-                                <Menu sx={
-                                    {
+                                <Menu
+                                    sx={{
                                         mt: "1px", "& .MuiMenu-paper":
                                             {backgroundColor: '#f8d588',},
-                                    }
-                                }
-                                      anchorEl={anchorEl}
-                                      open={open}
-                                      onClose={handleCloseMenu}
-                                      TransitionComponent={Fade}
+                                    }}
+                                    anchorEl={anchorEl}
+                                    open={open}
+                                    onClose={handleCloseMenu}
+                                    TransitionComponent={Fade}
                                 >
                                     <MenuItem className="MenuItem" onClick={() => navigate("/profile")}><FontAwesomeIcon
                                         icon={faUserEdit}/>{String.fromCharCode(160)}Profile</MenuItem>

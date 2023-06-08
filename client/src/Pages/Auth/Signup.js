@@ -6,6 +6,8 @@ import {useDispatch} from "react-redux";
 import GoogleButton from "react-google-button";
 import {ErrorAction, InvalidPassword, SuccessActionLogin} from "../../Redux/Actions/GlobalActions";
 import Header from "../../Components/Header/Header";
+import Footer from "../../Components/Footer/Footer";
+import './AuthForm.css'
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -117,6 +119,9 @@ function Signup() {
                         />
                     </div>
                 </div>
+            </div>
+            <div className="footer">
+                <Footer/>
             </div>
         </div>
 

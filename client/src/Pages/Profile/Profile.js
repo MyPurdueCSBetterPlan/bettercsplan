@@ -6,6 +6,8 @@ import LogOut from "../../Components/LogOut"
 import DeleteAccount from "../../Components/Profile/DeleteAccount";
 import ChangePassword from "../../Components/Profile/ChangePassword";
 import Header from "../../Components/Header/Header";
+import './Profile.css'
+import Footer from "../../Components/Footer/Footer";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -84,6 +86,9 @@ function Profile() {
                     )}
                 </div>
                 <DeleteAccount/>
+            </div>
+            <div className="footer">
+                <Footer/>
             </div>
         </div>
     )

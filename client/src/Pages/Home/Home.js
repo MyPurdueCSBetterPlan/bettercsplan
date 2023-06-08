@@ -15,6 +15,7 @@ import CoursesTable from "../../Components/Home/CoursesTable";
 import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 import {v4} from 'uuid'
 import Header from "../../Components/Header/Header";
+import Footer from "../../Components/Footer/Footer";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -176,6 +177,9 @@ function Home() {
                 </div>
             </DndProvider>
             <button onClick={() => navigate("/create")}>Create new</button>
+            <div className="footer">
+                <Footer/>
+            </div>
         </div>
     )
 }
