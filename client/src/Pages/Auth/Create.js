@@ -7,6 +7,8 @@ import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
 import {Step, StepLabel, Stepper} from "@mui/material";
 import Header from "../../Components/Header/Header";
+import Footer from "../../Components/Footer/Footer";
+import './CreateForm.css'
 
 function Create() {
 
@@ -83,6 +85,9 @@ function Create() {
                     <ChooseTracks next={() => setTracksInput(true)}/>
                     <LogOut/>
                 </div>
+                <div className="footer">
+                    <Footer/>
+                </div>
             </div>
         )
     } else if (classInput === false) {
@@ -102,6 +107,9 @@ function Create() {
                     <ChooseClasses next={() => setClassInput(true)}/>
                     <LogOut/>
                 </div>
+                <div className="footer">
+                    <Footer/>
+                </div>
             </div>
 
         )
@@ -119,6 +127,9 @@ function Create() {
                     </Stepper>
                     <ChooseOptions/>
                     <LogOut/>
+                </div>
+                <div className="footer">
+                    <Footer/>
                 </div>
             </div>
         )
