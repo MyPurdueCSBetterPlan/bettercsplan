@@ -515,20 +515,74 @@ module.exports.RemoveClass = async (req, res) => {
  */
 module.exports.getAlternatives = async(req, res) => {
     try {
-
-        const {course} = req.body
+        const {className} = req.body
 
         //gets user data from MongoDB
         const user = await User.findOne({email: req.email})
 
         //arrays that store alternatives
-        const core_wc_il = ["SCLA 10100", "ENGL 10600", "ENGL 10800", "ENGL 30400"]
-        const alternatives = [core_wc_il]
+        const core_wc_il = [
+            {name: "SCLA 10100", credits: "3.00"},
+            {name: "ENGL 10600", credits: "4.00"},
+            {name:"ENGL 10800", credits: "3.00"},
+            {name: "ENGL 30400", credits: "3.00"}
+        ]
+
+        const sts = [
+            {name: "EAPS 10000", credits: "3.00"},
+            {name: "CS 10100", credits: "3.00"},
+            {name: "EAPS 10400", creidts: "3.00"}
+        ]
+        const stat = [
+            {name: "STAT 35000", credits: "3.00"},
+            {name: "STAT 51100", credits: "3.00"}
+        ]
+        const alternativeLists = [core_wc_il, sts, stat]
+
+        //alternatives for course given from user
+        let alternates = []
+
+        for (let i = 0; i < alternativeLists.length; i++) {
+            for (let j = 0; j < alternativeLists[i].length; j++) {
+                if (alternativeLists[i][j].name === className) {
+                    alternates = alternativeLists[i]
+                    alternates.splice(j, 1)
+                }
+            }
+        }
+        console.log(alternates)
+
+        return res.status(200).json({
+            alternates: alternates,
+            success: true
+        })
 
 
     }
     catch {
-
+        return res.status(400).json({message: "Unable to get alternatives", success: false})
     }
 
+}
+
+module.exports.ReplaceClass = async (req, res) => {
+    try {
+        const {oldClassName, newClassName} = req.body
+
+        //gets user data from MongoDB
+        const user = await User.findOne({email: req.email})
+
+        let coursesToTake = user.coursesToTake
+
+        coursesToTake.splice(coursesToTake.indexOf(oldClassName), 1)
+        coursesToTake.push(newClassName)
+
+        //updates user data on MongoDB
+        await User.updateOne({email: req.email}, {coursesToTake: coursesToTake})
+
+        return res.status(200).json({message: "Replaced classes successfully", success: true})
+    }
+    catch {
+        return res.status(400).json({message: "Unable to replace classes", success: false})
+    }
 }

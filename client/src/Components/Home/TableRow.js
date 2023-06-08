@@ -5,6 +5,7 @@ function TableRow(props) {
     const credits = props.credits
     const index = props.index
     const removeMyself = props.delete
+    const handleClick = props.handleClick
     const [, drag] = useDrag(() => ({
         type: 'TABLE_ROW',
         item: {name, credits, index},
@@ -20,9 +21,9 @@ function TableRow(props) {
     }))
 
     return (
-        <tr ref={drag}>
-            <td>{props.name}</td>
-            <td>{props.credits}</td>
+        <tr ref={drag} onClick={() => handleClick(name)}>
+            <td>{name}</td>
+            <td>{credits}</td>
         </tr>
     )
 }

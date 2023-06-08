@@ -26,6 +26,10 @@ function Home() {
     const [coursesToTake, setCoursesToTake] = useState([])
     const [semesters, setSemesters] = useState([])
     const [schedule, setSchedule] = useState([])
+    const directions = "Drag and drop classes from your class list to the semester tables. To avoid " +
+        "prerequisite errors, first move your math classes, then your CS core classes, and then your CS track " +
+        "classes. If you would like to see alternatives for a class in your class list, simply click on the class." +
+        "Please note that the list of alternatives is not comprehensive."
 
     //Checks if the user is logged in or not
     useEffect(() => {
@@ -126,6 +130,7 @@ function Home() {
             })
     }
 
+    //called when a class is moved from one semester table to another
     async function moveClass(semIndex, className) {
         axios.post(
             `${REACT_APP_SERVER_URL}/schedule-remove`,
@@ -158,6 +163,23 @@ function Home() {
             })
     }
 
+    function replaceClass (oldClassName, newClassName) {
+        axios.post(
+            `${REACT_APP_SERVER_URL}/schedule-replace`,
+            {
+                oldClassName: oldClassName,
+                newClassName: newClassName
+            },
+            {withCredentials: true}
+        )
+            .then((response) => {
+                const {message, success} = response.data
+                if (!success) {
+                    ErrorAction(message)
+                }
+            })
+    }
+
     return (
         <div>
             <div className="header">
@@ -166,9 +188,10 @@ function Home() {
             <h4>
                 Welcome <span>{name}</span>
             </h4>
+            <h4>{directions}</h4>
             <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
                 <div className="two-split">
-                    <CoursesTable courses={coursesToTake} add={removeClass}/>
+                    <CoursesTable courses={coursesToTake} add={removeClass} replace={replaceClass}/>
                     <div>
                         {semesters.map((name, index) => <SemesterTable key={v4()} index={index} semester={name}
                                                                        courses={schedule[index]}
