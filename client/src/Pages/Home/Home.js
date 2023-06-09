@@ -6,6 +6,7 @@ import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import {TouchBackend} from 'react-dnd-touch-backend'
 import {isMobile} from "react-device-detect"
+import withScrolling from 'react-dnd-scrolling'
 
 import axios from "axios";
 import LogOut from "../../Components/LogOut"
@@ -16,8 +17,10 @@ import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 import {v4} from 'uuid'
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
+import {Grid} from "@mui/material";
 
 const {REACT_APP_SERVER_URL} = process.env;
+const ScrollingComponent = withScrolling('div')
 
 function Home() {
     const navigate = useNavigate();
@@ -190,14 +193,17 @@ function Home() {
             </h4>
             <h4>{directions}</h4>
             <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
-                <div className="two-split">
-                    <CoursesTable courses={coursesToTake} add={removeClass} replace={replaceClass}/>
-                    <div>
-                        {semesters.map((name, index) => <SemesterTable key={v4()} index={index} semester={name}
-                                                                       courses={schedule[index]}
-                                                                       add={addClass} move={moveClass}/>)}
-                    </div>
-                </div>
+                <ScrollingComponent className='scrollable-area'>
+                    <Grid container justifyContent="center">
+                        <Grid container item xs={6} sm={3} alignItems="center" direction="column">
+                            <CoursesTable courses={coursesToTake} add={removeClass} replace={replaceClass}/>
+                        </Grid>
+                        <Grid container item xs={6} sm={9} rowSpacing={10} >
+                            {semesters.map((name, index) => <SemesterTable key={v4()} index={index} semester={name}
+                                                                           courses={schedule[index]} add={addClass} move={moveClass}/>)}
+                        </Grid>
+                    </Grid>
+                </ScrollingComponent>
             </DndProvider>
             <button onClick={() => navigate("/create")}>Create new</button>
             <div className="footer">

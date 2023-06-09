@@ -5,6 +5,7 @@ import {useDrop} from "react-dnd";
 import {v4} from 'uuid'
 import axios from "axios";
 import Alternate from "./Alternate";
+import {Grid} from "@mui/material";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -75,14 +76,17 @@ function CoursesTable(props) {
     }
 
     return (
-        <div>
-            <div>
+        <>
+            <Grid item>
                 {alternates.map(alternate => <Alternate name={alternate.name} credits={alternate.credits}
                                                         handleClick={handleAlternateClick} />)}
-            </div>
-            <div className="table-box" ref={drop}>
-                <table>
+            </Grid>
+            <Grid item ref={drop}>
+                <table className='course-table'>
                     <tbody>
+                    <tr>
+                        <th colSpan='2'>Courses to Take</th>
+                    </tr>
                     <tr>
                         <th>Class</th>
                         <th>Credits</th>
@@ -93,8 +97,8 @@ function CoursesTable(props) {
                     )}
                     </tbody>
                 </table>
-            </div>
-        </div>
+            </Grid>
+        </>
 
     )
 }

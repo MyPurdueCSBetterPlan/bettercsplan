@@ -3,6 +3,7 @@ import TableRow from "./TableRow";
 import {useDrop} from "react-dnd";
 import {useEffect, useState} from "react";
 import {v4} from 'uuid'
+import {Grid} from "@mui/material";
 
 function SemesterTable(props) {
     const index = props.index
@@ -52,10 +53,12 @@ function SemesterTable(props) {
     }, [props.courses])
 
     return (
-        <div className="table-box" ref={drop}>
-            <p className="table-title">{props.semester}</p>
-            <table>
+        <Grid item xs={12} sm={6} md={3} sx={{textAlign: 'center'}}>
+            <table ref={drop}>
                 <tbody>
+                <tr>
+                    <th colSpan='2'>{props.semester}</th>
+                </tr>
                 <tr>
                     <th>Class</th>
                     <th>Credits</th>
@@ -65,7 +68,7 @@ function SemesterTable(props) {
                     <TableRow key={v4()} index={index} name={row.name} credits={row.credits} delete={removeRow}/>)}
                 </tbody>
             </table>
-        </div>
+        </Grid>
     )
 }
 

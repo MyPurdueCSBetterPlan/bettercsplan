@@ -8,3 +8,17 @@
     align-items: center;
     text-align: center;
 }
+
+.scrollable-area {
+    overflow: auto;
+    max-height: 75vh;
+}
+
+.scrollable-area::-webkit-scrollbar {
+    width: 10px;
+}
+
+.scrollable-area::-webkit-scrollbar-thumb {
+    background: #2f234f;
+    border-radius: 10px;
+}
