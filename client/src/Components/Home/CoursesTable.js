@@ -4,8 +4,7 @@ import {useEffect, useState} from "react";
 import {useDrop} from "react-dnd";
 import {v4} from 'uuid'
 import axios from "axios";
-import Alternate from "./Alternate";
-import {Grid} from "@mui/material";
+import {Dialog, DialogTitle, Grid, List, ListItem, ListItemButton, ListItemText} from "@mui/material";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -25,6 +24,7 @@ function CoursesTable(props) {
             isOver: !!monitor.isOver()
         })
     }))
+    const [open, setOpen] = useState(false)
 
     //removes only THE FIRST OCCURRENCE of the row that has the given name
     function removeRow(name) {
@@ -57,13 +57,15 @@ function CoursesTable(props) {
                 const {alternates} = response.data
                 setReplace(name)
                 setAlternates(alternates)
+                if (alternates.length !== 0) {
+                    setOpen(true)
+                }
             })
     }
 
     function handleAlternateClick(alternateName, alternateCredits) {
+        setOpen(false)
         props.replace(replace, alternateName)
-        setReplace("")
-        setAlternates([])
         setRows(rows => {
             for (let i = 0; i < rows.length; i++) {
                 if (rows[i].name === replace) {
@@ -75,12 +77,24 @@ function CoursesTable(props) {
         })
     }
 
+    function closeDialog() {
+        setOpen(false)
+    }
+
     return (
         <>
-            <Grid item>
-                {alternates.map(alternate => <Alternate name={alternate.name} credits={alternate.credits}
-                                                        handleClick={handleAlternateClick} />)}
-            </Grid>
+            <Dialog open={open} onClose={closeDialog}>
+                <DialogTitle sx={{fontFamily: "'Poppins', sans-serif"}}>Choose an Alternative for {replace}</DialogTitle>
+                <List>
+                    {alternates.map(alternate => (
+                        <ListItem disableGutters>
+                            <ListItemButton onClick={() => {handleAlternateClick(alternate.name, alternate.credits)}}>
+                                <ListItemText primary={alternate.name} sx={{'& .MuiTypography-root': {fontFamily:"'Poppins', sans-serif"}}}/>
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>
+            </Dialog>
             <Grid item ref={drop}>
                 <table className='course-table'>
                     <tbody>

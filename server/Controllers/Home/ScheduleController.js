@@ -531,13 +531,41 @@ module.exports.getAlternatives = async(req, res) => {
         const sts = [
             {name: "EAPS 10000", credits: "3.00"},
             {name: "CS 10100", credits: "3.00"},
-            {name: "EAPS 10400", creidts: "3.00"}
+            {name: "EAPS 10400", credits: "3.00"},
+            {name: "EAPS 10600", credits: "3.00"}
         ]
         const stat = [
             {name: "STAT 35000", credits: "3.00"},
             {name: "STAT 51100", credits: "3.00"}
         ]
-        const alternativeLists = [core_wc_il, sts, stat]
+
+        const gis = [
+            {name: "EAPS 32700", credits: "3.00"},
+            {name: "EAPS 37500", credits: "3.00"},
+            {name: "CS 39000", credits: "3.00"}
+        ]
+
+        const calc1 = [
+            {name: "MA 16100", credits: "5.00"},
+            {name: "MA 16500", credits: "4.00"}
+        ]
+
+        const calc2 = [
+            {name: "MA 16200", credits: "5.00"},
+            {name: "MA 16600", credits: "4.00"}
+        ]
+
+        const calc3 = [
+            {name: "MA 26100", credits: "4.00"},
+            {name: "MA 27101", credits: "5.00"}
+        ]
+
+        const linear = [
+            {name: "MA 26500", credits: "3.00"},
+            {name: "MA 35100", credits: "3.00"}
+        ]
+
+        const alternativeLists = [core_wc_il, sts, stat, gis, calc1, calc2, calc3, linear]
 
         //alternatives for course given from user
         let alternates = []

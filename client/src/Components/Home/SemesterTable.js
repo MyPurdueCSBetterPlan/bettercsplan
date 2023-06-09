@@ -65,7 +65,8 @@ function SemesterTable(props) {
                 </tr>
                 {}
                 {rows.map(row =>
-                    <TableRow key={v4()} index={index} name={row.name} credits={row.credits} delete={removeRow}/>)}
+                    <TableRow key={v4()} index={index} name={row.name} credits={row.credits} delete={removeRow}
+                              handleClick={() => {}}/>)}
                 </tbody>
             </table>
         </Grid>
