@@ -6,26 +6,27 @@ import {v4} from 'uuid'
 import {Grid} from "@mui/material";
 
 function SemesterTable(props) {
-    const index = props.index
-    const add = props.add
-    const move = props.move
 
+    //the rows displayed under the semester table
     const [rows, setRows] = useState([])
 
+    //on a table row drop, the rows are updated and a certain function is called based on where the row came from
+    //note that on a drop, the original table_row is deleted (look at TableRow.js)
     const [, drop] = useDrop(() => ({
         accept: 'TABLE_ROW',
         drop: async (draggedRow) => {
             setRows(rows => [...rows, {name: draggedRow.name, credits: draggedRow.credits}])
-            if (draggedRow.index === -1) {
-                add(index, draggedRow.name)
 
-                console.log("CALLED UPDATE")
-            } else if (draggedRow.index !== index) {
-                move(index, draggedRow.name)
-                console.log("CALLED MOVE")
-            } else {
-                console.log("NOTHING")
+            //row is coming from the classes table
+            if (draggedRow.index === -1) {
+                props.add(props.index, draggedRow.name)
+
+            //row is coming from another semester table
+            } else if (draggedRow.index !== props.index) {
+                props.move(props.index, draggedRow.name)
             }
+
+            //do nothing if draggedRow.index === props.index (row is coming from the same semester table)
         },
         collect: monitor => ({
             isOver: !!monitor.isOver()
@@ -65,7 +66,7 @@ function SemesterTable(props) {
                 </tr>
                 {}
                 {rows.map(row =>
-                    <TableRow key={v4()} index={index} name={row.name} credits={row.credits} delete={removeRow}
+                    <TableRow key={v4()} index={props.index} name={row.name} credits={row.credits} delete={removeRow}
                               handleClick={() => {}}/>)}
                 </tbody>
             </table>

@@ -10,14 +10,26 @@ import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
 import './CreateForm.css'
 
+
+/**
+ * @return {JSX.Element} - Displays various screens that all deal with setting user information necessary
+ * to determine what classes the user needs to take and generating their base (empty) schedule
+ */
 function Create() {
 
+    //array to store user's selected tracks
     const [tracksInput, setTracksInput] = useState(false);
-    const [classInput, setClassInput] = useState(false);
-    const [cookies, setCookie, removeCookie] = useCookies(["token"]);
-    const navigate = useNavigate();
-    const steps = ["Choose Tracks", "List Classes Taken", "Choose Options"]
 
+    //array to store user's taken classes
+    const [classInput, setClassInput] = useState(false);
+
+    //cookies for user authentication purposes
+    const [cookies, setCookie, removeCookie] = useCookies(["token"]);
+
+    const navigate = useNavigate();
+
+    //steps for Material-UI stepper
+    const steps = ["Choose Tracks", "List Classes Taken", "Choose Options"]
     const stepperStyle = {
         padding: 2,
         "& .Mui-active": {
@@ -69,6 +81,9 @@ function Create() {
         }
     }, [cookies, navigate, removeCookie]);
 
+
+    //displays screen to input tracks, screen to input classes, or screen to input options based on
+    //which ones the user has/has-not already done
     if (tracksInput === false) {
         return (
             <div>

@@ -4,9 +4,14 @@ import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
+/**
+ * @return {JSX.Element} - Menu where the user can choose their schedule options: years to graduate and
+ * desire to take summer classes
+ */
 function ChooseOptions() {
     const navigate = useNavigate();
 
+    //sends the user's options to the server to be saved
     function saveOptions(e) {
         e.preventDefault()
         const options = Object.fromEntries(new FormData(e.target).entries())
@@ -22,34 +27,24 @@ function ChooseOptions() {
             },
             {withCredentials: true}
         )
-            .then((response) => {
-                if (response.status === 200) {
-                    generateSchedule()
-                } else {
-                    console.log(response.status)
-                }
-            })
-            .catch((error) => {
-                console.log(error)
+            .then(generateSchedule)
+            .catch(error => {
+                const {message} = error.data
+                ErrorAction(message)
             })
     }
 
+    //tells the server to generate the user's schedule and navigates back to the home page on succes
     function generateSchedule() {
         axios.get(
             `${REACT_APP_SERVER_URL}/generate`,
             {withCredentials: true}
         )
-            .then((response) => {
-                if (response.status === 200) {
-                    console.log("schedule successfully generated")
-                    console.log(response.data)
-                    navigate("/")
-                } else {
-                    console.log("error during schedule generation")
-                    navigate("/")
-                }
+            .then(() => navigate("/"))
+            .catch(error => {
+                const {message} = error.data
+                ErrorAction(message)
             })
-            .catch((err) => console.log(err))
 
     }
 

@@ -6,7 +6,6 @@ import GoogleButton from 'react-google-button'
 import {useDispatch} from "react-redux";
 import {ErrorAction, InvalidPassword, SuccessActionLogin} from "../../Redux/Actions/GlobalActions";
 import "./AuthForm.css"
-import ChooseTracks from "../../Components/Auth/ChooseTracks";
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
 import './AuthForm.css'
@@ -14,6 +13,9 @@ import './AuthForm.css'
 const {REACT_APP_SERVER_URL} = process.env;
 
 
+/**
+ * @return {JSX.Element} - Login screen
+ */
 function Login() {
     const navigate = useNavigate();
     const dispatch = useDispatch();

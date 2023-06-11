@@ -464,7 +464,6 @@ module.exports.AddClass = async (req, res) => {
     catch {
         return res.status(400).json({
             message: "Something went wrong while trying to update your schedule",
-            success: true
         })
     }
 }
@@ -503,10 +502,10 @@ module.exports.RemoveClass = async (req, res) => {
         //updates user data on MongoDB
         await User.updateOne({email: req.email}, {schedule: schedule, coursesToTake: coursesToTake})
 
-        return res.status(200).json({message: "schedule was successfully updated", success: true})
+        return res.status(200).json()
     }
     catch {
-        return res.status(400).json({message: "Schedule was not able to be updated", success: false})
+        return res.status(400).json({message: "Schedule was not able to be updated"})
     }
 }
 
@@ -578,17 +577,15 @@ module.exports.getAlternatives = async(req, res) => {
                 }
             }
         }
-        console.log(alternates)
 
         return res.status(200).json({
-            alternates: alternates,
-            success: true
+            alternates: alternates
         })
 
 
     }
     catch {
-        return res.status(400).json({message: "Unable to get alternatives", success: false})
+        return res.status(400).json({message: "Unable to get alternatives"})
     }
 
 }

@@ -5,13 +5,29 @@ import {useDrop} from "react-dnd";
 import {v4} from 'uuid'
 import axios from "axios";
 import {Dialog, DialogTitle, Grid, List, ListItem, ListItemButton, ListItemText} from "@mui/material";
+import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
+/**
+ * @param props.courses - array of course objects, each object has "name" and "credits" properties
+ * @param props.add - function that updates server data after a class is added to the courses table
+ * @param props.replace - function that updates server data after a class is replaced with its alternative
+ * @return {JSX.Element} - table that displays all the courses the user needs to take
+ */
 function CoursesTable(props) {
+
+    //rows displayed under the courses table
     const [rows, setRows] = useState(props.courses)
+
+    //class that alternatives are listed for
     const [replace, setReplace] = useState("")
+
+    //alternatives for clicked class
     const [alternates, setAlternates] = useState([])
+
+    //on a table_row drop, the rows are updated and the add function is called (updates server data)
+    //note that on a drop, the original table_row is deleted (look at TableRow.js)
     const [, drop] = useDrop(() => ({
         accept: 'TABLE_ROW',
         drop: (draggedRow) => {
@@ -24,6 +40,8 @@ function CoursesTable(props) {
             isOver: !!monitor.isOver()
         })
     }))
+
+    //boolean to track whether the dialog is open or not
     const [open, setOpen] = useState(false)
 
     //removes only THE FIRST OCCURRENCE of the row that has the given name
@@ -45,6 +63,8 @@ function CoursesTable(props) {
         setRows(props.courses)
     }, [props.courses])
 
+
+    //shows the user a list of alternatives for the class w/ the name given by the argument
     function showAlternatives(name) {
         axios.post(
             `${REACT_APP_SERVER_URL}/schedule-alternateList`,
@@ -61,8 +81,13 @@ function CoursesTable(props) {
                     setOpen(true)
                 }
             })
+            .catch(error => {
+                const {message} = error.data
+                ErrorAction(message)
+            })
     }
 
+    //updates table rows and tells the server to update data when an alternate is clicked
     function handleAlternateClick(alternateName, alternateCredits) {
         setOpen(false)
         props.replace(replace, alternateName)
@@ -77,6 +102,7 @@ function CoursesTable(props) {
         })
     }
 
+    //closes the dialog
     function closeDialog() {
         setOpen(false)
     }

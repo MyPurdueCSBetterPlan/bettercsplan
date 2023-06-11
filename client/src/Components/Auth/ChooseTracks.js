@@ -1,7 +1,14 @@
 import axios from "axios";
+import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
+/**
+ *
+ * @param props.next - the next functional component to be returned after saving tracks (ChooseClasses)
+ * @return {JSX.Element} - menu where user can select/save their desired tracks
+ *
+ */
 function ChooseTracks(props) {
 
     //Sends array of track names to the server and moves on to next page if successful
@@ -19,15 +26,11 @@ function ChooseTracks(props) {
                 },
                 {withCredentials: true}
             )
-                .then((response) => {
-                    if (response.status === 200) {
-                        console.log("success")
-                        props.next()
-                    } else {
-                        console.log(response.status)
-                    }
+                .then(props.next)
+                .catch(error => {
+                    const {message} = error.data
+                    ErrorAction(message)
                 })
-                .catch((error) => console.log(error))
         }
     }
 

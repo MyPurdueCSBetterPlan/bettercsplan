@@ -22,13 +22,28 @@ import {Grid} from "@mui/material";
 const {REACT_APP_SERVER_URL} = process.env;
 const ScrollingComponent = withScrolling('div')
 
+/**
+ * @return {JSX.Element} - Home screen for a user that displays their schedule and courses to take
+ * @constructor
+ */
 function Home() {
-    const navigate = useNavigate();
-    const [cookies, setCookie, removeCookie] = useCookies(["token"]);
-    const [name, setName] = useState("");
+    const navigate = useNavigate()
+
+    //cookies for user authentication purposes
+    const [cookies, setCookie, removeCookie] = useCookies(["token"])
+
+    //name of the user
+    const [name, setName] = useState("")
+
+    //array of objects where each object represents a course (has "name" and "credits" properties)
     const [coursesToTake, setCoursesToTake] = useState([])
+
+    //array of the names of the semesters in the user's schedule
     const [semesters, setSemesters] = useState([])
+
+    //array of arrays of objects where each object represents a course (has "name" and "credits" properties)
     const [schedule, setSchedule] = useState([])
+
     const directions = "Drag and drop classes from your class list to the semester tables. To avoid " +
         "prerequisite errors, first move your math classes, then your CS core classes, and then your CS track " +
         "classes. If you would like to see alternatives for a class in your class list, simply click on the class." +
@@ -114,6 +129,10 @@ function Home() {
                     setSchedule(schedule)
                 }
             })
+            .catch(error => {
+                const {message} = error.data
+                ErrorAction(message)
+            })
     }
 
     //called whenever a class is moved from a semester table back to the courses table
@@ -125,11 +144,9 @@ function Home() {
             },
             {withCredentials: true}
         )
-            .then((response) => {
-                const {message, success} = response.data
-                if (!success) {
-                    ErrorAction(message)
-                }
+            .catch(error => {
+                const {message} = error.data
+                ErrorAction(message)
             })
     }
 
@@ -142,11 +159,7 @@ function Home() {
             },
             {withCredentials: true}
         )
-            .then((response) => {
-                const {message, success} = response.data
-                if (!success) {
-                    ErrorAction(message)
-                }
+            .then(() => {
                 axios.post(
                     `${REACT_APP_SERVER_URL}/schedule-add`,
                     {
@@ -163,6 +176,14 @@ function Home() {
                             setSchedule(schedule)
                         }
                     })
+                    .catch(error => {
+                        const {message} = error.data
+                        ErrorAction(message)
+                    })
+            })
+            .catch(error => {
+                const {message} = error.data
+                ErrorAction(message)
             })
     }
 

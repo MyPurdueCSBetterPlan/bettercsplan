@@ -1,12 +1,17 @@
 import {useState} from "react";
 import "./ChooseClasses.css"
 import axios from "axios";
+import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
+/**
+ * @param props.next - The next functional component to be rendered after classes are saved (ChooseOptions)
+ * @return {JSX.Element} - Menu where the user can search for classes using a filter and select them
+ * as classes they have already taken
+ */
+
 function ChooseClasses(props) {
-    const [filter, setFilter] = useState("")
-    const [showClassList, setShowClassList] = useState(false)
     const [classList, setClassList] = useState([])
     const [selected, setSelected] = useState([])
 
@@ -20,9 +25,11 @@ function ChooseClasses(props) {
             {withCredentials: true}
         )
             .then(response => {
-                if (response.status === 200) {
-                    setClassList(response.data.classes)
-                }
+                setClassList(response.data.classes)
+            })
+            .catch(error => {
+                const {message} = error.data
+                ErrorAction(message)
             })
     }
 
@@ -47,15 +54,10 @@ function ChooseClasses(props) {
             },
             {withCredentials: true}
         )
-            .then((response) => {
-                if (response.status === 200) {
-                    props.next()
-                } else {
-                    console.log(response.status)
-                }
-            })
+            .then(props.next)
             .catch((error) => {
-                console.log(error)
+                const {message} = error.data
+                ErrorAction(message)
             })
     }
 

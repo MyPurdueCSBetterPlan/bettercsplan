@@ -11,6 +11,9 @@ import './AuthForm.css'
 
 const {REACT_APP_SERVER_URL} = process.env;
 
+/**
+ * @return {JSX.Element} - Signup screen
+ */
 function Signup() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
