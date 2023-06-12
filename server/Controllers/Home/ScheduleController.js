@@ -519,6 +519,64 @@ module.exports.getAlternatives = async(req, res) => {
         //gets user data from MongoDB
         const user = await User.findOne({email: req.email})
 
+        //checks to see if course is part of a lab sci sequence & gets index of requested class
+        const sci_alt = user.sci_alt
+        const coursesToTake = user.coursesToTake
+        const taken = user.taken
+        let seq_index
+        let isLab = false
+        for (let i = 0; i < sci_alt.length; i++) {
+            if (sci_alt[i].includes(className)) {
+                let found = true
+                for (let j = 0; j < sci_alt[i].length; j++) {
+                    if (!coursesToTake.includes(sci_alt[i][j]) && !taken.includes(sci_alt[i][j])) {
+                        found = false
+                    }
+                }
+                if (found) {
+                    isLab = true
+                    seq_index = i
+                }
+            }
+        }
+
+        if (isLab) {
+            let sci_alt_credits = []
+            const replacements = sci_alt.splice(seq_index, 1)[0]
+
+            //getting credit hours of each lab science course
+            const db = new sqlite3.Database("classes.db")
+            await new Promise(async (resolve, reject) => {
+                for (let i = 0; i < sci_alt.length; i++) {
+                    let sequence = []
+                    for (let j = 0; j < sci_alt[j].length; j++) {
+                        await new Promise((res, rej) => {
+                            db.get('SELECT credit_hours FROM classesList WHERE class_id = ?',
+                                [sci_alt[i][j]],
+                                (err, row) => {
+                                    sequence.push({name: sci_alt[i][j], credits: row.credit_hours})
+                                    res()
+                                })
+                        })
+                    }
+                    sci_alt_credits.push(sequence)
+                }
+                resolve()
+            })
+            db.close()
+
+            console.log(sci_alt_credits)
+            return res.status(200).json({
+                isLab: true,
+                replacements: replacements,
+                alternates: sci_alt_credits
+            })
+        }
+
+
+
+
+
         //arrays that store alternatives
         const core_wc_il = [
             {name: "SCLA 10100", credits: "3.00"},
@@ -579,6 +637,7 @@ module.exports.getAlternatives = async(req, res) => {
         }
 
         return res.status(200).json({
+            isLab: false,
             alternates: alternates
         })
 
@@ -593,6 +652,7 @@ module.exports.getAlternatives = async(req, res) => {
 module.exports.ReplaceClass = async (req, res) => {
     try {
         const {oldClassName, newClassName} = req.body
+        console.log("replacing ", oldClassName, " with ", newClassName)
 
         //gets user data from MongoDB
         const user = await User.findOne({email: req.email})
@@ -601,6 +661,33 @@ module.exports.ReplaceClass = async (req, res) => {
 
         coursesToTake.splice(coursesToTake.indexOf(oldClassName), 1)
         coursesToTake.push(newClassName)
+
+        //updates user data on MongoDB
+        await User.updateOne({email: req.email}, {coursesToTake: coursesToTake})
+
+        return res.status(200).json({message: "Replaced classes successfully", success: true})
+    }
+    catch {
+        return res.status(400).json({message: "Unable to replace classes", success: false})
+    }
+}
+
+module.exports.ReplaceSequence = async (req, res)  => {
+    try {
+        const {oldClassNames, newClassNames} = req.body
+
+        //gets user data from MongoDB
+        const user = await User.findOne({email: req.email})
+
+        let coursesToTake = user.coursesToTake
+
+        for (let i = 0; i < oldClassNames.length; i++) {
+            console.log('replacing ', oldClassNames[i], ' with ', newClassNames[i])
+            coursesToTake.splice(coursesToTake.indexOf(oldClassNames[i]), 1)
+            coursesToTake.push(newClassNames[i])
+        }
+
+        console.log(coursesToTake)
 
         //updates user data on MongoDB
         await User.updateOne({email: req.email}, {coursesToTake: coursesToTake})

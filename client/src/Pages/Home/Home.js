@@ -204,6 +204,23 @@ function Home() {
             })
     }
 
+    function replaceSequence (oldClassNames, newClassNames) {
+        axios.post(
+            `${REACT_APP_SERVER_URL}/schedule-replace-sequence`,
+            {
+                oldClassNames: oldClassNames,
+                newClassNames: newClassNames
+            },
+            {withCredentials: true}
+        )
+            .then((response) => {
+                const {message, success} = response.data
+                if (!success) {
+                    ErrorAction(message)
+                }
+            })
+    }
+
     return (
         <div>
             <div className="header">
@@ -217,7 +234,8 @@ function Home() {
                 <ScrollingComponent className='scrollable-area'>
                     <Grid container justifyContent="center">
                         <Grid container item xs={6} sm={3} alignItems="center" direction="column">
-                            <CoursesTable courses={coursesToTake} add={removeClass} replace={replaceClass}/>
+                            <CoursesTable courses={coursesToTake} add={removeClass} replace={replaceClass}
+                                          replaceSequence={replaceSequence}/>
                         </Grid>
                         <Grid container item xs={6} sm={9} rowSpacing={10} >
                             {semesters.map((name, index) => <SemesterTable key={v4()} index={index} semester={name}

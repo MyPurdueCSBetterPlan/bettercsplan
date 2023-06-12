@@ -46,6 +46,10 @@ const userSchema = new mongoose.Schema({
     },
     schedule: {
         type: [[String]]
+    },
+    //array of lab sequence arrays of class names
+    sci_alt: {
+        type: [[String]]
     }
 })
 

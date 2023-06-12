@@ -516,6 +516,7 @@ module.exports.coreSciAdd = async (req, res, next) => {
         })
         // if lab req is not met, sees if there are any sequences where only one class is needed to complete
         // otherwise adds EAPS 11100 and EAPS 11200
+        const sci_alt = []
         if (!meet_sci_lab) {
             console.log("sci_lab not met")
             let added = false
@@ -529,17 +530,33 @@ module.exports.coreSciAdd = async (req, res, next) => {
                         addClass = sequenceArr[j][0]
                     }
                 }
-                if (falseCount === 1) {
+                if (falseCount === 1 && !added) {
                     coursesToTake.push(addClass)
+                    sci_alt.push([addClass])
                     added = true
-                    break
+                }
+                else if (falseCount === 1){
+                    sci_alt.push([addClass])
                 }
             }
             if (!added) {
                 coursesToTake.push("EAPS 11100")
                 coursesToTake.push("EAPS 11200")
+
+                //all 2-course sequences are listed as alternatives in this case
+                sci_alt.push(["EAPS 11100", "EAPS 11200"])
+                sci_alt.push(["BIOL 11000", "BIOL 11100"])
+                sci_alt.push(["CHM 11500", "CHM 11600"])
+                sci_alt.push(["CHM 12500", "CHM 12600"])
+                sci_alt.push(["PHYS 22000", "PHYS 22100"])
+                sci_alt.push(["PHYS 17200", "PHYS 22100"])
+                sci_alt.push(["PHYS 17200", "PHYS 27200"])
+                sci_alt.push(["PHYS 17200", "PHYS 23400"])
+                sci_alt.push(["PHYS 22000", "PHYS 23400"])
+                sci_alt.push(["PHYS 23300", "PHYS 23400"])
             }
         }
+        await User.updateOne({email: email}, {sci_alt: sci_alt})
 
         //STATISTICS
         if (!sci_stat) {

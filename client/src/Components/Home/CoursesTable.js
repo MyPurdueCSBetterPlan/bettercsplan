@@ -20,8 +20,11 @@ function CoursesTable(props) {
     //rows displayed under the courses table
     const [rows, setRows] = useState(props.courses)
 
-    //class that alternatives are listed for
+    //class(es) that alternatives are listed for
     const [replace, setReplace] = useState("")
+
+    //used to track whether the current class to "replace" is part of a lab sequence
+    const [isLab, setIsLab] = useState(false)
 
     //alternatives for clicked class
     const [alternates, setAlternates] = useState([])
@@ -74,12 +77,24 @@ function CoursesTable(props) {
             {withCredentials: true}
         )
             .then(response => {
-                const {alternates} = response.data
-                setReplace(name)
-                setAlternates(alternates)
-                if (alternates.length !== 0) {
-                    setOpen(true)
+                const {isLab, alternates, replacements} = response.data
+                if (!isLab) {
+                    setIsLab(false)
+                    setReplace(name)
+                    setAlternates(alternates)
+                    if (alternates.length !== 0) {
+                        setOpen(true)
+                    }
                 }
+                else {
+                    setIsLab(true)
+                    setReplace(replacements)
+                    setAlternates(alternates)
+                    if (alternates.length !== 0) {
+                        setOpen(true)
+                    }
+                }
+
             })
             .catch(error => {
                 const {message} = error.data
@@ -102,6 +117,22 @@ function CoursesTable(props) {
         })
     }
 
+    function handleAlternateClickSequence(alternates) {
+        setOpen(false)
+        props.replaceSequence(replace, alternates.map(alt => alt.name))
+        for (let i = 0; i < replace.length; i++) {
+            setRows(rows => {
+                for (let j = 0; j < rows.length; j++) {
+                    if (rows[j].name === replace[i]) {
+                        rows[j].name = alternates[i].name
+                        rows[j].credits = alternates[i].credits
+                    }
+                }
+                return rows
+            })
+        }
+    }
+
     //closes the dialog
     function closeDialog() {
         setOpen(false)
@@ -110,15 +141,26 @@ function CoursesTable(props) {
     return (
         <>
             <Dialog open={open} onClose={closeDialog}>
-                <DialogTitle sx={{fontFamily: "'Poppins', sans-serif"}}>Choose an Alternative for {replace}</DialogTitle>
+                {isLab ?
+                    (<DialogTitle sx={{fontFamily: "'Poppins', sans-serif"}}>Choose an alternative for {replace.length === 1 ? (replace) : (replace[0] + " + " + replace[1])}</DialogTitle>) :
+                    (<DialogTitle sx={{fontFamily: "'Poppins', sans-serif"}}>Choose an Alternative for {replace}</DialogTitle>)}
                 <List>
-                    {alternates.map(alternate => (
-                        <ListItem disableGutters>
-                            <ListItemButton onClick={() => {handleAlternateClick(alternate.name, alternate.credits)}}>
-                                <ListItemText primary={alternate.name} sx={{'& .MuiTypography-root': {fontFamily:"'Poppins', sans-serif"}}}/>
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
+                    {isLab ?
+                        (alternates.map(altSequence => (
+                            <ListItem disableGutters>
+                                <ListItemButton onClick={() => {handleAlternateClickSequence(altSequence)}}>
+                                    <ListItemText primary={altSequence.length === 1 ? (altSequence[0].name) :  (altSequence[0].name + " " + altSequence[1].name)}/>
+                                </ListItemButton>
+                            </ListItem>
+                        ))) :
+                        (alternates.map(alternate => (
+                            <ListItem disableGutters>
+                                <ListItemButton onClick={() => {handleAlternateClick(alternate.name, alternate.credits)}}>
+                                    <ListItemText primary={alternate.name} sx={{'& .MuiTypography-root': {fontFamily:"'Poppins', sans-serif"}}}/>
+                                </ListItemButton>
+                            </ListItem>
+                        )))}
+
                 </List>
             </Dialog>
             <Grid item ref={drop}>
