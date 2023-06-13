@@ -50,6 +50,10 @@ const userSchema = new mongoose.Schema({
     //array of lab sequence arrays of class names
     sci_alt: {
         type: [[String]]
+    },
+    //array of arrays of language sequences
+    lang_alt: {
+        type: [[String]]
     }
 })
 

@@ -567,10 +567,54 @@ module.exports.getAlternatives = async(req, res) => {
 
             console.log(sci_alt_credits)
             return res.status(200).json({
-                isLab: true,
+                isSeq: true,
                 replacements: replacements,
                 alternates: sci_alt_credits
             })
+        }
+
+        //checks to see if course is a part of a language sequence
+        else {
+            const lang_alt = user.lang_alt
+            let isLang = false
+            console.log(lang_alt)
+
+            for (let i = 0; i < lang_alt.length; i++) {
+                if (lang_alt[i].includes(className)) {
+                    console.log('found?')
+                    let found = true
+                    for (let j = 0; j < lang_alt[i].length; j++) {
+                        if (!coursesToTake.includes(lang_alt[i][j]) && !taken.includes(lang_alt[i][j])) {
+                            found = false
+                        }
+                    }
+                    if (found) {
+                        isLang = true
+                        seq_index = i
+                    }
+                }
+            }
+
+            if (isLang) {
+
+                const replacements = lang_alt.splice(seq_index, 1)[0]
+
+                const lang_alt_credits = []
+                //all core lang classes are 3 credits
+                for (let i = 0; i < lang_alt.length; i++) {
+                    const seq = []
+                    for (let j = 0; j < lang_alt[i].length; j++) {
+                        seq.push({name: lang_alt[i][j], credits: '3.00'})
+                    }
+                    lang_alt_credits.push(seq)
+                }
+
+                return res.status(200).json({
+                    isSeq: true,
+                    replacements: replacements,
+                    alternates: lang_alt_credits
+                })
+            }
         }
 
 
@@ -637,7 +681,7 @@ module.exports.getAlternatives = async(req, res) => {
         }
 
         return res.status(200).json({
-            isLab: false,
+            isSeq: false,
             alternates: alternates
         })
 

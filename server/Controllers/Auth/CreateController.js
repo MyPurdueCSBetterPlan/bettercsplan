@@ -576,6 +576,7 @@ module.exports.coreSciAdd = async (req, res, next) => {
 
         //LANGUAGE AND CULTURE
         let language_count = {}
+        const lang_alt = []
         for (let i = 0; i < sci_lang.length; i++) {
             const language = sci_lang[i].split(" ")[0]
             if (!language_count.hasOwnProperty(language)) {
@@ -592,6 +593,17 @@ module.exports.coreSciAdd = async (req, res, next) => {
                 const prefix = sci_lang[0].split(" ")[0]
                 coursesToTake.push(prefix + " 10200")
 
+                //adding one lang alternatives if any
+                for (let i = 0; i < sci_lang.length; i++) {
+                    const prefix = sci_lang[i].split(" ")[0]
+                    const number = sci_lang[i].split(" ")[1]
+                    if (number === '10100') {
+                        lang_alt.push([prefix + " 10200"])
+                        console.log(prefix + ' 10200')
+                    }
+                }
+
+
                 //removing single culture class from gen-ed list
                 if (sci_gen.includes(sci_cult[0])) {
                     console.log("removing gen-ed", sci_gen[0])
@@ -602,6 +614,17 @@ module.exports.coreSciAdd = async (req, res, next) => {
                 coursesToTake.push("SPAN 10100")
                 coursesToTake.push("SPAN 10200")
                 core_hum = true
+
+                //adding two-lang alternatives
+                lang_alt.push(['SPAN 10100', 'SPAN 10200'])
+                lang_alt.push(['FR 10100', 'FR 10200'])
+                lang_alt.push(['ASL 10100', 'ASL 10200'])
+                lang_alt.push(['GER 10100', 'GER 10200'])
+                lang_alt.push(['KOR 10100', 'KOR 10200'])
+                lang_alt.push(['RUSS 10100', 'RUS 10200'])
+                lang_alt.push(['CHNS 10100', 'CHNS 10200'])
+                lang_alt.push(['JPNS 10100', 'JPNS 10200'])
+                lang_alt.push(['ITAL 10100', 'ITAL 10200'])
 
                 //removing single culture class from gen-ed list
                 for (let i = 0; i < sci_gen.length; i++) {
@@ -618,6 +641,22 @@ module.exports.coreSciAdd = async (req, res, next) => {
                 coursesToTake.push(prefix + " 10200")
                 core_hum = true
 
+                //adding one lang alternatives if any
+                for (let i = 0; i < sci_lang.length; i++) {
+                    const prefix = sci_lang[i].split(" ")[0]
+                    const number = sci_lang[i].split(" ")[1]
+                    if (number === '10100') {
+                        lang_alt.push([prefix + " 10200"])
+                        console.log(prefix + ' 10200')
+                    }
+                }
+
+                //POL 13000 meets cult requirement and core_bss
+                sci_cult.push("POL 13000")
+                coursesToTake.push("POL 13000")
+                core_bss = true
+            } else if (sci_cult.length === 0 && num_lang === 2) {
+
                 //POL 13000 meets cult requirement and core_bss
                 sci_cult.push("POL 13000")
                 coursesToTake.push("POL 13000")
@@ -629,6 +668,16 @@ module.exports.coreSciAdd = async (req, res, next) => {
                 sci_lang.push("SPAN 10200")
                 coursesToTake.push("SPAN 10200")
                 core_hum = true
+
+                //adding two-lang alternatives
+                lang_alt.push(['SPAN 10100', 'SPAN 10200'])
+                lang_alt.push(['FR 10100', 'FR 10200'])
+                lang_alt.push(['ASL 10100', 'ASL 10200'])
+                lang_alt.push(['GER 10100', 'GER 10200'])
+                lang_alt.push(['KOR 10100', 'KOR 10200'])
+                lang_alt.push(['RUSS 10100', 'RUS 10200'])
+                lang_alt.push(['CHNS 10100', 'CHNS 10200'])
+                lang_alt.push(['ITAL 10100', 'ITAL 10200'])
 
                 //POL 13000 meets cult requirement and core_bss
                 sci_cult.push("POL 13000")
@@ -646,6 +695,7 @@ module.exports.coreSciAdd = async (req, res, next) => {
                 }
             }
         }
+        await User.updateOne({email: email}, {lang_alt: lang_alt})
 
         //the only requirements besides gen-ed that may not be filled at this point are: core_il and core_bss
         //PSY 12000 and PHIL 12000 also count as gen-eds

@@ -23,8 +23,8 @@ function CoursesTable(props) {
     //class(es) that alternatives are listed for
     const [replace, setReplace] = useState("")
 
-    //used to track whether the current class to "replace" is part of a lab sequence
-    const [isLab, setIsLab] = useState(false)
+    //used to track whether the current class to "replace" is part of a sequence
+    const [isSeq, setIsSeq] = useState(false)
 
     //alternatives for clicked class
     const [alternates, setAlternates] = useState([])
@@ -77,9 +77,9 @@ function CoursesTable(props) {
             {withCredentials: true}
         )
             .then(response => {
-                const {isLab, alternates, replacements} = response.data
-                if (!isLab) {
-                    setIsLab(false)
+                const {isSeq, alternates, replacements} = response.data
+                if (!isSeq) {
+                    setIsSeq(false)
                     setReplace(name)
                     setAlternates(alternates)
                     if (alternates.length !== 0) {
@@ -87,7 +87,7 @@ function CoursesTable(props) {
                     }
                 }
                 else {
-                    setIsLab(true)
+                    setIsSeq(true)
                     setReplace(replacements)
                     setAlternates(alternates)
                     if (alternates.length !== 0) {
@@ -141,11 +141,11 @@ function CoursesTable(props) {
     return (
         <>
             <Dialog open={open} onClose={closeDialog}>
-                {isLab ?
+                {isSeq ?
                     (<DialogTitle sx={{fontFamily: "'Poppins', sans-serif"}}>Choose an alternative for {replace.length === 1 ? (replace) : (replace[0] + " + " + replace[1])}</DialogTitle>) :
                     (<DialogTitle sx={{fontFamily: "'Poppins', sans-serif"}}>Choose an Alternative for {replace}</DialogTitle>)}
                 <List>
-                    {isLab ?
+                    {isSeq ?
                         (alternates.map(altSequence => (
                             <ListItem disableGutters>
                                 <ListItemButton onClick={() => {handleAlternateClickSequence(altSequence)}}>
