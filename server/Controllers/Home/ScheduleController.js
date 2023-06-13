@@ -23,22 +23,29 @@ module.exports.AddClass = async (req, res) => {
         //gets user data from MongoDB
         const user = await User.findOne({email: req.email})
 
+        let schedule = user.schedule
+        let taken = user.taken
+        let coursesToTake = user.coursesToTake
 
         //TODO: this is duplicated code from HomeController.js...maybe find a way to reuse instead of copy/paste
         const db = new sqlite3.Database("classes.db")
 
         const courseNames = user.coursesToTake
         const coursesWithCredits = []
+        let semestersAllowed = ""
 
         //gets the credit hours for each course name in the user's coursesToTake list (courseNames) to take
         //creates an object for each course containing the name and credit hours and pushes to coursesWithCredits array
         await new Promise(async (resolve, reject) => {
             for (let i = 0; i < courseNames.length; i++) {
                 await new Promise((res, rej) => {
-                    db.get('SELECT credit_hours FROM classesList WHERE class_id = ?',
+                    db.get('SELECT credit_hours, semesters_offered FROM classesList WHERE class_id = ?',
                         [courseNames[i]],
                         (err, row) => {
                             coursesWithCredits.push({name: courseNames[i], credits: row.credit_hours})
+                            if (courseNames[i] === className) {
+                                semestersAllowed = row.semesters_offered
+                            }
                             res()
                         })
                 })
@@ -70,9 +77,67 @@ module.exports.AddClass = async (req, res) => {
         })
         db.close()
 
-        let schedule = user.schedule
-        let taken = user.taken
-        let coursesToTake = user.coursesToTake
+        //check to see if class can be taken in the chosen semester
+        console.log(semestersAllowed)
+        if (semestersAllowed !== null && semestersAllowed !== "") {
+            const summer = user.openToSummer
+            const years = user.years
+            if (summer) {
+                const semester = semIndex % 3
+                if (semester === 0) { //fall
+                    if (!semestersAllowed.includes("Fall")) {
+                        return res.status(200).json({
+                            message: "This class is not available in the Fall semester",
+                            success: false,
+                            coursesToTake: coursesWithCredits,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                } else if (semester === 1) { //spring
+                    if (!semestersAllowed.includes("Spring")) {
+                        return res.status(200).json({
+                            message: "This class is not available in the Spring semester",
+                            success: false,
+                            coursesToTake: coursesWithCredits,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                } else { //summer
+                    if (!semestersAllowed.includes("Summer")) {
+                        return res.status(200).json({
+                            message: "This class is not available in the Summer semester",
+                            success: false,
+                            coursesToTake: coursesWithCredits,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+
+            }
+            else {
+                const semester = semIndex % 2
+                if (semester === 0) { //fall
+                    if (!semestersAllowed.includes("Fall")) {
+                        return res.status(200).json({
+                            message: "This class is not available in the Fall semester",
+                            success: false,
+                            coursesToTake: coursesWithCredits,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+                else { //spring
+                    if (!semestersAllowed.includes("Spring")) {
+                        return res.status(200).json({
+                            message: "This class is not available in the Spring semester",
+                            success: false,
+                            coursesToTake: coursesWithCredits,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+        }
 
         //array to store all the classes that the user has listed on their schedule for the previous semesters
         let previousSemClasses = []
