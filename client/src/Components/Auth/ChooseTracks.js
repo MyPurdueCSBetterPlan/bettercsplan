@@ -1,5 +1,9 @@
 import axios from "axios";
 import {ErrorAction} from "../../Redux/Actions/GlobalActions";
+import {Button, ThemeProvider, ToggleButton, ToggleButtonGroup} from "@mui/material";
+import {useState} from "react";
+import "./ChooseComponent.css"
+import { createTheme } from '@mui/material/styles';
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -14,15 +18,14 @@ function ChooseTracks(props) {
     //Sends array of track names to the server and moves on to next page if successful
     function saveTracks(e) {
         e.preventDefault()
-        const tracks = Object.fromEntries(new FormData(e.target).entries())
 
-        if (Object.keys(tracks).length === 0) {
+        if (tracks.length === 0) {
             console.log("Select at least one track")
         } else {
             axios.post(
                 `${REACT_APP_SERVER_URL}/tracks`,
                 {
-                    "tracks": Object.keys(tracks)
+                    "tracks": tracks
                 },
                 {withCredentials: true}
             )
@@ -34,35 +37,42 @@ function ChooseTracks(props) {
         }
     }
 
+    const [tracks, setTracks] = useState([]);
+
+    const handleChange = (event, newTracks) => {
+        setTracks(newTracks);
+    };
+
+    const toggleButtonStyle = {
+        flexWrap: 'wrap',
+        '& .MuiToggleButton-root': {
+            fontFamily: 'Poppins, sans-serif'
+        }
+    }
+
     return (
-        <form onSubmit={saveTracks}>
-            <label htmlFor="CSE">Computational Science and Engineering</label>
-            <input name="CSE" id="CSE" type="checkbox"/>
-            <br/>
-            <label htmlFor="Graphics">Computer Graphics and Visualization</label>
-            <input name="Graphics" id="Graphics" type="checkbox"/>
-            <br/>
-            <label htmlFor="DB">Database and Information Systems</label>
-            <input name="DB" id="DB" type="checkbox"/>
-            <br/>
-            <label htmlFor="Algo">(Algorithmic) Foundations</label>
-            <input name="Algo" id="Algo" type="checkbox"/>
-            <br/>
-            <label htmlFor="ML">Machine Intelligence</label>
-            <input name="ML" id="ML" type="checkbox"/>
-            <br/>
-            <label htmlFor="Language">Programming Language</label>
-            <input name="Language" id="Language" type="checkbox"/>
-            <br/>
-            <label htmlFor="Security">Security</label>
-            <input name="Security" id="Security" type="checkbox"/>
-            <br/>
-            <label htmlFor="SWE">Software Engineering</label>
-            <input name="SWE" id="SWE" type="checkbox"/>
-            <br/>
-            <label htmlFor="Systems">Systems Software</label>
-            <input name="Systems" id="Systems" type="checkbox"/>
-            <button type="submit">SUBMIT</button>
+        <form onSubmit={saveTracks} className="tracks-form">
+            <ToggleButtonGroup
+                value={tracks}
+                color='warning'
+                onChange={handleChange}
+                aria-label="tracks"
+                fullWidth
+                orientation='vertical'
+                size='small'
+                sx={toggleButtonStyle}
+            >
+                <ToggleButton value="CSE" aria-label="CSE">CSE</ToggleButton>
+                <ToggleButton value="Graphics" aria-label="Computer Graphics and Visualization">Computer Graphics and Visualization</ToggleButton>
+                <ToggleButton value="DB" aria-label="Database and Information Systems">Database and Information Systems</ToggleButton>
+                <ToggleButton value="Algo" aria-label="(Algorithmic) Foundations">(Algorithmic) Foundations</ToggleButton>
+                <ToggleButton value="ML" aria-label="Machine Intelligence">Machine Intelligence</ToggleButton>
+                <ToggleButton value="Language" aria-label="Programming Languages">Programming Languages</ToggleButton>
+                <ToggleButton value="Security" aria-label="Security">Security</ToggleButton>
+                <ToggleButton value="SWE" aria-label="Software Engineering">Software Engineering</ToggleButton>
+                <ToggleButton value="Systems" aria-label="Systems">Systems Software</ToggleButton>
+            </ToggleButtonGroup>
+            <Button variant="contained" type='submit' fullWidth sx={{color: '#2f234f'}}>SUBMIT</Button>
         </form>
     )
 }

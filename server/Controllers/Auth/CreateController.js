@@ -675,7 +675,7 @@ module.exports.coreSciAdd = async (req, res, next) => {
                 lang_alt.push(['ASL 10100', 'ASL 10200'])
                 lang_alt.push(['GER 10100', 'GER 10200'])
                 lang_alt.push(['KOR 10100', 'KOR 10200'])
-                lang_alt.push(['RUSS 10100', 'RUS 10200'])
+                lang_alt.push(['RUSS 10100', 'RUSS 10200'])
                 lang_alt.push(['CHNS 10100', 'CHNS 10200'])
                 lang_alt.push(['ITAL 10100', 'ITAL 10200'])
 

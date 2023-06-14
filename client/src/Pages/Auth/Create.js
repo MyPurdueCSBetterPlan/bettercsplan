@@ -36,10 +36,12 @@ function Create() {
             "&.MuiStepIcon-root": {
                 color: "warning.main",
                 fontSize: "2rem",
+                fontFamily: 'Poppins, sans-serif'
             },
             "&.MuiStepLabel-alternativeLabel": {
               fontSize: '2vw',
-              color: "warning.main"
+              color: "warning.main",
+              fontFamily: 'Poppins, sans-serif'
             },
             "& .MuiStepConnector-line": {
                 borderColor: "#2f234f"
@@ -49,10 +51,12 @@ function Create() {
             "&.MuiStepIcon-root": {
                 color: "#2f234f",
                 fontSize: "2rem",
+                fontFamily: 'Poppins, sans-serif'
             },
             "&.MuiStepLabel-alternativeLabel": {
                 fontSize: '2vw',
-                color: "#2f234f"
+                color: "#2f234f",
+                fontFamily: 'Poppins, sans-serif'
             },
             "& .MuiStepConnector-line": {
                 borderColor: "#2f234f"
@@ -61,11 +65,13 @@ function Create() {
         "& .Mui-disabled": {
             ".MuiStepIcon-root": {
                 color: "#2f234f",
-                fontSize: '2rem'
+                fontSize: '2rem',
+                fontFamily: 'Poppins, sans-serif'
             },
             "&.MuiStepLabel-alternativeLabel": {
                 fontSize: '2vw',
-                color: "#2f234f"
+                color: "#2f234f",
+                fontFamily: 'Poppins, sans-serif'
             },
             "& .MuiStepConnector-line": {
                 borderColor: '#2f234f'
@@ -96,7 +102,6 @@ function Create() {
                             <StepLabel key={step}>{step}</StepLabel>
                         </Step>)}
                     </Stepper>
-                    Choose your tracks
                     <ChooseTracks next={() => setTracksInput(true)}/>
                     <LogOut/>
                 </div>
@@ -118,7 +123,6 @@ function Create() {
                                 {step}</StepLabel>
                         </Step>)}
                     </Stepper>
-                    Choose your already taken courses
                     <ChooseClasses next={() => setClassInput(true)}/>
                     <LogOut/>
                 </div>
