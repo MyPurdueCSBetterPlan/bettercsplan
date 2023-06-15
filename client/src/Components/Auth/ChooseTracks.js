@@ -45,35 +45,45 @@ function ChooseTracks(props) {
 
     const toggleButtonStyle = {
         flexWrap: 'wrap',
-        '& .MuiToggleButton-root': {
-            fontFamily: 'Poppins, sans-serif'
-        }
+        marginTop: '10vh',
     }
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#2f234f'
+            },
+        },
+        typography: {
+            fontFamily: ['Poppins', 'sans-serif'].join(',')
+        }
+    })
 
     return (
-        <form onSubmit={saveTracks} className="tracks-form">
-            <ToggleButtonGroup
-                value={tracks}
-                color='warning'
-                onChange={handleChange}
-                aria-label="tracks"
-                fullWidth
-                orientation='vertical'
-                size='small'
-                sx={toggleButtonStyle}
-            >
-                <ToggleButton value="CSE" aria-label="CSE">CSE</ToggleButton>
-                <ToggleButton value="Graphics" aria-label="Computer Graphics and Visualization">Computer Graphics and Visualization</ToggleButton>
-                <ToggleButton value="DB" aria-label="Database and Information Systems">Database and Information Systems</ToggleButton>
-                <ToggleButton value="Algo" aria-label="(Algorithmic) Foundations">(Algorithmic) Foundations</ToggleButton>
-                <ToggleButton value="ML" aria-label="Machine Intelligence">Machine Intelligence</ToggleButton>
-                <ToggleButton value="Language" aria-label="Programming Languages">Programming Languages</ToggleButton>
-                <ToggleButton value="Security" aria-label="Security">Security</ToggleButton>
-                <ToggleButton value="SWE" aria-label="Software Engineering">Software Engineering</ToggleButton>
-                <ToggleButton value="Systems" aria-label="Systems">Systems Software</ToggleButton>
-            </ToggleButtonGroup>
-            <Button variant="contained" type='submit' fullWidth sx={{color: '#2f234f'}}>SUBMIT</Button>
-        </form>
+        <ThemeProvider theme={theme}>
+            <form onSubmit={saveTracks} className="tracks-form">
+                <ToggleButtonGroup
+                    value={tracks}
+                    color='warning'
+                    onChange={handleChange}
+                    aria-label="tracks"
+                    fullWidth
+                    orientation='vertical'
+                    size='small'
+                    sx={toggleButtonStyle}
+                >
+                    <ToggleButton value="CSE" aria-label="CSE">CSE</ToggleButton>
+                    <ToggleButton value="Graphics" aria-label="Computer Graphics and Visualization">Computer Graphics and Visualization</ToggleButton>
+                    <ToggleButton value="DB" aria-label="Database and Information Systems">Database and Information Systems</ToggleButton>
+                    <ToggleButton value="Algo" aria-label="(Algorithmic) Foundations">(Algorithmic) Foundations</ToggleButton>
+                    <ToggleButton value="ML" aria-label="Machine Intelligence">Machine Intelligence</ToggleButton>
+                    <ToggleButton value="Language" aria-label="Programming Languages">Programming Languages</ToggleButton>
+                    <ToggleButton value="Security" aria-label="Security">Security</ToggleButton>
+                    <ToggleButton value="SWE" aria-label="Software Engineering">Software Engineering</ToggleButton>
+                    <ToggleButton value="Systems" aria-label="Systems">Systems Software</ToggleButton>
+                </ToggleButtonGroup>
+                <Button variant="outlined" type='submit' fullWidth>SUBMIT</Button>
+            </form>
+        </ThemeProvider>
     )
 }
 

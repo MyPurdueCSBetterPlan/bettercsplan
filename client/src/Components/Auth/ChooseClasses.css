@@ -1,9 +1,0 @@
-.split {
-    display: flex;
-    justify-content: space-evenly;
-}
-
-.filtered-classes {
-    overflow-y: auto;
-    height: 50vh;
-}

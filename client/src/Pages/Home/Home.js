@@ -9,7 +9,7 @@ import {isMobile} from "react-device-detect"
 import withScrolling from 'react-dnd-scrolling'
 
 import axios from "axios";
-import LogOut from "../../Components/LogOut"
+import LogOut from "../../Components/Profile/LogOut"
 import SemesterTable from "../../Components/Home/SemesterTable";
 import "./Home.css"
 import CoursesTable from "../../Components/Home/CoursesTable";

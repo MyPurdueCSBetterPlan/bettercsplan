@@ -1,4 +1,58 @@
 .tracks-form {
     margin: auto;
     width: 50vw;
+    height: 65vh;
+}
+
+.filter {
+    flex: 0 1 240px;
+}
+
+.filtered-classes {
+    overflow-y: auto;
+    height: 50vh;
+    border: 1px solid #2f234f;
+    border-radius: 5px;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.filtered-classes::-webkit-scrollbar {
+    width: 10px;
+    display: none; /* Chrome and Safari */
+}
+
+.class {
+    margin: 0;
+    padding: 5px;
+    color: #2f234f;
+    user-select: none;
+}
+
+.class:hover {
+    background-color: #ed6c02;
+}
+
+.selected {
+    flex: 0 1 240px;
+}
+
+.selected-classes {
+    overflow-y: auto;
+    height: 50vh;
+    border: 1px solid #2f234f;
+    border-radius: 5px;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.selected-classes::-webkit-scrollbar {
+    width: 10px;
+    display: none; /* Chrome and Safari */
+}
+
+.split {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 5vh;
 }

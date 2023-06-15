@@ -1,7 +1,9 @@
 import {useState} from "react";
-import "./ChooseClasses.css"
+import "./ChooseComponent.css"
 import axios from "axios";
 import {ErrorAction} from "../../Redux/Actions/GlobalActions";
+import {Button, ButtonGroup, TextField, ThemeProvider} from "@mui/material";
+import {createTheme} from "@mui/material/styles";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -17,6 +19,13 @@ function ChooseClasses(props) {
 
     //updates the filter value
     function handleChange(e) {
+
+        //returns an empty list if nothing is in the filter
+        if (e.target.value === "") {
+            setClassList([])
+            return
+        }
+
         axios.post(
             `${REACT_APP_SERVER_URL}/classes`,
             {
@@ -61,25 +70,64 @@ function ChooseClasses(props) {
             })
     }
 
+    //empties list of selected classes
+    function clearClasses() {
+        setSelected([])
+    }
+
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#2f234f'
+            },
+        },
+        typography: {
+            fontFamily: ['Poppins', 'sans-serif'].join(',')
+        }
+    })
+
+    const fieldStyle = {
+        '& .MuiFormLabel-root': {
+            color: '#2f234f'
+        },
+        '& .MuiInputBase-root .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#2f234f',
+            borderWidth: 2
+        }
+    }
+
+    const buttonStyle = {
+        border: '2px solid',
+        '&:hover': {
+            border: '2px solid',
+        }
+    }
 
     return (
-        <div className="split">
-            <div className="filter">
-                <p>Search Filter</p>
-                <input type="text" onChange={handleChange}/>
-                <div className="filtered-classes">
-                    {classList.map((option, index) =>
-                        <p key={index} onClick={select}>{option}</p>
-                    )}
+        <ThemeProvider theme={theme}>
+            <div className="split">
+                <div className="filter">
+                    <TextField id="outlined-basic" color='primary' label="Search Filter" variant="outlined"
+                               onChange={handleChange} sx={fieldStyle} />
+                    <div className="filtered-classes">
+                        {classList.map((option, index) =>
+                            <p className='class' key={index} onClick={select}>{option}</p>
+                        )}
+                    </div>
+                </div>
+                <div className="selected">
+                    <ButtonGroup fullWidth sx={{height: 56}}>
+                        <Button onClick={clearClasses} sx={buttonStyle}>Clear</Button>
+                        <Button type="submit" onClick={saveClasses} sx={buttonStyle}>Submit</Button>
+                    </ButtonGroup>
+                    <div className='selected-classes'>
+                        {selected.map((option, index) =>
+                            <p className='class' key={index} onClick={unselect}>{option}</p>)}
+                    </div>
                 </div>
             </div>
-            <div className="selected">
-                <p>Selected</p>
-                {selected.map((option, index) =>
-                    <p key={index} onClick={unselect}>{option}</p>)}
-                <button type="submit" onClick={saveClasses}>Submit</button>
-            </div>
-        </div>
+        </ThemeProvider>
+
     )
 }
 
