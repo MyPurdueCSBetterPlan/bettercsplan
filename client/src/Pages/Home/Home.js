@@ -9,15 +9,16 @@ import {isMobile} from "react-device-detect"
 import withScrolling from 'react-dnd-scrolling'
 
 import axios from "axios";
-import LogOut from "../../Components/Profile/LogOut"
 import SemesterTable from "../../Components/Home/SemesterTable";
 import "./Home.css"
 import CoursesTable from "../../Components/Home/CoursesTable";
 import {ErrorAction} from "../../Redux/Actions/GlobalActions";
+import Help from '../../Components/Home/Help'
 import {v4} from 'uuid'
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
-import {Grid} from "@mui/material";
+import {Grid, ThemeProvider} from "@mui/material";
+import {createTheme} from "@mui/material/styles";
 
 const {REACT_APP_SERVER_URL} = process.env;
 const ScrollingComponent = withScrolling('div')
@@ -32,9 +33,6 @@ function Home() {
     //cookies for user authentication purposes
     const [cookies, setCookie, removeCookie] = useCookies(["token"])
 
-    //name of the user
-    const [name, setName] = useState("")
-
     //array of objects where each object represents a course (has "name" and "credits" properties)
     const [coursesToTake, setCoursesToTake] = useState([])
 
@@ -43,11 +41,6 @@ function Home() {
 
     //array of arrays of objects where each object represents a course (has "name" and "credits" properties)
     const [schedule, setSchedule] = useState([])
-
-    const directions = "Drag and drop classes from your class list to the semester tables. To avoid " +
-        "prerequisite errors, first move your math classes, then your CS core classes, and then your CS track " +
-        "classes. If you would like to see alternatives for a class in your class list, simply click on the class." +
-        "Please note that the list of alternatives is not comprehensive."
 
     //Checks if the user is logged in or not
     useEffect(() => {
@@ -66,8 +59,7 @@ function Home() {
             {withCredentials: true}
         )
             .then((response) => {
-                const {success, message, name, coursesToTake, schedule, summer} = response.data
-                setName(name)
+                const {success, message, coursesToTake, schedule, summer} = response.data
                 if (success) {
                     //set boolean variable depending on whether the user is new or not
                     if (coursesToTake.length !== 0) {
@@ -77,19 +69,19 @@ function Home() {
                         if (summer) {
                             for (let i = 0; i < schedule.length; i++) {
                                 if (i % 3 === 0) {
-                                    setSemesters(semesters => [...semesters, "fall " + (Math.floor(i / 3) + 1)])
+                                    setSemesters(semesters => [...semesters, "Fall " + (Math.floor(i / 3) + 1)])
                                 } else if (i % 3 === 1) {
-                                    setSemesters(semesters => [...semesters, "spring " + (Math.floor(i / 3) + 1)])
+                                    setSemesters(semesters => [...semesters, "Spring " + (Math.floor(i / 3) + 1)])
                                 } else {
-                                    setSemesters(semesters => [...semesters, "summer " + (Math.floor(i / 3) + 1)])
+                                    setSemesters(semesters => [...semesters, "Summer " + (Math.floor(i / 3) + 1)])
                                 }
                             }
                         } else {
                             for (let i = 0; i < schedule.length; i++) {
                                 if (i % 2 === 0) {
-                                    setSemesters(semesters => [...semesters, "fall " + (Math.floor(i / 2) + 1)])
+                                    setSemesters(semesters => [...semesters, "Fall " + (Math.floor(i / 2) + 1)])
                                 } else {
-                                    setSemesters(semesters => [...semesters, "spring " + (Math.floor(i / 2) + 1)])
+                                    setSemesters(semesters => [...semesters, "Spring " + (Math.floor(i / 2) + 1)])
                                 }
                             }
                         }
@@ -221,34 +213,42 @@ function Home() {
             })
     }
 
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#2f234f'
+            },
+        },
+        typography: {
+            fontFamily: ['Poppins', 'sans-serif'].join(',')
+        }
+    })
+
     return (
-        <div>
+        <ThemeProvider theme={theme}>
             <div className="header">
                 <Header mode={"USER_VERIFIED"}/>
             </div>
-            <h4>
-                Welcome <span>{name}</span>
-            </h4>
-            <h4>{directions}</h4>
             <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
                 <ScrollingComponent className='scrollable-area'>
                     <Grid container justifyContent="center">
-                        <Grid container item xs={6} sm={3} alignItems="center" direction="column">
+                        <Grid container item xs={6} sm={6} md={3} alignItems="center" direction="column">
                             <CoursesTable courses={coursesToTake} add={removeClass} replace={replaceClass}
                                           replaceSequence={replaceSequence}/>
                         </Grid>
-                        <Grid container item xs={6} sm={9} rowSpacing={10} >
+                        <Grid container item xs={6} sm={6} md={9} rowSpacing={10} >
                             {semesters.map((name, index) => <SemesterTable key={v4()} index={index} semester={name}
                                                                            courses={schedule[index]} add={addClass} move={moveClass}/>)}
                         </Grid>
                     </Grid>
+
                 </ScrollingComponent>
             </DndProvider>
-            <button onClick={() => navigate("/create")}>Create new</button>
             <div className="footer">
                 <Footer/>
             </div>
-        </div>
+            <Help />
+        </ThemeProvider>
     )
 }
 

@@ -989,7 +989,7 @@ module.exports.buildEmptySchedule = async (req, res) => {
         //creates empty semester arrays
         for (let i = 0; i < years; i += 0.5) {
             schedule.push([])
-            if (openToSummer && (i % 1 === 0)) {
+            if (openToSummer && (i % 0.5 === 0) && !(i % 1 === 0) && (i !== 0)) {
                 schedule.push([])
             }
         }

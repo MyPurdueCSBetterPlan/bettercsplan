@@ -67,7 +67,6 @@ module.exports.Home = async (req, res) => {
         return res.json({
             success: true,
             message: "Successfully got user data",
-            name: user.name,
             coursesToTake: coursesWithCredits,
             schedule: scheduleWithCredits,
             summer: user.openToSummer

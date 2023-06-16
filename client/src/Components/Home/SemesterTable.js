@@ -54,7 +54,7 @@ function SemesterTable(props) {
     }, [props.courses])
 
     return (
-        <Grid item xs={12} sm={6} md={3} sx={{textAlign: 'center'}}>
+        <Grid item xs={12} sm={6} md={6} lg={3} sx={{textAlign: 'center'}}>
             <table ref={drop}>
                 <tbody>
                 <tr>

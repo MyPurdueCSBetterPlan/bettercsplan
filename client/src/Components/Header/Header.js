@@ -8,7 +8,7 @@ import {
     faInfoCircle,
     faEnvelope,
     faUserPlus,
-    faArrowLeft, faMoon, faHomeAlt, faUser, faUserEdit, faSignOut
+    faArrowLeft, faMoon, faHomeAlt, faUser, faUserEdit, faSignOut, faRotateRight
 } from '@fortawesome/free-solid-svg-icons';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -102,6 +102,8 @@ const Header = ({mode}) => {
                                 >
                                     <MenuItem className="MenuItem" onClick={() => navigate("/profile")}><FontAwesomeIcon
                                         icon={faUserEdit}/>{String.fromCharCode(160)}Profile</MenuItem>
+                                    <MenuItem className="MenuItem" onClick={() => navigate("/create")}><FontAwesomeIcon
+                                        icon={faRotateRight}/>{String.fromCharCode(160)}Create New</MenuItem>
                                     <MenuItem className="MenuItem" onClick={() => LogOutAction(removeCookie, navigate)}><FontAwesomeIcon
                                         icon={faSignOut}/>{String.fromCharCode(160)}Sign Out</MenuItem>
                                 </Menu>
