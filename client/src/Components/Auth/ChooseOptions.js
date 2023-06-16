@@ -1,6 +1,11 @@
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {ErrorAction} from "../../Redux/Actions/GlobalActions";
+import {Button, FormControl, InputLabel, Select, ThemeProvider, ToggleButton} from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import {useState} from "react";
+import './ChooseComponent.css'
+import {createTheme} from "@mui/material/styles";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -11,18 +16,18 @@ const {REACT_APP_SERVER_URL} = process.env;
 function ChooseOptions() {
     const navigate = useNavigate();
 
+    //user's years until graduation
+    const [years, setYears] = useState(4);
+
+    //whether the user is open to taking summer classes
+    const [summer, setSummer] = useState(false)
+
     //sends the user's options to the server to be saved
-    function saveOptions(e) {
-        e.preventDefault()
-        const options = Object.fromEntries(new FormData(e.target).entries())
-        let summer = false
-        if (options.summer === "on") {
-            summer = true
-        }
+    function saveOptions() {
         axios.post(
             `${REACT_APP_SERVER_URL}/options`,
             {
-                "years": options.years,
+                "years": years,
                 "summer": summer
             },
             {withCredentials: true}
@@ -48,26 +53,69 @@ function ChooseOptions() {
 
     }
 
+    const handleChange = (event) => {
+        setYears(event.target.value);
+    };
+
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#2f234f'
+            },
+        },
+        typography: {
+            fontFamily: ['Poppins', 'sans-serif'].join(',')
+        }
+    })
+
+    const formStyle = {
+        '& .MuiFormLabel-root': {
+            color: '#2f234f',
+        },
+        '& .MuiOutlinedInput-notchedOutline': {
+            border: '2px solid #2f234f',
+        },
+        '& .MuiSelect-select': {
+            color: '#2f234f',
+        },
+        '& .MuiButtonBase-root': {
+            border: '1px solid #2f234f',
+            color: '#2f234f'
+        },
+
+    }
+
     return (
-        <form onSubmit={saveOptions}>
-            <label htmlFor="years">Years until graduation</label>
-            <select name="years" id="years">
-                <option>0.5</option>
-                <option>1</option>
-                <option>1.5</option>
-                <option>2</option>
-                <option>2.5</option>
-                <option>3</option>
-                <option>3.5</option>
-                <option>4</option>
-                <option>4.5</option>
-                <option>5</option>
-            </select>
-            <br/>
-            <label htmlFor="summer">Are you open to taking summer classes?</label>
-            <input name="summer" id="summer" type="checkbox"/>
-            <button type="submit">GENERATE SCHEDULE</button>
-        </form>
+        <div className='options-form'>
+            <ThemeProvider theme={theme}>
+                <FormControl onSubmit={saveOptions} sx={formStyle}>
+                    <InputLabel id="grad-years">Years until Graduation</InputLabel>
+                    <Select
+                        labelId="grad-years"
+                        id="grad-years"
+                        value={years}
+                        label="Years until Graduation"
+                        onChange={handleChange}
+                    >
+                        <MenuItem value={0.5}>0.5</MenuItem>
+                        <MenuItem value={1}>1</MenuItem>
+                        <MenuItem value={1.5}>1.5</MenuItem>
+                        <MenuItem value={2}>2</MenuItem>
+                        <MenuItem value={2.5}>2.5</MenuItem>
+                        <MenuItem value={3}>3</MenuItem>
+                        <MenuItem value={3.5}>3.5</MenuItem>
+                        <MenuItem value={4}>4</MenuItem>
+                        <MenuItem value={4.5}>4.5</MenuItem>
+                        <MenuItem value={5}>5</MenuItem>
+                    </Select>
+                    <ToggleButton value='summer' selected={summer} color='warning' onChange={() => setSummer(!summer)}>
+                        Open to summer classes?
+                    </ToggleButton>
+                    <Button onClick={() => saveOptions()}>GENERATE SCHEDULE</Button>
+                </FormControl>
+            </ThemeProvider>
+        </div>
+
     )
 }
 

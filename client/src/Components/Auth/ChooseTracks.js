@@ -46,6 +46,10 @@ function ChooseTracks(props) {
     const toggleButtonStyle = {
         flexWrap: 'wrap',
         marginTop: '10vh',
+        '& .MuiButtonBase-root': {
+            border: '1px solid #2f234f',
+            color: '#2f234f'
+        }
     }
     const theme = createTheme({
         palette: {
