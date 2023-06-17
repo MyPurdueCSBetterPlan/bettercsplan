@@ -16,17 +16,29 @@
 }
 
 .explanation-box {
-    flex: 0 0 auto;
-    border: 2px solid black;
+    flex: 0 0 350px;
+    border: 2px solid #2f234f;
     aspect-ratio: 1 / 1;
-    width: 300px;
     text-align: center;
+    color: #2f234f;
+}
+
+.google-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+    margin-bottom: 12px;
 }
 
 .Auth-box {
-    flex: 0 0 auto;
-    border: 2px solid black;
+    flex: 0 0 350px;
+    border: 2px solid #2f234f;
     aspect-ratio: 1 / 1;
     width: 300px;
     text-align: center;
+    color: #2f234f;
+}
+
+.signup-question {
+    margin-top: 12px;
 }

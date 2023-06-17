@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 import {GoogleAuth} from "./GoogleAuth";
@@ -8,6 +8,7 @@ import {ErrorAction, InvalidPassword, SuccessActionLogin} from "../../Redux/Acti
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
 import './AuthForm.css'
+import {Button, TextField} from "@mui/material";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -18,17 +19,42 @@ function Signup() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const dataSaved = "We store your email, password, the list of courses you need to take, and your " +
+        "schedule. Thats it."
+
+    const [name, setName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [confirm, setConfirm] = useState("")
+
+    function handleNameChange(e) {
+        e.preventDefault()
+        setName(e.target.value)
+    }
+
+    function handleEmailChange(e) {
+        e.preventDefault()
+        setEmail(e.target.value)
+    }
+
+    function handlePasswordChange(e) {
+        e.preventDefault()
+        setPassword(e.target.value)
+    }
+
+    function handleConfirmChange(e) {
+        e.preventDefault()
+        setConfirm(e.target.value)
+    }
+
     //called when user presses submit button
     function handleSubmit(e) {
 
         //prevents page reload
         e.preventDefault()
 
-        //gets username and password from input fields as an object
-        const credentials = Object.fromEntries(new FormData(e.target).entries())
-
         //check for password confirmation
-        if (credentials.password !== credentials.confirmPassword) {
+        if (password !== confirm) {
             ErrorAction("Ensure that the passwords match.");
             return
         }
@@ -37,9 +63,9 @@ function Signup() {
         axios.post(
             `${REACT_APP_SERVER_URL}/signup`,
             {
-                "email": credentials.email,
-                "name": credentials.name,
-                "password": credentials.password,
+                "email": email,
+                "name": name,
+                "password": password,
             },
             {withCredentials: true}
         )
@@ -68,58 +94,32 @@ function Signup() {
             </div>
             <div className="two-split">
                 <div className="explanation-box">
-                    <p>What data is saved?</p>
+                    <h2>What data is saved?</h2>
+                    <p>{dataSaved}</p>
                 </div>
                 <div className="Auth-box">
                     <div>
                         <h2>Signup Account</h2>
-                        <form onSubmit={handleSubmit}>
-                            <div>
-                                <label htmlFor="name">Nickname</label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    placeholder="Enter your Nickname"
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="email">Email</label>
-                                <input
-                                    type="text"
-                                    id="email"
-                                    name="email"
-                                    placeholder="Enter your email"
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="password">Password</label>
-                                <input
-                                    type="password"
-                                    id="password"
-                                    name="password"
-                                    placeholder="Enter your password"
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="confirmPassword">Confirm Password</label>
-                                <input
-                                    type="password"
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    placeholder="Confirm your password"
-                                />
-                            </div>
-                            <button type="submit">Submit</button>
-                            <span>Already have an account? <Link to={"/login"}>Login</Link></span>
-                        </form>
-                        <GoogleButton
-                            label='Sign up with Google'
-                            type="light"
-                            onClick={() => {
-                                handleGoogleLogin()
-                            }}
-                        />
+                        <TextField id="name" label="Name" variant="outlined"
+                                   margin="dense" onChange={handleNameChange}/>
+                        <TextField id="email" label="Email" variant="outlined"
+                                   margin="dense" onChange={handleEmailChange}/>
+                        <TextField id="password" label="Password" variant="outlined"
+                                   margin="dense" onChange={handlePasswordChange}/>
+                        <TextField id="confirm-password" label="Confirm Password" variant="outlined"
+                                   margin="dense" onChange={handleConfirmChange}/>
+                        <div className='google-container'>
+                            <GoogleButton
+                                label='Sign up with Google'
+                                type="light"
+                                onClick={() => {
+                                    handleGoogleLogin()
+                                }}
+                            />
+                        </div>
+                        <Button variant='contained' onClick={handleSubmit}>Submit</Button>
+                        <p className='signup-question'>Already have an account? <Link to={"/login"}>Login</Link></p>
+
                     </div>
                 </div>
             </div>
