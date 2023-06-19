@@ -103,7 +103,7 @@ const Header = ({mode}) => {
                                     <MenuItem className="MenuItem" onClick={() => navigate("/profile")}><FontAwesomeIcon
                                         icon={faUserEdit}/>{String.fromCharCode(160)}Profile</MenuItem>
                                     <MenuItem className="MenuItem" onClick={() => navigate("/create")}><FontAwesomeIcon
-                                        icon={faRotateRight}/>{String.fromCharCode(160)}Create New</MenuItem>
+                                        icon={faRotateRight}/>{String.fromCharCode(160)}Remake</MenuItem>
                                     <MenuItem className="MenuItem" onClick={() => LogOutAction(removeCookie, navigate)}><FontAwesomeIcon
                                         icon={faSignOut}/>{String.fromCharCode(160)}Sign Out</MenuItem>
                                 </Menu>

@@ -5,6 +5,9 @@ import Signup from "./Pages/Auth/Signup";
 import Home from "./Pages/Home/Home";
 import NotFound from "./Pages/NotFound/NotFound";
 import Profile from "./Pages/Profile/Profile";
+import About from "./Pages/About/About"
+import Contact from "./Pages/Contact/Contact"
+import "./App.css"
 
 
 function App() {
@@ -16,6 +19,8 @@ function App() {
                 <Route path={"/signup"} element={<Signup/>}/>
                 <Route path={"/create"} element={<Create/>}/>
                 <Route path={"/profile"} element={<Profile/>}/>
+                <Route path={"/about"} element={<About />} />
+                <Route path={"/contact"} element={<Contact />} />
                 <Route path={'*'} element={<NotFound/>}/>
             </Routes>
         </div>

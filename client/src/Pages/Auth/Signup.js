@@ -8,7 +8,8 @@ import {ErrorAction, InvalidPassword, SuccessActionLogin} from "../../Redux/Acti
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
 import './AuthForm.css'
-import {Button, TextField} from "@mui/material";
+import {Button, Paper, TextField, ThemeProvider} from "@mui/material";
+import {createTheme} from "@mui/material/styles";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -87,27 +88,48 @@ function Signup() {
         GoogleAuth(dispatch, navigate, "signup");
     }
 
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#2f234f'
+            },
+        },
+        typography: {
+            fontFamily: ['Poppins', 'sans-serif'].join(',')
+        }
+    })
+
+    const fieldStyle = {
+        width: '240px',
+        '& .MuiFormLabel-root': {
+            color: '#2f234f',
+        },
+        '& .MuiInputBase-root .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#2f234f',
+        }
+    }
+
     return (
-        <div>
+        <ThemeProvider theme={theme}>
             <div className="header">
                 <Header mode={"NOT_USER_SIGNUP"}/>
             </div>
             <div className="two-split">
-                <div className="explanation-box">
-                    <h2>What data is saved?</h2>
-                    <p>{dataSaved}</p>
-                </div>
-                <div className="Auth-box">
+                <Paper className="explanation-box" elevation='10'>
+                    <h2 className='text'>What data is saved?</h2>
+                    <p className='text'>{dataSaved}</p>
+                </Paper>
+                <Paper className="Auth-box" elevation='10'>
                     <div>
                         <h2>Signup Account</h2>
                         <TextField id="name" label="Name" variant="outlined"
-                                   margin="dense" onChange={handleNameChange}/>
+                                   margin="dense" onChange={handleNameChange} sx={fieldStyle}/>
                         <TextField id="email" label="Email" variant="outlined"
-                                   margin="dense" onChange={handleEmailChange}/>
+                                   margin="dense" onChange={handleEmailChange} sx={fieldStyle}/>
                         <TextField id="password" label="Password" variant="outlined"
-                                   margin="dense" onChange={handlePasswordChange}/>
+                                   margin="dense" onChange={handlePasswordChange} sx={fieldStyle}/>
                         <TextField id="confirm-password" label="Confirm Password" variant="outlined"
-                                   margin="dense" onChange={handleConfirmChange}/>
+                                   margin="dense" onChange={handleConfirmChange} sx={fieldStyle}/>
                         <div className='google-container'>
                             <GoogleButton
                                 label='Sign up with Google'
@@ -118,15 +140,15 @@ function Signup() {
                             />
                         </div>
                         <Button variant='contained' onClick={handleSubmit}>Submit</Button>
-                        <p className='signup-question'>Already have an account? <Link to={"/login"}>Login</Link></p>
+                        <p className='signup-question text'>Already have an account? <Link to={"/login"}>Login</Link></p>
 
                     </div>
-                </div>
+                </Paper>
             </div>
             <div className="footer">
                 <Footer/>
             </div>
-        </div>
+        </ThemeProvider>
 
     )
 }

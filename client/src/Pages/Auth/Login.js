@@ -9,7 +9,8 @@ import "./AuthForm.css"
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
 import './AuthForm.css'
-import {Button, TextField} from "@mui/material";
+import {Button, Paper, TextField, ThemeProvider} from "@mui/material";
+import {createTheme} from "@mui/material/styles";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -81,22 +82,43 @@ function Login() {
         GoogleAuth(dispatch, navigate, "login");
     }
 
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#2f234f'
+            },
+        },
+        typography: {
+            fontFamily: ['Poppins', 'sans-serif'].join(',')
+        }
+    })
+
+    const fieldStyle = {
+        width: '240px',
+        '& .MuiFormLabel-root': {
+            color: '#2f234f',
+        },
+        '& .MuiInputBase-root .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#2f234f',
+        }
+    }
+
     return (
-        <div>
+        <ThemeProvider theme={theme}>
             <div className="header">
                 <Header mode={"NOT_USER_LOGIN"}/>
             </div>
             <div className="two-split">
-                <div className="explanation-box">
-                    <h2>What it Does</h2>
-                    <p>{explanation}</p>
-                </div>
-                <div className="Auth-box">
-                    <h2>Login</h2>
-                    <TextField id="email" label="Email" variant="outlined"
-                               margin="dense" onChange={handleEmailChange}/>
+                <Paper className="explanation-box" elevation={10}>
+                    <h2 className='text'>What it Does</h2>
+                    <p className='text'>{explanation}</p>
+                </Paper>
+                <Paper className="Auth-box" elevation={10}>
+                    <h2 className='text'>Login</h2>
+                    <TextField fullWidth={false} id="email" label="Email" variant="outlined"
+                               margin="dense" onChange={handleEmailChange} sx={fieldStyle}/>
                     <TextField id="password" label="Password" variant="outlined"
-                               margin="dense" onChange={handlePasswordChange}/>
+                               margin="dense" onChange={handlePasswordChange} sx={fieldStyle}/>
                     <div className='google-container'>
                         <GoogleButton
                             label='Login with Google'
@@ -107,13 +129,13 @@ function Login() {
                         />
                     </div>
                     <Button onClick={handleSubmit} variant='contained'>Submit</Button>
-                    <p className='signup-question'>Don't have an account? <Link to={"/signup"}>Signup</Link></p>
-                </div>
+                    <p className='signup-question text'>Don't have an account? <Link to={"/signup"}>Signup</Link></p>
+                </Paper>
             </div>
             <div className="footer">
                 <Footer/>
             </div>
-        </div>
+        </ThemeProvider>
 
     );
 }

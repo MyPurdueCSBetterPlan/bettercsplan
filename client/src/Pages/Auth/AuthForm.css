@@ -16,11 +16,12 @@
 }
 
 .explanation-box {
-    flex: 0 0 350px;
+    flex: 0 0 310px;
     border: 2px solid #2f234f;
     aspect-ratio: 1 / 1;
     text-align: center;
     color: #2f234f;
+    padding: 20px;
 }
 
 .google-container {
@@ -31,14 +32,18 @@
 }
 
 .Auth-box {
-    flex: 0 0 350px;
+    flex: 0 0 300px;
     border: 2px solid #2f234f;
     aspect-ratio: 1 / 1;
-    width: 300px;
     text-align: center;
     color: #2f234f;
+    padding: 20px;
 }
 
 .signup-question {
     margin-top: 12px;
+}
+
+.text {
+    color: #2f234f;
 }
