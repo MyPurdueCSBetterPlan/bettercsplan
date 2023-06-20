@@ -13,8 +13,8 @@
     height: 50vh;
     border: 1px solid #2f234f;
     border-radius: 5px;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 }
 
 .filtered-classes::-webkit-scrollbar {
@@ -42,8 +42,8 @@
     height: 50vh;
     border: 1px solid #2f234f;
     border-radius: 5px;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 }
 
 .selected-classes::-webkit-scrollbar {

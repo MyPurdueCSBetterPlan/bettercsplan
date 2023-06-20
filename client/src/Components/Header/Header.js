@@ -84,7 +84,11 @@ const Header = ({mode}) => {
                                 <NavLink to="/about"><FontAwesomeIcon icon={faInfoCircle}/> About</NavLink>
                             </li>
                             <li>
-                                <NavLink to="/contact"><FontAwesomeIcon icon={faEnvelope}/> Contact</NavLink>
+                                <div style={{cursor: 'pointer'}}>
+                                    <a href="mailto:bettercsplan@gmail.com">
+                                        <FontAwesomeIcon icon={faEnvelope}/> Contact
+                                    </a>
+                                </div>
                             </li>
                             <li>
                                 <div onClick={handleMenu} className="account-icon" style={{cursor: 'pointer'}}>
@@ -127,19 +131,25 @@ const Header = ({mode}) => {
                     <div className="menu-icon">
                         <ul>
                             <li>
-                                <FontAwesomeIcon icon={faMoon}/>
+                                <div>
+                                    <a className="contact-icon" href="mailto:bettercsplan@gmail.com">
+                                        <FontAwesomeIcon icon={faEnvelope}/>
+                                    </a>
+                                </div>
                             </li>
                             <li>
-                                <div onClick={handleShowHeader}>
-                                    <FontAwesomeIcon icon={faBars}/>
-                                </div>
+                                <FontAwesomeIcon icon={faMoon}/>
                             </li>
                         </ul>
                     </div>
                     <div className={`header-elements  ${showHeader && 'active'}`}>
                         <ul>
                             <li>
-                                <NavLink to="/contact"><FontAwesomeIcon icon={faEnvelope}/> Contact</NavLink>
+                                <div style={{cursor: 'pointer'}}>
+                                    <a href="mailto:bettercsplan@gmail.com">
+                                        <FontAwesomeIcon icon={faEnvelope}/> Contact
+                                    </a>
+                                </div>
                             </li>
                             <li>
                                 <FontAwesomeIcon icon={faMoon} className="thmode-icon"/>
@@ -215,7 +225,11 @@ const Header = ({mode}) => {
                                 <NavLink to="/about"><FontAwesomeIcon icon={faInfoCircle}/> About</NavLink>
                             </li>
                             <li>
-                                <NavLink to="/contact"><FontAwesomeIcon icon={faEnvelope}/> Contact</NavLink>
+                                <div style={{cursor: 'pointer'}}>
+                                    <a href="mailto:bettercsplan@gmail.com">
+                                        <FontAwesomeIcon icon={faEnvelope}/> Contact
+                                    </a>
+                                </div>
                             </li>
                             <li>
                                 <FontAwesomeIcon icon={faMoon} className="thmode-icon"/>
@@ -253,7 +267,11 @@ const Header = ({mode}) => {
                                 <NavLink to="/about"><FontAwesomeIcon icon={faInfoCircle}/> About</NavLink>
                             </li>
                             <li>
-                                <NavLink to="/contact"><FontAwesomeIcon icon={faEnvelope}/> Contact</NavLink>
+                                <div style={{cursor: 'pointer'}}>
+                                    <a href="mailto:bettercsplan@gmail.com">
+                                        <FontAwesomeIcon icon={faEnvelope}/> Contact
+                                    </a>
+                                </div>
                             </li>
                             <li>
                                 <FontAwesomeIcon icon={faMoon} className="thmode-icon"/>

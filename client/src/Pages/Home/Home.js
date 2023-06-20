@@ -179,7 +179,7 @@ function Home() {
             })
     }
 
-    function replaceClass (oldClassName, newClassName) {
+    function replaceClass(oldClassName, newClassName) {
         axios.post(
             `${REACT_APP_SERVER_URL}/schedule-replace`,
             {
@@ -196,7 +196,7 @@ function Home() {
             })
     }
 
-    function replaceSequence (oldClassNames, newClassNames) {
+    function replaceSequence(oldClassNames, newClassNames) {
         axios.post(
             `${REACT_APP_SERVER_URL}/schedule-replace-sequence`,
             {
@@ -236,18 +236,18 @@ function Home() {
                             <CoursesTable courses={coursesToTake} add={removeClass} replace={replaceClass}
                                           replaceSequence={replaceSequence}/>
                         </Grid>
-                        <Grid container item xs={6} sm={6} md={9} rowSpacing={10} >
+                        <Grid container item xs={6} sm={6} md={9} rowSpacing={10}>
                             {semesters.map((name, index) => <SemesterTable key={v4()} index={index} semester={name}
-                                                                           courses={schedule[index]} add={addClass} move={moveClass}/>)}
+                                                                           courses={schedule[index]} add={addClass}
+                                                                           move={moveClass}/>)}
                         </Grid>
                     </Grid>
-
                 </ScrollingComponent>
             </DndProvider>
             <div className="footer">
                 <Footer/>
             </div>
-            <Help />
+            <Help/>
         </ThemeProvider>
     )
 }

@@ -8,8 +8,10 @@ import ChangePassword from "../../Components/Profile/ChangePassword";
 import Header from "../../Components/Header/Header";
 import './Profile.css'
 import Footer from "../../Components/Footer/Footer";
+import {Box, Button, Container, Grid, Paper, Typography} from "@mui/material";
 
 const {REACT_APP_SERVER_URL} = process.env;
+
 
 function Profile() {
     const navigate = useNavigate();
@@ -18,6 +20,12 @@ function Profile() {
     const [email, setEmail] = useState("");
     const [googleID, setGoogleID] = useState(false);
 
+    const buttonStyle = {
+        border: '2px solid',
+        '&:hover': {
+            border: '2px solid',
+        }
+    }
 
     //Checks if the user is logged in or not
     useEffect(() => {
@@ -61,35 +69,101 @@ function Profile() {
 
     return (
         <div>
-            <div className="header">
-                <Header mode={"USER_VERIFIED"}/>
-            </div>
-            <div>
-                <h1>Profile Information</h1>
-                <h4>
-                    <span>Name:</span> {name}
-                </h4>
-                <h4>
-                    <span>Email:</span> {email}
-                </h4>
-                <div>
-                    {googleID && (
-                        <h4>
-                            <span>Google Login is enabled.</span>
-                        </h4>
-                    )}
-                </div>
+            <Container fixed>
+                <Box sx={{position: 'relative', zIndex: 1}}>
+                    <div className="header">
+                        <Header mode={"USER_VERIFIED"}/>
+                    </div>
+                </Box>
+                <Container>
+                    <Grid container spacing={2} direction="column" justifyContent="center" alignItems="center">
+                        <Grid item xs={12} sm={6} lg={4}>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    flexDirection: 'column',
+                                    marginTop: '100px'
+                                }}
+                            >
+                                <Typography variant="h1" sx={{
+                                    '@media (max-width: 600px)': {
+                                        fontSize: '5rem',
+                                        textAlign: 'center'
+                                    },
+                                }}
+                                >
+                                    Profile Information
+                                </Typography>
+                                <Typography variant="h4" sx={{
+                                    '@media (max-width: 600px)': {
+                                        fontSize: '1.5rem',
+                                    },
+                                }}
+                                >
+                                    <span>Name:</span> {name} <br/>
+                                    <span>Email:</span> {email}
+                                </Typography>
+                                <Typography variant="h4" sx={{
+                                    fontSize: '1.5rem',
+                                    '@media (max-width: 600px)': {
+                                        fontSize: '0.5rem',
+                                    },
+                                }}
+                                >
+                                    {googleID && (
+                                        <span>Google Login: Enabled.</span>
+                                    )}
+                                </Typography>
 
-                <div>
-                    {!googleID && (
-                        <ChangePassword/>
-                    )}
-                </div>
-                <DeleteAccount/>
-            </div>
-            <div className="footer">
-                <Footer/>
-            </div>
+                            </Box>
+                        </Grid>
+                        <Grid item xs={12} sm={6} lg={4}>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginTop: '50px',
+                                    '@media (max-width: 600px)': {
+                                        marginLeft: '60px',
+                                    },
+                                }}
+                            >
+                                {!googleID ? (
+                                    <Grid container spacing={2} justifyContent="center" alignItems="center">
+                                        <Grid item xs={12} sm={6} lg={4}>
+                                            <ChangePassword/>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} lg={4}>
+                                            <DeleteAccount/>
+                                        </Grid>
+                                    </Grid>
+                                ) : (
+                                    <DeleteAccount/>
+                                )}
+                            </Box>
+                        </Grid>
+                    </Grid>
+                </Container>
+                <Grid container direction="column" justifyContent="center" alignItems="center">
+                    <Grid item xs={12} sm={6} lg={4}>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                '@media (max-width: 600px)': {
+                                    marginLeft: '50px',
+                                },
+                            }}
+                        >
+                            <Footer/>
+                        </Box>
+                    </Grid>
+                </Grid>
+            </Container>
         </div>
     )
 }

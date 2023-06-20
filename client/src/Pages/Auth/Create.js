@@ -39,9 +39,9 @@ function Create() {
                 fontFamily: 'Poppins, sans-serif'
             },
             "&.MuiStepLabel-alternativeLabel": {
-              fontSize: '2vw',
-              color: "warning.main",
-              fontFamily: 'Poppins, sans-serif'
+                fontSize: '2vw',
+                color: "warning.main",
+                fontFamily: 'Poppins, sans-serif'
             },
             "& .MuiStepConnector-line": {
                 borderColor: "#2f234f"

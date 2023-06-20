@@ -1,6 +1,6 @@
 import {Box, Container, Typography} from "@mui/material";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faGithub} from '@fortawesome/free-brands-svg-icons';
 import './Footer.css';
 
 function Footer() {
@@ -14,7 +14,7 @@ function Footer() {
             position: 'fixed',
             bottom: 0,
             width: '100%',
-        }} component="footer" >
+        }} component="footer">
             <Box
                 sx={{
                     flexGrow: 2,
@@ -26,8 +26,8 @@ function Footer() {
                 <Typography variant="caption" color="initial">
                     Made with love ❤️ by CS Purdue Students. Copyright ©{getCurrentYear()}.
                     <a href="https://github.com/MyPurdueCSBetterPlan" target="_blank" rel="noopener noreferrer">
-                    <FontAwesomeIcon className="github-icon" icon={faGithub} size="2x" />
-                </a>
+                        <FontAwesomeIcon className="github-icon" icon={faGithub} size="2x"/>
+                    </a>
                 </Typography>
             </Box>
         </Container>

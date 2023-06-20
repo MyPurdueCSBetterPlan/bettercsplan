@@ -21,7 +21,7 @@ function Help() {
         <>
             <Fab color="primary" aria-label="add" sx={fabStyle}
                  size="small" onClick={() => setOpen(true)}>
-                <QuestionMarkIcon />
+                <QuestionMarkIcon/>
             </Fab>
             <Dialog open={open} onClose={() => setOpen(false)}>
                 <DialogContent>

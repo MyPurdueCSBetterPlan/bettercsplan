@@ -80,7 +80,6 @@ body {
 }
 
 
-
 @media (max-width: 768px) {
     .header-elements ul li:not(:last-child) {
         margin-right: 30px;
@@ -96,6 +95,12 @@ body {
     .account-icon,
     .thmode-icon {
         display: none;
+    }
+
+    .contact-icon {
+        cursor: pointer;
+        text-decoration: none;
+        color: black;
     }
 
     .menu-icon ul {

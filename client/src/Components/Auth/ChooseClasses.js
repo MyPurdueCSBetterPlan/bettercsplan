@@ -108,7 +108,7 @@ function ChooseClasses(props) {
             <div className="split">
                 <div className="filter">
                     <TextField id="outlined-basic" color='primary' label="Search Filter" variant="outlined"
-                               onChange={handleChange} sx={fieldStyle} />
+                               onChange={handleChange} sx={fieldStyle}/>
                     <div className="filtered-classes">
                         {classList.map((option, index) =>
                             <p className='class' key={index} onClick={select}>{option}</p>

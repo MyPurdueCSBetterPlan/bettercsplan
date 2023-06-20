@@ -140,7 +140,8 @@ function Signup() {
                             />
                         </div>
                         <Button variant='contained' onClick={handleSubmit}>Submit</Button>
-                        <p className='signup-question text'>Already have an account? <Link to={"/login"}>Login</Link></p>
+                        <p className='signup-question text'>Already have an account? <Link to={"/login"}>Login</Link>
+                        </p>
 
                     </div>
                 </Paper>

@@ -3,7 +3,7 @@ import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 import {Button, ThemeProvider, ToggleButton, ToggleButtonGroup} from "@mui/material";
 import {useState} from "react";
 import "./ChooseComponent.css"
-import { createTheme } from '@mui/material/styles';
+import {createTheme} from '@mui/material/styles';
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -76,11 +76,15 @@ function ChooseTracks(props) {
                     sx={toggleButtonStyle}
                 >
                     <ToggleButton value="CSE" aria-label="CSE">CSE</ToggleButton>
-                    <ToggleButton value="Graphics" aria-label="Computer Graphics and Visualization">Computer Graphics and Visualization</ToggleButton>
-                    <ToggleButton value="DB" aria-label="Database and Information Systems">Database and Information Systems</ToggleButton>
-                    <ToggleButton value="Algo" aria-label="(Algorithmic) Foundations">(Algorithmic) Foundations</ToggleButton>
+                    <ToggleButton value="Graphics" aria-label="Computer Graphics and Visualization">Computer Graphics
+                        and Visualization</ToggleButton>
+                    <ToggleButton value="DB" aria-label="Database and Information Systems">Database and Information
+                        Systems</ToggleButton>
+                    <ToggleButton value="Algo" aria-label="(Algorithmic) Foundations">(Algorithmic)
+                        Foundations</ToggleButton>
                     <ToggleButton value="ML" aria-label="Machine Intelligence">Machine Intelligence</ToggleButton>
-                    <ToggleButton value="Language" aria-label="Programming Languages">Programming Languages</ToggleButton>
+                    <ToggleButton value="Language" aria-label="Programming Languages">Programming
+                        Languages</ToggleButton>
                     <ToggleButton value="Security" aria-label="Security">Security</ToggleButton>
                     <ToggleButton value="SWE" aria-label="Software Engineering">Software Engineering</ToggleButton>
                     <ToggleButton value="Systems" aria-label="Systems">Systems Software</ToggleButton>

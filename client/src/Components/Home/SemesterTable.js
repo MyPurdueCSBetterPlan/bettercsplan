@@ -21,7 +21,7 @@ function SemesterTable(props) {
             if (draggedRow.index === -1) {
                 props.add(props.index, draggedRow.name)
 
-            //row is coming from another semester table
+                //row is coming from another semester table
             } else if (draggedRow.index !== props.index) {
                 props.move(props.index, draggedRow.name)
             }
@@ -67,7 +67,8 @@ function SemesterTable(props) {
                 {}
                 {rows.map(row =>
                     <TableRow key={v4()} index={props.index} name={row.name} credits={row.credits} delete={removeRow}
-                              handleClick={() => {}}/>)}
+                              handleClick={() => {
+                              }}/>)}
                 </tbody>
             </table>
         </Grid>

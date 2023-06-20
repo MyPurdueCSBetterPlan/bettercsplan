@@ -85,8 +85,7 @@ function CoursesTable(props) {
                     if (alternates.length !== 0) {
                         setOpen(true)
                     }
-                }
-                else {
+                } else {
                     setIsSeq(true)
                     setReplace(replacements)
                     setAlternates(alternates)
@@ -142,21 +141,29 @@ function CoursesTable(props) {
         <>
             <Dialog open={open} onClose={closeDialog}>
                 {isSeq ?
-                    (<DialogTitle sx={{fontFamily: "'Poppins', sans-serif"}}>Choose an alternative for {replace.length === 1 ? (replace) : (replace[0] + " + " + replace[1])}</DialogTitle>) :
-                    (<DialogTitle sx={{fontFamily: "'Poppins', sans-serif"}}>Choose an Alternative for {replace}</DialogTitle>)}
+                    (<DialogTitle sx={{fontFamily: "'Poppins', sans-serif"}}>Choose an alternative
+                        for {replace.length === 1 ? (replace) : (replace[0] + " + " + replace[1])}</DialogTitle>) :
+                    (<DialogTitle sx={{fontFamily: "'Poppins', sans-serif"}}>Choose an Alternative
+                        for {replace}</DialogTitle>)}
                 <List>
                     {isSeq ?
                         (alternates.map(altSequence => (
                             <ListItem disableGutters>
-                                <ListItemButton onClick={() => {handleAlternateClickSequence(altSequence)}}>
-                                    <ListItemText primary={altSequence.length === 1 ? (altSequence[0].name) :  (altSequence[0].name + " " + altSequence[1].name)}/>
+                                <ListItemButton onClick={() => {
+                                    handleAlternateClickSequence(altSequence)
+                                }}>
+                                    <ListItemText
+                                        primary={altSequence.length === 1 ? (altSequence[0].name) : (altSequence[0].name + " " + altSequence[1].name)}/>
                                 </ListItemButton>
                             </ListItem>
                         ))) :
                         (alternates.map(alternate => (
                             <ListItem disableGutters>
-                                <ListItemButton onClick={() => {handleAlternateClick(alternate.name, alternate.credits)}}>
-                                    <ListItemText primary={alternate.name} sx={{'& .MuiTypography-root': {fontFamily:"'Poppins', sans-serif"}}}/>
+                                <ListItemButton onClick={() => {
+                                    handleAlternateClick(alternate.name, alternate.credits)
+                                }}>
+                                    <ListItemText primary={alternate.name}
+                                                  sx={{'& .MuiTypography-root': {fontFamily: "'Poppins', sans-serif"}}}/>
                                 </ListItemButton>
                             </ListItem>
                         )))}
