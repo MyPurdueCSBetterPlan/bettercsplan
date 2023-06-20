@@ -213,19 +213,9 @@ function Home() {
             })
     }
 
-    const theme = createTheme({
-        palette: {
-            primary: {
-                main: '#2f234f'
-            },
-        },
-        typography: {
-            fontFamily: ['Poppins', 'sans-serif'].join(',')
-        }
-    })
 
     return (
-        <ThemeProvider theme={theme}>
+        <>
             <div className="header">
                 <Header mode={"USER_VERIFIED"}/>
             </div>
@@ -248,7 +238,7 @@ function Home() {
                 <Footer/>
             </div>
             <Help/>
-        </ThemeProvider>
+        </>
     )
 }
 

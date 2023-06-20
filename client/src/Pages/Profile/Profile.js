@@ -6,12 +6,20 @@ import LogOut from "../../Components/Profile/LogOut"
 import DeleteAccount from "../../Components/Profile/DeleteAccount";
 import ChangePassword from "../../Components/Profile/ChangePassword";
 import Header from "../../Components/Header/Header";
-import './Profile.css'
 import Footer from "../../Components/Footer/Footer";
-import {Box, Button, Container, Grid, Paper, Typography} from "@mui/material";
+import {Box, Container, Grid, Paper, Typography} from "@mui/material";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
+
+/**
+ * Renders the user profile information along with buttons to change profile settings.
+ *
+ * The displayed information includes the user's email, name, and whether Google login is enabled.
+ * The available buttons are "Delete Account" and "Change Password" (only for users without Google login).
+ *
+ * @return {JSX.Element} - The rendered profile user information component.
+ */
 
 function Profile() {
     const navigate = useNavigate();
@@ -20,12 +28,6 @@ function Profile() {
     const [email, setEmail] = useState("");
     const [googleID, setGoogleID] = useState(false);
 
-    const buttonStyle = {
-        border: '2px solid',
-        '&:hover': {
-            border: '2px solid',
-        }
-    }
 
     //Checks if the user is logged in or not
     useEffect(() => {
@@ -70,10 +72,8 @@ function Profile() {
     return (
         <div>
             <Container fixed>
-                <Box sx={{position: 'relative', zIndex: 1}}>
-                    <div className="header">
-                        <Header mode={"USER_VERIFIED"}/>
-                    </div>
+                <Box>
+                    <Header mode={"USER_VERIFIED"}/>
                 </Box>
                 <Container>
                     <Grid container spacing={2} direction="column" justifyContent="center" alignItems="center">
@@ -84,10 +84,12 @@ function Profile() {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     flexDirection: 'column',
-                                    marginTop: '100px'
+                                    marginTop: '100px',
+                                    marginRight: '20px'
                                 }}
                             >
                                 <Typography variant="h1" sx={{
+                                    fontSize: '5rem',
                                     '@media (max-width: 600px)': {
                                         fontSize: '5rem',
                                         textAlign: 'center'
@@ -97,26 +99,18 @@ function Profile() {
                                     Profile Information
                                 </Typography>
                                 <Typography variant="h4" sx={{
+                                    marginTop: '10px',
                                     '@media (max-width: 600px)': {
                                         fontSize: '1.5rem',
                                     },
                                 }}
                                 >
                                     <span>Name:</span> {name} <br/>
-                                    <span>Email:</span> {email}
-                                </Typography>
-                                <Typography variant="h4" sx={{
-                                    fontSize: '1.5rem',
-                                    '@media (max-width: 600px)': {
-                                        fontSize: '0.5rem',
-                                    },
-                                }}
-                                >
+                                    <span>Email:</span> {email}<br/>
                                     {googleID && (
                                         <span>Google Login: Enabled.</span>
                                     )}
                                 </Typography>
-
                             </Box>
                         </Grid>
                         <Grid item xs={12} sm={6} lg={4}>
@@ -126,18 +120,31 @@ function Profile() {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     marginTop: '50px',
-                                    '@media (max-width: 600px)': {
-                                        marginLeft: '60px',
-                                    },
                                 }}
                             >
                                 {!googleID ? (
                                     <Grid container spacing={2} justifyContent="center" alignItems="center">
                                         <Grid item xs={12} sm={6} lg={4}>
-                                            <ChangePassword/>
+                                            <Box
+                                                sx={{
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <ChangePassword/>
+                                            </Box>
                                         </Grid>
                                         <Grid item xs={12} sm={6} lg={4}>
-                                            <DeleteAccount/>
+                                            <Box
+                                                sx={{
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                }}
+                                            >
+                                                <DeleteAccount/>
+                                            </Box>
                                         </Grid>
                                     </Grid>
                                 ) : (
@@ -147,22 +154,18 @@ function Profile() {
                         </Grid>
                     </Grid>
                 </Container>
-                <Grid container direction="column" justifyContent="center" alignItems="center">
-                    <Grid item xs={12} sm={6} lg={4}>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                '@media (max-width: 600px)': {
-                                    marginLeft: '50px',
-                                },
-                            }}
-                        >
-                            <Footer/>
-                        </Box>
-                    </Grid>
-                </Grid>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        '@media (max-width: 600px)': {
+                            justifyContent: 'flex-start',
+                        },
+                    }}
+                >
+                    <Footer/>
+                </Box>
             </Container>
         </div>
     )

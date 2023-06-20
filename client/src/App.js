@@ -1,3 +1,4 @@
+import * as React from 'react';
 import {Route, Routes} from "react-router-dom"
 import Login from "./Pages/Auth/Login";
 import Create from "./Pages/Auth/Create";
@@ -7,20 +8,38 @@ import NotFound from "./Pages/NotFound/NotFound";
 import Profile from "./Pages/Profile/Profile";
 import About from "./Pages/About/About"
 import "./App.css"
+import {CssBaseline, ThemeProvider, useTheme} from "@mui/material";
+import ThemeMode from "./Themes/ThemeMode";
+import {ColorModeContext} from "./Themes/ColorModeContext";
 
+
+/**
+ * App component
+ *
+ * This component sets up the routing and theming for the application.
+ * It renders different pages based on the current URL path and applies the selected theme.
+ *
+ * @returns {JSX.Element} The rendered app component.
+ */
 
 function App() {
+    const {newTheme, colorMode} = ThemeMode();
     return (
         <div className="App">
-            <Routes>
-                <Route path={"/"} element={<Home/>}/>
-                <Route path={"/login"} element={<Login/>}/>
-                <Route path={"/signup"} element={<Signup/>}/>
-                <Route path={"/create"} element={<Create/>}/>
-                <Route path={"/profile"} element={<Profile/>}/>
-                <Route path={"/about"} element={<About />} />
-                <Route path={'*'} element={<NotFound/>}/>
-            </Routes>
+            <ColorModeContext.Provider value={colorMode}>
+                <ThemeProvider theme={newTheme}>
+                    <CssBaseline/>
+                    <Routes>
+                        <Route path={"/"} element={<Home/>}/>
+                        <Route path={"/login"} element={<Login/>}/>
+                        <Route path={"/signup"} element={<Signup/>}/>
+                        <Route path={"/create"} element={<Create/>}/>
+                        <Route path={"/profile"} element={<Profile/>}/>
+                        <Route path={"/about"} element={<About/>}/>
+                        <Route path={'*'} element={<NotFound/>}/>
+                    </Routes>
+                </ThemeProvider>
+            </ColorModeContext.Provider>
         </div>
     );
 }

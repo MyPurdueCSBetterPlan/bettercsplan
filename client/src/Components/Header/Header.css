@@ -6,7 +6,6 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
-    background-color: #fcfcfc;
 }
 
 .container {
@@ -24,18 +23,8 @@ body {
     position: relative;
 }
 
-
-.logo h1 {
-    font-size: 30px;
-    color: #2f234f;
-    text-decoration: none;
-}
-
 .header-icons {
     display: none;
-}
-
-.header-elements {
 }
 
 .header-elements ul {
@@ -49,25 +38,14 @@ body {
 }
 
 .header-elements ul a {
-    font-size: 16px;
-    font-weight: 400;
-    color: #2f234f;
-    text-decoration: none;
-}
-
-.header-elements ul p {
-    font-size: 16px;
-    font-weight: 400;
-    color: #2f234f;
     text-decoration: none;
 }
 
 .header-elements ul a.active {
-    color: #574c4c;
+    color: #ff9800;
     font-weight: 500;
     position: relative;
 }
-
 
 .header-elements ul a.active::after {
     content: '';
@@ -76,9 +54,8 @@ body {
     left: 0;
     width: 100%;
     height: 2px;
-    background-color: #574c4c;
+    background-color: #ff9800;
 }
-
 
 @media (max-width: 768px) {
     .header-elements ul li:not(:last-child) {
@@ -100,7 +77,6 @@ body {
     .contact-icon {
         cursor: pointer;
         text-decoration: none;
-        color: black;
     }
 
     .header-icons ul {
@@ -110,7 +86,7 @@ body {
     }
 
     .header-icons li:not(:last-child) {
-        margin-right: 30px;
+        margin-right: 50px;
     }
 
 
