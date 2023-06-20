@@ -31,7 +31,7 @@ body {
     text-decoration: none;
 }
 
-.menu-icon {
+.header-icons {
     display: none;
 }
 
@@ -87,7 +87,7 @@ body {
 }
 
 @media (max-width: 600px) {
-    .menu-icon {
+    .header-icons {
         display: block;
         cursor: pointer;
     }
@@ -103,13 +103,13 @@ body {
         color: black;
     }
 
-    .menu-icon ul {
+    .header-icons ul {
         display: flex;
         justify-content: space-between;
         list-style-type: none;
     }
 
-    .menu-icon li:not(:last-child) {
+    .header-icons li:not(:last-child) {
         margin-right: 30px;
     }
 
@@ -118,24 +118,10 @@ body {
         position: absolute;
         right: 0;
         top: 60px;
-        background-color: #f8d588;
         width: 0;
         height: calc(100vh - 60px);
         transition: all 0.3s ease-in;
         overflow: hidden;
     }
 
-    .header-elements.active {
-        width: 270px;
-    }
-
-    .header-elements ul {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .header-elements ul li {
-        margin-right: unset;
-        margin-top: 22px;
-    }
 }

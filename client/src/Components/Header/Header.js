@@ -8,31 +8,41 @@ import {
     faInfoCircle,
     faEnvelope,
     faUserPlus,
-    faArrowLeft, faMoon, faHomeAlt, faUser, faUserEdit, faSignOut, faRotateRight
+    faMoon, faHomeAlt, faUser, faUserEdit, faSignOut, faRotateRight
 } from '@fortawesome/free-solid-svg-icons';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Fade from '@mui/material/Fade';
 import {useCookies} from "react-cookie";
 import {LogOutAction} from "../../Redux/Actions/GlobalActions";
-import {red} from "@mui/material/colors";
 
 
 const Header = ({mode}) => {
     const [cookies, setCookie, removeCookie] = useCookies(["token"]);
     const [showHeader, setHeader] = useState(false);
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
+    const [anchorPr, setAnchorPr] = React.useState(null);
+    const [anchorMn, setAnchorMn] = React.useState(null);
+    const openProfile = Boolean(anchorPr);
+    const openMenu = Boolean(anchorMn);
     const navigate = useNavigate();
 
     const handleShowHeader = () => {
         setHeader(!showHeader)
     }
-    const handleMenu = (event) => {
-        setAnchorEl(event.currentTarget);
+    const handleProfile = (event) => {
+        setAnchorPr(event.currentTarget);
     };
+
+    const handleCloseProfile = () => {
+        setAnchorPr(null);
+    };
+
+    const handleMenu = (event) => {
+        setAnchorMn(event.currentTarget);
+    };
+
     const handleCloseMenu = () => {
-        setAnchorEl(null);
+        setAnchorMn(null);
     };
 
 
@@ -43,10 +53,10 @@ const Header = ({mode}) => {
                     <div className="logo">
                         <h1>MYBETTERCSPLAN</h1>
                     </div>
-                    <div className="menu-icon">
+                    <div className="header-icons">
                         <ul>
                             <li>
-                                <div onClick={handleMenu}>
+                                <div onClick={handleProfile}>
                                     <FontAwesomeIcon icon={faUser}/>
                                 </div>
                                 <Menu
@@ -54,9 +64,9 @@ const Header = ({mode}) => {
                                         mt: "1px", "& .MuiMenu-paper":
                                             {backgroundColor: '#f8d588',},
                                     }}
-                                    anchorEl={anchorEl}
-                                    open={open}
-                                    onClose={handleCloseMenu}
+                                    anchorEl={anchorPr}
+                                    open={openProfile}
+                                    onClose={handleCloseProfile}
                                     TransitionComponent={Fade}
                                 >
                                     <MenuItem className="MenuItem" onClick={() => navigate("/profile")}><FontAwesomeIcon
@@ -69,13 +79,35 @@ const Header = ({mode}) => {
                                 <FontAwesomeIcon icon={faMoon}/>
                             </li>
                             <li>
-                                <div onClick={handleShowHeader}>
+                                <div onClick={handleMenu}>
                                     <FontAwesomeIcon icon={faBars}/>
                                 </div>
+                                <Menu
+                                    sx={{
+                                        mt: "1px", "& .MuiMenu-paper":
+                                            {backgroundColor: '#f8d588',},
+                                    }}
+                                    anchorEl={anchorMn}
+                                    open={openMenu}
+                                    onClose={handleCloseMenu}
+                                    TransitionComponent={Fade}
+                                >
+                                    <MenuItem className="MenuItem" onClick={() => navigate("/")}>
+                                        <FontAwesomeIcon icon={faHomeAlt}/>{String.fromCharCode(160)}Home</MenuItem>
+                                    <MenuItem className="MenuItem" onClick={() => navigate("/about")}>
+                                        <FontAwesomeIcon icon={faInfoCircle}/>{String.fromCharCode(160)}About
+                                    </MenuItem>
+                                    <MenuItem className="MenuItem">
+                                        <a style={{cursor: 'pointer', textDecoration: 'none', color: 'black'}}
+                                           href="mailto:bettercsplan@gmail.com">
+                                            <FontAwesomeIcon icon={faEnvelope}/> Contact
+                                        </a>
+                                    </MenuItem>
+                                </Menu>
                             </li>
                         </ul>
                     </div>
-                    <div className={`header-elements  ${showHeader && 'active'}`}>
+                    <div className="header-elements">
                         <ul>
                             <li>
                                 <NavLink to="/"><FontAwesomeIcon icon={faHomeAlt}/> Home</NavLink>
@@ -91,7 +123,7 @@ const Header = ({mode}) => {
                                 </div>
                             </li>
                             <li>
-                                <div onClick={handleMenu} className="account-icon" style={{cursor: 'pointer'}}>
+                                <div onClick={handleProfile} className="account-icon" style={{cursor: 'pointer'}}>
                                     <a><FontAwesomeIcon icon={faUser}/> Account</a>
                                 </div>
                                 <Menu
@@ -99,9 +131,9 @@ const Header = ({mode}) => {
                                         mt: "1px", "& .MuiMenu-paper":
                                             {backgroundColor: '#f8d588',},
                                     }}
-                                    anchorEl={anchorEl}
-                                    open={open}
-                                    onClose={handleCloseMenu}
+                                    anchorEl={anchorPr}
+                                    open={openProfile}
+                                    onClose={handleCloseProfile}
                                     TransitionComponent={Fade}
                                 >
                                     <MenuItem className="MenuItem" onClick={() => navigate("/profile")}><FontAwesomeIcon
@@ -128,7 +160,7 @@ const Header = ({mode}) => {
                     <div className="logo">
                         <h1>MYBETTERCSPLAN</h1>
                     </div>
-                    <div className="menu-icon">
+                    <div className="header-icons">
                         <ul>
                             <li>
                                 <div>
@@ -142,7 +174,7 @@ const Header = ({mode}) => {
                             </li>
                         </ul>
                     </div>
-                    <div className={`header-elements  ${showHeader && 'active'}`}>
+                    <div className={"header-elements"}>
                         <ul>
                             <li>
                                 <div style={{cursor: 'pointer'}}>
@@ -166,60 +198,45 @@ const Header = ({mode}) => {
                     <div className="logo">
                         <h1>MYBETTERCSPLAN</h1>
                     </div>
-                    <div className="menu-icon">
+                    <div className="header-icons">
                         <ul>
                             <li>
                                 <FontAwesomeIcon icon={faMoon}/>
                             </li>
                             <li>
-                                <div onClick={handleShowHeader}>
+                                <div onClick={handleMenu}>
                                     <FontAwesomeIcon icon={faBars}/>
                                 </div>
+                                <Menu
+                                    sx={{
+                                        mt: "1px", "& .MuiMenu-paper":
+                                            {backgroundColor: '#f8d588',},
+                                    }}
+                                    anchorEl={anchorMn}
+                                    open={openMenu}
+                                    onClose={handleCloseMenu}
+                                    TransitionComponent={Fade}
+                                >
+                                    <MenuItem className="MenuItem" onClick={() => navigate("/signup")}>
+                                        <FontAwesomeIcon icon={faUserPlus}/>{String.fromCharCode(160)}Create
+                                        Account</MenuItem>
+                                    <MenuItem className="MenuItem" onClick={() => navigate("/about")}>
+                                        <FontAwesomeIcon icon={faInfoCircle}/>{String.fromCharCode(160)}About
+                                    </MenuItem>
+                                    <MenuItem className="MenuItem">
+                                        <a style={{cursor: 'pointer', textDecoration: 'none', color: 'black'}}
+                                           href="mailto:bettercsplan@gmail.com">
+                                            <FontAwesomeIcon icon={faEnvelope}/> Contact
+                                        </a>
+                                    </MenuItem>
+                                </Menu>
                             </li>
                         </ul>
                     </div>
-                    <div className={`header-elements  ${showHeader && 'active'}`}>
+                    <div className="header-elements">
                         <ul>
                             <li>
                                 <NavLink to="/signup"><FontAwesomeIcon icon={faUserPlus}/> Create Account</NavLink>
-                            </li>
-                            <li>
-                                <NavLink to="/about"><FontAwesomeIcon icon={faInfoCircle}/> About</NavLink>
-                            </li>
-                            <li>
-                                <NavLink to="/contact"><FontAwesomeIcon icon={faEnvelope}/> Contact</NavLink>
-                            </li>
-                            <li>
-                                <FontAwesomeIcon icon={faMoon} className="thmode-icon"/>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        )
-    } else if (mode === "NOT_USER_SIGNUP") {
-        return (
-            <nav className="header">
-                <div className="container">
-                    <div className="logo">
-                        <h1>MYBETTERCSPLAN</h1>
-                    </div>
-                    <div className="menu-icon">
-                        <ul>
-                            <li>
-                                <FontAwesomeIcon icon={faMoon}/>
-                            </li>
-                            <li>
-                                <div onClick={handleShowHeader}>
-                                    <FontAwesomeIcon icon={faBars}/>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className={`header-elements  ${showHeader && 'active'}`}>
-                        <ul>
-                            <li>
-                                <NavLink to="/login"><FontAwesomeIcon icon={faSignInAlt}/> Login</NavLink>
                             </li>
                             <li>
                                 <NavLink to="/about"><FontAwesomeIcon icon={faInfoCircle}/> About</NavLink>
@@ -239,29 +256,51 @@ const Header = ({mode}) => {
                 </div>
             </nav>
         )
-    } else if (mode === "NOT_USER_AUTH") {
+    } else if (mode === "NOT_USER_SIGNUP") {
         return (
             <nav className="header">
                 <div className="container">
                     <div className="logo">
                         <h1>MYBETTERCSPLAN</h1>
                     </div>
-                    <div className="menu-icon">
+                    <div className="header-icons">
                         <ul>
                             <li>
                                 <FontAwesomeIcon icon={faMoon}/>
                             </li>
                             <li>
-                                <div onClick={handleShowHeader}>
+                                <div onClick={handleMenu}>
                                     <FontAwesomeIcon icon={faBars}/>
                                 </div>
+                                <Menu
+                                    sx={{
+                                        mt: "1px", "& .MuiMenu-paper":
+                                            {backgroundColor: '#f8d588',},
+                                    }}
+                                    anchorEl={anchorMn}
+                                    open={openMenu}
+                                    onClose={handleCloseMenu}
+                                    TransitionComponent={Fade}
+                                >
+                                    <MenuItem className="MenuItem" onClick={() => navigate("/login")}>
+                                        <FontAwesomeIcon icon={faSignInAlt}/>{String.fromCharCode(160)}Login</MenuItem>
+                                    <MenuItem className="MenuItem" onClick={() => navigate("/about")}>
+                                        <FontAwesomeIcon icon={faInfoCircle}/>{String.fromCharCode(160)}About
+                                    </MenuItem>
+                                    <MenuItem className="MenuItem">
+                                        <a style={{cursor: 'pointer', textDecoration: 'none', color: 'black'}}
+                                           href="mailto:bettercsplan@gmail.com">
+                                            <FontAwesomeIcon icon={faEnvelope}/> Contact
+                                        </a>
+                                    </MenuItem>
+                                </Menu>
                             </li>
                         </ul>
                     </div>
-                    <div className={`header-elements  ${showHeader && 'active'}`}>
+                    <div className="header-elements">
                         <ul>
                             <li>
-                                <NavLink to="/login"><FontAwesomeIcon icon={faArrowLeft}/> Go back to Auth</NavLink>
+                                <NavLink to="/login"><FontAwesomeIcon icon={faSignInAlt}/> Login</NavLink>
                             </li>
                             <li>
                                 <NavLink to="/about"><FontAwesomeIcon icon={faInfoCircle}/> About</NavLink>
