@@ -3,6 +3,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faGithub} from '@fortawesome/free-brands-svg-icons';
 import React from "react";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
+import ThemeCSS from "../../Themes/css/ThemeCSS.css";
 
 /**
  * Renders a footer component for the entire page with a short message and a GitHub icon that takes to the GitHub page.
@@ -42,9 +43,9 @@ const Footer = ({page}) => {
             >
                 <Typography sx={{
                     '@media (max-width: 600px)': {
-                        fontSize: '11px',
-                        textAlign: 'center'
-                    },
+                    fontSize: '11px',
+                    textAlign: 'center'
+                },
                 }} variant="caption">
                     Made with love ❤️ by CS Purdue Students. Copyright ©{getCurrentYear()}.
                     <a href="https://github.com/MyPurdueCSBetterPlan" target="_blank" rel="noopener noreferrer">

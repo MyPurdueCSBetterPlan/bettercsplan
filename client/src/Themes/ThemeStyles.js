@@ -1,5 +1,7 @@
 import {amber, grey} from "@mui/material/colors";
+import {useTheme} from "@mui/material";
 import React from "react";
+import {ColorModeContext} from "./ColorModeContext";
 
 /**
  * Custom Palette dark/light mode

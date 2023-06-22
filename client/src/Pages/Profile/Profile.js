@@ -159,7 +159,6 @@ function Profile() {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    position: 'fixed',
                     '@media (max-width: 600px)': {
                         justifyContent: 'flex-start',
                     },
