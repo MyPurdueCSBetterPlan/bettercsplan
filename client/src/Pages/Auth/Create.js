@@ -4,9 +4,11 @@ import ChooseTracks from "../../Components/Auth/ChooseTracks";
 import ChooseOptions from "../../Components/Auth/ChooseOptions";
 import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
-import {Box, Container, Grid, Step, StepLabel, Stepper} from "@mui/material";
+import {Box, Container, Grid, Step, StepLabel, Stepper, useTheme} from "@mui/material";
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
+import {stepperStyle} from "../../Themes/ThemeStyles";
+import {ColorModeContext} from "../../Themes/ColorModeContext";
 
 
 /**
@@ -14,7 +16,8 @@ import Footer from "../../Components/Footer/Footer";
  * to determine what classes the user needs to take and generating their base (empty) schedule
  */
 function Create() {
-
+    const theme = useTheme();
+    const colorMode = React.useContext(ColorModeContext);
 
     //array to store user's selected tracks
     const [tracksInput, setTracksInput] = useState(false);
@@ -51,13 +54,25 @@ function Create() {
                     <Grid item xs={12} sm={6} lg={4} justifyContent="center" alignItems="center">
                         <Stepper
                             activeStep={0}
+                            sx={stepperStyle(theme.palette.mode)}
                             alternativeLabel>
                             {steps.map(step =>
                                 <Step>
                                     <StepLabel key={step}>{step}</StepLabel>
                                 </Step>)}
                         </Stepper>
-                        <ChooseTracks next={() => setTracksInput(true)}/>
+                        <Box sx={{
+                            '@media (max-width: 600px)': {
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                flexDirection: 'column',
+                                width: '100%',
+                            },
+                        }}>
+                            <ChooseTracks next={() => setTracksInput(true)}/>
+                        </Box>
+
                     </Grid>
                     <Grid item xs={12} sm={6} lg={4}>
                         <Box
@@ -107,35 +122,35 @@ function Create() {
         )
     } else {
         return (
-        <Container fixed>
-            <Grid container spacing={2} direction="column">
-                <Grid item xs={12} sm={6} lg={4}>
-                    <Header mode={"USER_CREATE_PROMPS"}/>
+            <Container fixed>
+                <Grid container spacing={2} direction="column">
+                    <Grid item xs={12} sm={6} lg={4}>
+                        <Header mode={"USER_CREATE_PROMPS"}/>
+                    </Grid>
+                    <Grid item xs={12} sm={6} lg={4}>
+                        <Stepper
+                            activeStep={2}
+                            alternativeLabel>
+                            {steps.map(step =>
+                                <Step>
+                                    <StepLabel key={step}>{step}</StepLabel>
+                                </Step>)}
+                        </Stepper>
+                        <ChooseOptions/>
+                    </Grid>
+                    <Grid item xs={12} sm={6} lg={4}>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Footer/>
+                        </Box>
+                    </Grid>
                 </Grid>
-                <Grid item xs={12} sm={6} lg={4}>
-                    <Stepper
-                        activeStep={2}
-                        alternativeLabel>
-                        {steps.map(step =>
-                            <Step>
-                                <StepLabel key={step}>{step}</StepLabel>
-                            </Step>)}
-                    </Stepper>
-                    <ChooseOptions/>
-                </Grid>
-                <Grid item xs={12} sm={6} lg={4}>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Footer/>
-                    </Box>
-                </Grid>
-            </Grid>
-        </Container>
+            </Container>
         )
     }
 }

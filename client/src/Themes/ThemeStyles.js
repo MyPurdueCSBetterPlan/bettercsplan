@@ -91,3 +91,105 @@ export const buttonStyle = (mode) => ({
         }),
 });
 
+export const stepperStyle = (mode) => ({
+    padding: 2,
+    ...(mode === "light" ? {
+            "& .Mui-active": {
+                "&.MuiStepIcon-root": {
+                    color: "warning.main",
+                    fontSize: "2rem",
+                    fontFamily: 'Poppins, sans-serif',
+                },
+                "&.MuiStepLabel-alternativeLabel": {
+                    fontSize: '2vw',
+                    color: "warning.main",
+                    fontFamily: 'Poppins, sans-serif'
+                },
+                "&.MuiStepConnector-line": {
+                    borderColor: grey[500],
+                },
+                "&.MuiStepIcon-text": {
+                    fill: 'white',
+                },
+            },
+            "& .Mui-completed": {
+                "&.MuiStepIcon-root": {
+                    color: "#2f234f",
+                    fontSize: "2rem",
+                    fontFamily: 'Poppins, sans-serif'
+                },
+                "&.MuiStepLabel-alternativeLabel": {
+                    fontSize: '2vw',
+                    color: "#2f234f",
+                    fontFamily: 'Poppins, sans-serif'
+                },
+                "& .MuiStepConnector-line": {
+                    color: "#2f234f",
+                }
+            },
+            "& .Mui-disabled": {
+                ".MuiStepIcon-root": {
+                    color: "#2f234f",
+                    fontSize: '2rem',
+                    fontFamily: 'Poppins, sans-serif'
+                },
+                "&.MuiStepLabel-alternativeLabel": {
+                    fontSize: '2vw',
+                    color: "#2f234f",
+                    fontFamily: 'Poppins, sans-serif'
+                },
+                "& .MuiStepConnector-line": {
+                    color: "#2f234f",
+                }
+            }
+        } : {
+        "& .Mui-active": {
+            "&.MuiStepIcon-root": {
+                color: "warning.main",
+                fontSize: "2rem",
+                fontFamily: 'Poppins, sans-serif',
+            },
+            "&.MuiStepLabel-alternativeLabel": {
+                fontSize: '2vw',
+                color: "warning.main",
+                fontFamily: 'Poppins, sans-serif'
+            },
+            "&.MuiStepConnector-line": {
+                borderColor: grey[500],
+            },
+            "&.MuiStepIcon-text": {
+                fill: 'white',
+            },
+        },
+        "& .Mui-completed": {
+            "&.MuiStepIcon-root": {
+                color: grey[400],
+                fontSize: "2rem",
+                fontFamily: 'Poppins, sans-serif'
+            },
+            "&.MuiStepLabel-alternativeLabel": {
+                fontSize: '2vw',
+                color: grey[400],
+                fontFamily: 'Poppins, sans-serif'
+            },
+            "& .MuiStepConnector-line": {
+                color: grey[400],
+            }
+        },
+        "& .Mui-disabled": {
+            ".MuiStepIcon-root": {
+                color: grey[400],
+                fontSize: '2rem',
+                fontFamily: 'Poppins, sans-serif'
+            },
+            "&.MuiStepLabel-alternativeLabel": {
+                fontSize: '2vw',
+                color: grey[400],
+                fontFamily: 'Poppins, sans-serif'
+            },
+            "& .MuiStepConnector-line": {
+                color: grey[400],
+            }
+        }
+    })
+});

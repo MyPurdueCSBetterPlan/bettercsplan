@@ -50,8 +50,10 @@ function ChooseTracks(props) {
 
 
     return (
-        <form onSubmit={saveTracks} className="tracks-form">
-            <Box sx={{marginTop: '60px'}}>
+        <form onSubmit={saveTracks}>
+            <Box sx={{
+                marginTop: '60px',
+            }}>
                 <ToggleButtonGroup
                     value={tracks}
                     color='warning'
@@ -81,7 +83,9 @@ function ChooseTracks(props) {
                     </Box>
                 )}
             </Box>
-            <Box sx={{marginTop: '20px'}}>
+            <Box sx={{
+                marginTop: '20px',
+            }}>
                 <Button variant="outlined" sx={buttonStyle(theme.palette.mode)} type='submit' fullWidth>SUBMIT</Button>
             </Box>
         </form>
