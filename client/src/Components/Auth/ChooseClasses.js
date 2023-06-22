@@ -1,9 +1,19 @@
-import {useState} from "react";
-import "./ChooseComponent.css"
+import React, {useState} from "react";
 import axios from "axios";
 import {ErrorAction} from "../../Redux/Actions/GlobalActions";
-import {Button, ButtonGroup, TextField, ThemeProvider} from "@mui/material";
-import {createTheme} from "@mui/material/styles";
+import {
+    Box,
+    Button,
+    ButtonGroup,
+    Grid,
+    Paper,
+    Table, TableBody,
+    TableCell,
+    TableContainer, TableRow,
+    TextField, useTheme
+} from "@mui/material";
+import {buttonStyle} from "../../Themes/ThemeStyles";
+import {ColorModeContext} from "../../Themes/ColorModeContext";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -14,17 +24,13 @@ const {REACT_APP_SERVER_URL} = process.env;
  */
 
 function ChooseClasses(props) {
-    const [classList, setClassList] = useState([])
-    const [selected, setSelected] = useState([])
+    const [classList, setClassList] = useState([]);
+    const [selected, setSelected] = useState([]);
+    const theme = useTheme();
+    const colorMode = React.useContext(ColorModeContext);
 
     //updates the filter value
     function handleChange(e) {
-
-        //returns an empty list if nothing is in the filter
-        if (e.target.value === "") {
-            setClassList([])
-            return
-        }
 
         axios.post(
             `${REACT_APP_SERVER_URL}/classes`,
@@ -43,15 +49,15 @@ function ChooseClasses(props) {
     }
 
     //selecting a class moves it from the unselected array to the selected array
-    function select(e) {
-        if (!selected.includes(e.target.textContent)) {
-            setSelected(selected => [...selected, e.target.textContent])
+    function select(option) {
+        if (!selected.includes(option)) {
+            setSelected((selected) => [...selected, option]);
         }
     }
 
     //unselecting a class moves it from the selected array to the unselected array
-    function unselect(e) {
-        setSelected(selected => selected.filter(option => option !== e.target.textContent))
+    function unselect(option) {
+        setSelected(selected => selected.filter(option => option !== option))
     }
 
     //sends array of selected classes to the server and moves on to next page if successful
@@ -75,59 +81,87 @@ function ChooseClasses(props) {
         setSelected([])
     }
 
-    const theme = createTheme({
-        palette: {
-            primary: {
-                main: '#2f234f'
-            },
-        },
-        typography: {
-            fontFamily: ['Poppins', 'sans-serif'].join(',')
-        }
-    })
-
-    const fieldStyle = {
-        '& .MuiFormLabel-root': {
-            color: '#2f234f'
-        },
-        '& .MuiInputBase-root .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#2f234f',
-            borderWidth: 2
-        }
-    }
-
-    const buttonStyle = {
-        border: '2px solid',
-        '&:hover': {
-            border: '2px solid',
-        }
-    }
 
     return (
-        <ThemeProvider theme={theme}>
-            <div className="split">
-                <div className="filter">
-                    <TextField id="outlined-basic" color='primary' label="Search Filter" variant="outlined"
-                               onChange={handleChange} sx={fieldStyle}/>
-                    <div className="filtered-classes">
-                        {classList.map((option, index) =>
-                            <p className='class' key={index} onClick={select}>{option}</p>
-                        )}
-                    </div>
-                </div>
-                <div className="selected">
-                    <ButtonGroup fullWidth sx={{height: 56}}>
-                        <Button onClick={clearClasses} sx={buttonStyle}>Clear</Button>
-                        <Button type="submit" onClick={saveClasses} sx={buttonStyle}>Submit</Button>
+        <Box sx={{
+            marginTop: '60px',
+            '@media (max-width: 600px)': {
+                width: '95%',
+            },
+        }}>
+            <Grid container spacing={20} justifyContent="center" alignItems="center">
+                <Grid item xs={12} sm={6} lg={4}>
+                    <TextField
+                        id="outlined-basic"
+                        label="Search Filter"
+                        variant="outlined"
+                        onChange={handleChange}
+                        autoComplete="off"
+                        sx={{width: '100%', marginBottom: '10px'}}/>
+                    <Paper variant="outlined" elevation={12}>
+                        <Box sx={{overflow: 'auto', height: '50vh'}}>
+                            <TableContainer>
+                                <Table>
+                                    <TableBody>
+                                        {classList.length > 0 ? (
+                                            classList.map((option, index) => (
+                                                <TableRow sx={{
+                                                    '&:hover': {
+                                                        backgroundColor: '#f5f5f5'
+                                                    }
+                                                }}
+                                                          key={index} onClick={() => select(option)}>
+                                                    <TableCell component="th" scope="row">
+                                                        {option}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        ) : (
+                                            <TableRow>
+                                                <TableCell colSpan={1} align="center">
+                                                    Class not found.
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Box>
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} sm={6} lg={4}>
+                    <ButtonGroup fullWidth sx={{marginBottom: '10px', height: 56}}>
+                        <Button onClick={clearClasses} sx={buttonStyle(theme.palette.mode)}>Clear</Button>
+                        <Button type="submit" onClick={saveClasses} sx={buttonStyle(theme.palette.mode)}>Submit</Button>
                     </ButtonGroup>
-                    <div className='selected-classes'>
-                        {selected.map((option, index) =>
-                            <p className='class' key={index} onClick={unselect}>{option}</p>)}
-                    </div>
-                </div>
-            </div>
-        </ThemeProvider>
-
+                    <TableContainer component={Paper} variant="outlined" elevation={12}>
+                        <Table>
+                            <TableBody>
+                                {selected.length > 0 ? (
+                                    selected.map((option, index) => (
+                                        <TableRow sx={{
+                                            '&:hover': {
+                                                backgroundColor: '#f5f5f5'
+                                            }
+                                        }} key={index} onClick={() => unselect(option)}>
+                                            <TableCell component="th" scope="row">
+                                                {option}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={1} align="center">
+                                            Empty.
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Grid>
+            </Grid>
+        </Box>
     )
 }
 

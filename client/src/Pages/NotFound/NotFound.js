@@ -1,10 +1,12 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
 import Footer from "../../Components/Footer/Footer";
-import {Box, Button, Typography, useTheme} from "@mui/material";
+import {Box, Button, Container, Grid, Typography, useTheme} from "@mui/material";
 import emojiNotFoundLight from './emoji-light.png';
 import emojiNotFoundDark from './emoji-dark.png';
 import {ColorModeContext} from "../../Themes/ColorModeContext";
+import Header from "../../Components/Header/Header";
+import {buttonStyle} from "../../Themes/ThemeStyles";
 
 
 /**
@@ -21,59 +23,80 @@ function NotFound() {
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
     const emojiNotFound = theme.palette.mode === 'dark' ? emojiNotFoundLight : emojiNotFoundDark;
-    console.log(theme.palette.mode);
-    const buttonStyle = {
-        border: '2px solid',
-        '&:hover': {
-            border: '2px solid',
-        }
-    }
 
     return (
-        <div>
+        <Container fixed>
+            <Grid container spacing={2} direction="column">
+                <Grid item xs={12} sm={6} lg={4}>
+                    <Header mode={"NOT_FOUND"}/>
+                </Grid>
+                <Grid item xs={12} sm={6} lg={4}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                            marginTop: '50px',
+                            '@media (max-width: 600px)': {
+                                marginTop: '20px',
+                            },
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                paddingLeft: '15px',
+                                marginBottom: '30px',
+                            }}
+                        >
+                            <img
+                                src={emojiNotFound}
+                                alt=""
+                                width={220} height={220}
+                            />
+                        </Box>
+                        <Typography variant="h1" sx={{
+                            fontSize: '5rem',
+                            '@media (max-width: 600px)': {
+                                fontSize: '3rem',
+                                textAlign: 'center'
+                            },
+                        }}>
+                            404
+                        </Typography>
+                        <Typography sx={{
+                            '@media (max-width: 600px)': {
+                                fontSize: '15px',
+                                textAlign: 'center'
+                            },
+                        }} variant="h4">
+                            Page not Found.
+                        </Typography>
+                        <Typography sx={{
+                            '@media (max-width: 600px)': {
+                                fontSize: '15px',
+                                textAlign: 'center'
+                            },
+                        }} variant="h6">
+                            The page you’re looking for does not exist.
+                        </Typography>
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginTop: '30px'
+                        }}>
+                            <Button type="contained"
+                                    sx={buttonStyle(theme.palette.mode)}
+                                    onClick={() => navigate("/")}>Go Back
+                            </Button>
+                        </Box>
+                    </Box>
+                </Grid>
+            </Grid>
             <Box
                 sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                    marginTop: '170px',
-                }}
-            >
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginBottom: '30px',
-                    }}
-                >
-                    <img
-                        src={emojiNotFound}
-                        alt=""
-                        width={210} height={210}
-                    />
-                </Box>
-                <Typography sx={{
-                    fontSize: '100px'
-                }} variant="h2">404</Typography>
-                <Typography variant="h4">
-                    Page not Found.
-                </Typography>
-                <Typography variant="h6">
-                    The page you’re looking for doesn’t exist.
-                </Typography>
-                <Box sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: '30px'
-                }}>
-                    <Button type="contained" onClick={() => navigate("/")} sx={buttonStyle}>Go Back</Button>
-                </Box>
-            </Box>
-            <Box
-                sx={{
+                    paddingTop: '5px',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -84,7 +107,7 @@ function NotFound() {
             >
                 <Footer/>
             </Box>
-        </div>
+        </Container>
     )
 }
 

@@ -3,7 +3,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faGithub} from '@fortawesome/free-brands-svg-icons';
 import React from "react";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
-import ThemeCSS from "../../Themes/css/ThemeCSS.css";
 
 /**
  * Renders a footer component for the entire page with a short message and a GitHub icon that takes to the GitHub page.
@@ -11,7 +10,7 @@ import ThemeCSS from "../../Themes/css/ThemeCSS.css";
  * @return {JSX.Element} - The rendered footer component.
  */
 
-function Footer() {
+const Footer = ({page}) => {
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
     const mode = theme.palette.mode === 'dark' ? "dark" : "light";
@@ -22,7 +21,12 @@ function Footer() {
     };
 
     return (
-        <Container sx={{
+        <Container sx={page === "CREATE_FORM" ? {
+            marginTop: 'calc(10% + 60px)',
+            position: 'relative',
+            bottom: 0,
+            width: '100%',
+        } : {
             marginTop: 'calc(10% + 60px)',
             position: 'fixed',
             bottom: 0,
@@ -36,7 +40,12 @@ function Footer() {
                     mb: 1,
                 }}
             >
-                <Typography variant="caption">
+                <Typography sx={{
+                    '@media (max-width: 600px)': {
+                        fontSize: '11px',
+                        textAlign: 'center'
+                    },
+                }} variant="caption">
                     Made with love ❤️ by CS Purdue Students. Copyright ©{getCurrentYear()}.
                     <a href="https://github.com/MyPurdueCSBetterPlan" target="_blank" rel="noopener noreferrer">
                         <FontAwesomeIcon className={`${mode}-github-icon`} icon={faGithub} size="2x"/>

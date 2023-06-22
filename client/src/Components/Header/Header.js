@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {NavLink, useNavigate} from 'react-router-dom'
 import './Header.css'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -198,18 +198,31 @@ const Header = ({mode}) => {
         return (
             <nav className="header">
                 <div className="container">
-                <Typography variant="h1"> MYBETTERCSPLAN</Typography>
+                    <Typography variant="h1"> MYBETTERCSPLAN</Typography>
                     <div className="header-icons">
                         <ul>
                             <li>
                                 <div>
-                                    <a className="contact-icon" href="mailto:bettercsplan@gmail.com">
+                                    <a className="contact-icon" style={{
+                                        textDecoration: 'none', color: `${color}`
+                                    }} href="mailto:bettercsplan@gmail.com">
                                         <FontAwesomeIcon icon={faEnvelope}/>
                                     </a>
                                 </div>
                             </li>
                             <li>
-                                <FontAwesomeIcon icon={faMoon}/>
+                                <div onClick={colorMode.toggleColorMode}
+                                     style={{cursor: 'pointer'}}>
+                                    {theme.palette.mode === 'dark' ?
+                                        <FontAwesomeIcon icon={faSun} style={{fontSize: '15px'}}/> :
+                                        <FontAwesomeIcon icon={faMoon}/>}
+                                </div>
+                            </li>
+                            <li>
+                                <div onClick={() => LogOutAction(removeCookie, navigate)}
+                                     style={{cursor: 'pointer', paddingRight: '10px'}}>
+                                    <FontAwesomeIcon icon={faSignOut}/>
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -225,7 +238,19 @@ const Header = ({mode}) => {
                                 </div>
                             </li>
                             <li>
-                                <FontAwesomeIcon icon={faMoon} className="thmode-icon"/>
+                                <div onClick={() => LogOutAction(removeCookie, navigate)}
+                                     style={{cursor: 'pointer', paddingRight: '10px'}}>
+                                    <Typography variant="h7">
+                                        <FontAwesomeIcon icon={faSignOut}/>
+                                    </Typography>
+                                </div>
+                            </li>
+                            <li>
+                                <div onClick={colorMode.toggleColorMode} className="thmode-icon"
+                                     style={{cursor: 'pointer'}}>
+                                    {theme.palette.mode === 'dark' ? <FontAwesomeIcon icon={faSun}/> :
+                                        <FontAwesomeIcon icon={faMoon}/>}
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -370,6 +395,55 @@ const Header = ({mode}) => {
                             </li>
                             <li>
                                 <FontAwesomeIcon icon={faMoon} className="thmode-icon"/>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        )
+    } else if (mode === "NOT_FOUND") {
+        return (
+            <nav className="header">
+                <div className="container">
+                    <Typography variant="h1"> MYBETTERCSPLAN</Typography>
+                    <div className="header-icons">
+                        <ul>
+                            <li>
+                                <div>
+                                    <a className="contact-icon" style={{
+                                        textDecoration: 'none', color: `${color}`
+                                    }} href="mailto:bettercsplan@gmail.com">
+                                        <FontAwesomeIcon icon={faEnvelope}/>
+                                    </a>
+                                </div>
+                            </li>
+                            <li>
+                                <div onClick={colorMode.toggleColorMode}
+                                     style={{cursor: 'pointer'}}>
+                                    {theme.palette.mode === 'dark' ?
+                                        <FontAwesomeIcon icon={faSun} style={{fontSize: '15px'}}/> :
+                                        <FontAwesomeIcon icon={faMoon}/>}
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div className={"header-elements"}>
+                        <ul>
+                            <li>
+                                <div style={{cursor: 'pointer'}}>
+                                    <a href="mailto:bettercsplan@gmail.com">
+                                        <Typography variant="h7">
+                                            <FontAwesomeIcon icon={faEnvelope}/> Contact
+                                        </Typography>
+                                    </a>
+                                </div>
+                            </li>
+                            <li>
+                                <div onClick={colorMode.toggleColorMode} className="thmode-icon"
+                                     style={{cursor: 'pointer'}}>
+                                    {theme.palette.mode === 'dark' ? <FontAwesomeIcon icon={faSun}/> :
+                                        <FontAwesomeIcon icon={faMoon}/>}
+                                </div>
                             </li>
                         </ul>
                     </div>

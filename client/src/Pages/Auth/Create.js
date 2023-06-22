@@ -1,14 +1,12 @@
 import React, {useEffect, useState} from "react";
-import LogOut from "../../Components/Profile/LogOut";
 import ChooseClasses from "../../Components/Auth/ChooseClasses";
 import ChooseTracks from "../../Components/Auth/ChooseTracks";
 import ChooseOptions from "../../Components/Auth/ChooseOptions";
 import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
-import {Step, StepLabel, Stepper} from "@mui/material";
+import {Box, Container, Grid, Step, StepLabel, Stepper} from "@mui/material";
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
-import './CreateForm.css'
 
 
 /**
@@ -16,6 +14,7 @@ import './CreateForm.css'
  * to determine what classes the user needs to take and generating their base (empty) schedule
  */
 function Create() {
+
 
     //array to store user's selected tracks
     const [tracksInput, setTracksInput] = useState(false);
@@ -30,54 +29,6 @@ function Create() {
 
     //steps for Material-UI stepper
     const steps = ["Choose Tracks", "List Classes Taken", "Choose Options"]
-    const stepperStyle = {
-        padding: 2,
-        "& .Mui-active": {
-            "&.MuiStepIcon-root": {
-                color: "warning.main",
-                fontSize: "2rem",
-                fontFamily: 'Poppins, sans-serif'
-            },
-            "&.MuiStepLabel-alternativeLabel": {
-                fontSize: '2vw',
-                color: "warning.main",
-                fontFamily: 'Poppins, sans-serif'
-            },
-            "& .MuiStepConnector-line": {
-                borderColor: "#2f234f"
-            }
-        },
-        "& .Mui-completed": {
-            "&.MuiStepIcon-root": {
-                color: "#2f234f",
-                fontSize: "2rem",
-                fontFamily: 'Poppins, sans-serif'
-            },
-            "&.MuiStepLabel-alternativeLabel": {
-                fontSize: '2vw',
-                color: "#2f234f",
-                fontFamily: 'Poppins, sans-serif'
-            },
-            "& .MuiStepConnector-line": {
-                borderColor: "#2f234f"
-            }
-        },
-        "& .Mui-disabled": {
-            ".MuiStepIcon-root": {
-                color: "#2f234f",
-                fontSize: '2rem',
-                fontFamily: 'Poppins, sans-serif'
-            },
-            "&.MuiStepLabel-alternativeLabel": {
-                fontSize: '2vw',
-                color: "#2f234f",
-                fontFamily: 'Poppins, sans-serif'
-            },
-            "& .MuiStepConnector-line": {
-                borderColor: '#2f234f'
-            }
-        }
-    }
 
     //Checks if the user is logged in or not
     useEffect(() => {
@@ -92,65 +43,99 @@ function Create() {
     //which ones the user has/has-not already done
     if (tracksInput === false) {
         return (
-            <div>
-                <div className="header">
-                    <Header mode={"USER_CREATE_PROMPS"}/>
-                </div>
-                <div>
-                    <Stepper activeStep={0} alternativeLabel sx={stepperStyle}>
-                        {steps.map(step => <Step>
-                            <StepLabel key={step}>{step}</StepLabel>
-                        </Step>)}
-                    </Stepper>
-                    <ChooseTracks next={() => setTracksInput(true)}/>
-                    <LogOut/>
-                </div>
-                <div className="footer">
-                    <Footer/>
-                </div>
-            </div>
+            <Container fixed>
+                <Grid container spacing={2} direction="column">
+                    <Grid item xs={12} sm={6} lg={4}>
+                        <Header mode={"USER_CREATE_PROMPS"}/>
+                    </Grid>
+                    <Grid item xs={12} sm={6} lg={4} justifyContent="center" alignItems="center">
+                        <Stepper
+                            activeStep={0}
+                            alternativeLabel>
+                            {steps.map(step =>
+                                <Step>
+                                    <StepLabel key={step}>{step}</StepLabel>
+                                </Step>)}
+                        </Stepper>
+                        <ChooseTracks next={() => setTracksInput(true)}/>
+                    </Grid>
+                    <Grid item xs={12} sm={6} lg={4}>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Footer/>
+                        </Box>
+                    </Grid>
+                </Grid>
+            </Container>
         )
     } else if (classInput === false) {
         return (
-            <div>
-                <div className="header">
-                    <Header mode={"USER_CREATE_PROMPS"}/>
-                </div>
-                <div>
-                    <Stepper activeStep={1} alternativeLabel sx={stepperStyle}>
-                        {steps.map(step => <Step>
-                            <StepLabel key={step}>
-                                {step}</StepLabel>
-                        </Step>)}
-                    </Stepper>
-                    <ChooseClasses next={() => setClassInput(true)}/>
-                    <LogOut/>
-                </div>
-                <div className="footer">
-                    <Footer/>
-                </div>
-            </div>
-
+            <Container fixed>
+                <Grid container spacing={2} direction="column">
+                    <Grid item xs={12} sm={6} lg={4}>
+                        <Header mode={"USER_CREATE_PROMPS"}/>
+                    </Grid>
+                    <Grid item xs={12} sm={6} lg={4} justifyContent="center" alignItems="center">
+                        <Stepper
+                            activeStep={1}
+                            alternativeLabel>
+                            {steps.map(step =>
+                                <Step>
+                                    <StepLabel key={step}>{step}</StepLabel>
+                                </Step>)}
+                        </Stepper>
+                        <ChooseClasses next={() => setClassInput(true)}/>
+                    </Grid>
+                    <Grid item xs={12} sm={6} lg={4}>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Footer page={"CREATE_FORM"}/>
+                        </Box>
+                    </Grid>
+                </Grid>
+            </Container>
         )
     } else {
         return (
-            <div>
-                <div className="header">
+        <Container fixed>
+            <Grid container spacing={2} direction="column">
+                <Grid item xs={12} sm={6} lg={4}>
                     <Header mode={"USER_CREATE_PROMPS"}/>
-                </div>
-                <div>
-                    <Stepper activeStep={2} alternativeLabel sx={stepperStyle}>
-                        {steps.map(step => <Step>
-                            <StepLabel key={step}>{step}</StepLabel>
-                        </Step>)}
+                </Grid>
+                <Grid item xs={12} sm={6} lg={4}>
+                    <Stepper
+                        activeStep={2}
+                        alternativeLabel>
+                        {steps.map(step =>
+                            <Step>
+                                <StepLabel key={step}>{step}</StepLabel>
+                            </Step>)}
                     </Stepper>
                     <ChooseOptions/>
-                    <LogOut/>
-                </div>
-                <div className="footer">
-                    <Footer/>
-                </div>
-            </div>
+                </Grid>
+                <Grid item xs={12} sm={6} lg={4}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Footer/>
+                    </Box>
+                </Grid>
+            </Grid>
+        </Container>
         )
     }
 }

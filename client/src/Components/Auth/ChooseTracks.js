@@ -1,9 +1,10 @@
 import axios from "axios";
+import React from 'react'
 import {ErrorAction} from "../../Redux/Actions/GlobalActions";
-import {Button, ThemeProvider, ToggleButton, ToggleButtonGroup} from "@mui/material";
+import {Alert, Box, Button, ToggleButton, ToggleButtonGroup, useTheme} from "@mui/material";
 import {useState} from "react";
-import "./ChooseComponent.css"
-import {createTheme} from '@mui/material/styles';
+import {buttonStyle} from "../../Themes/ThemeStyles";
+import {ColorModeContext} from "../../Themes/ColorModeContext";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -14,13 +15,15 @@ const {REACT_APP_SERVER_URL} = process.env;
  *
  */
 function ChooseTracks(props) {
+    const theme = useTheme();
+    const colorMode = React.useContext(ColorModeContext);
 
     //Sends array of track names to the server and moves on to next page if successful
     function saveTracks(e) {
         e.preventDefault()
 
         if (tracks.length === 0) {
-            console.log("Select at least one track")
+            setEmptyFields(true);
         } else {
             axios.post(
                 `${REACT_APP_SERVER_URL}/tracks`,
@@ -38,33 +41,17 @@ function ChooseTracks(props) {
     }
 
     const [tracks, setTracks] = useState([]);
+    const [emptyFields, setEmptyFields] = useState(false); // Track selection fields empty
 
     const handleChange = (event, newTracks) => {
+        setEmptyFields(false);
         setTracks(newTracks);
     };
 
-    const toggleButtonStyle = {
-        flexWrap: 'wrap',
-        marginTop: '10vh',
-        '& .MuiButtonBase-root': {
-            border: '1px solid #2f234f',
-            color: '#2f234f'
-        }
-    }
-    const theme = createTheme({
-        palette: {
-            primary: {
-                main: '#2f234f'
-            },
-        },
-        typography: {
-            fontFamily: ['Poppins', 'sans-serif'].join(',')
-        }
-    })
 
     return (
-        <ThemeProvider theme={theme}>
-            <form onSubmit={saveTracks} className="tracks-form">
+        <form onSubmit={saveTracks} className="tracks-form">
+            <Box sx={{marginTop: '60px'}}>
                 <ToggleButtonGroup
                     value={tracks}
                     color='warning'
@@ -73,7 +60,6 @@ function ChooseTracks(props) {
                     fullWidth
                     orientation='vertical'
                     size='small'
-                    sx={toggleButtonStyle}
                 >
                     <ToggleButton value="CSE" aria-label="CSE">CSE</ToggleButton>
                     <ToggleButton value="Graphics" aria-label="Computer Graphics and Visualization">Computer Graphics
@@ -89,9 +75,16 @@ function ChooseTracks(props) {
                     <ToggleButton value="SWE" aria-label="Software Engineering">Software Engineering</ToggleButton>
                     <ToggleButton value="Systems" aria-label="Systems">Systems Software</ToggleButton>
                 </ToggleButtonGroup>
-                <Button variant="outlined" type='submit' fullWidth>SUBMIT</Button>
-            </form>
-        </ThemeProvider>
+                {emptyFields && (
+                    <Box sx={{marginTop: '10px'}}>
+                        <Alert severity="error">Please select at least one track.</Alert>
+                    </Box>
+                )}
+            </Box>
+            <Box sx={{marginTop: '20px'}}>
+                <Button variant="outlined" sx={buttonStyle(theme.palette.mode)} type='submit' fullWidth>SUBMIT</Button>
+            </Box>
+        </form>
     )
 }
 

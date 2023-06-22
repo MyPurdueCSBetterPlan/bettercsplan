@@ -1,4 +1,5 @@
 import {amber, grey} from "@mui/material/colors";
+import React from "react";
 
 /**
  * Custom Palette dark/light mode
@@ -68,3 +69,23 @@ export const getDesignTokens = (mode) => ({
             }),
     },
 });
+
+export const buttonStyle = (mode) => ({
+    ...(mode === 'dark'
+        ? {
+            border: '2px solid',
+            '&:hover': {
+                border: '2px solid',
+            },
+        }
+        : {
+            border: '2px solid',
+            background: amber[300],
+            color: '#ffffff',
+            '&:hover': {
+                border: '2px solid',
+                background: amber[400],
+            },
+        }),
+});
+

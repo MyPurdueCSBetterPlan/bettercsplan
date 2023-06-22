@@ -3,21 +3,18 @@ import {useCookies} from "react-cookie";
 import alert from "sweetalert2";
 import axios from "axios";
 import {ErrorAction} from "../../Redux/Actions/GlobalActions";
-import {Button} from "@mui/material";
+import {Button, useTheme} from "@mui/material";
 import React from "react";
+import {buttonStyle} from "../../Themes/ThemeStyles";
+import {ColorModeContext} from "../../Themes/ColorModeContext";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
 function DeleteAccount() {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(["token"]);
-
-    const buttonStyle = {
-        border: '2px solid',
-        '&:hover': {
-            border: '2px solid',
-        }
-    }
+    const theme = useTheme();
+    const colorMode = React.useContext(ColorModeContext);
 
     function handleClick() {
         alert.fire({
@@ -54,7 +51,7 @@ function DeleteAccount() {
 
 
     return (
-    <Button type="contained" onClick={handleClick} sx={buttonStyle}>Delete Account</Button>
+        <Button type="contained" onClick={handleClick} sx={buttonStyle(theme.palette.mode)}>Delete Account</Button>
     )
 }
 

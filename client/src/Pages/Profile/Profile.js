@@ -2,12 +2,11 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
 import axios from "axios";
-import LogOut from "../../Components/Profile/LogOut"
 import DeleteAccount from "../../Components/Profile/DeleteAccount";
 import ChangePassword from "../../Components/Profile/ChangePassword";
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
-import {Box, Container, Grid, Paper, Typography} from "@mui/material";
+import {Box, Container, Grid, Typography} from "@mui/material";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -27,6 +26,7 @@ function Profile() {
     const [cookies, setCookie, removeCookie] = useCookies(["token"]);
     const [email, setEmail] = useState("");
     const [googleID, setGoogleID] = useState(false);
+
 
 
     //Checks if the user is logged in or not
@@ -70,104 +70,104 @@ function Profile() {
     }, [cookies, navigate, removeCookie]);
 
     return (
-        <div>
-            <Container fixed>
-                <Box>
+        <Container fixed>
+            <Grid container spacing={2} direction="column">
+                <Grid item xs={12} sm={6} lg={4}>
                     <Header mode={"USER_VERIFIED"}/>
-                </Box>
-                <Container>
-                    <Grid container spacing={2} direction="column" justifyContent="center" alignItems="center">
-                        <Grid item xs={12} sm={6} lg={4}>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    flexDirection: 'column',
-                                    marginTop: '100px',
-                                    marginRight: '20px'
-                                }}
-                            >
-                                <Typography variant="h1" sx={{
-                                    fontSize: '5rem',
-                                    '@media (max-width: 600px)': {
-                                        fontSize: '5rem',
-                                        textAlign: 'center'
-                                    },
-                                }}
-                                >
-                                    Profile Information
-                                </Typography>
-                                <Typography variant="h4" sx={{
-                                    marginTop: '10px',
-                                    '@media (max-width: 600px)': {
-                                        fontSize: '1.5rem',
-                                    },
-                                }}
-                                >
-                                    <span>Name:</span> {name} <br/>
-                                    <span>Email:</span> {email}<br/>
-                                    {googleID && (
-                                        <span>Google Login: Enabled.</span>
-                                    )}
-                                </Typography>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={6} lg={4}>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    marginTop: '50px',
-                                }}
-                            >
-                                {!googleID ? (
-                                    <Grid container spacing={2} justifyContent="center" alignItems="center">
-                                        <Grid item xs={12} sm={6} lg={4}>
-                                            <Box
-                                                sx={{
-                                                    display: 'flex',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                }}
-                                            >
-                                                <ChangePassword/>
-                                            </Box>
-                                        </Grid>
-                                        <Grid item xs={12} sm={6} lg={4}>
-                                            <Box
-                                                sx={{
-                                                    display: 'flex',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                }}
-                                            >
-                                                <DeleteAccount/>
-                                            </Box>
-                                        </Grid>
-                                    </Grid>
-                                ) : (
-                                    <DeleteAccount/>
+                </Grid>
+                <Grid item xs={12} sm={6} lg={4}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                            marginTop: '100px',
+                            marginRight: '20px'
+                        }}
+                    >
+                        <Typography variant="h1" sx={{
+                            fontSize: '5rem',
+                            '@media (max-width: 600px)': {
+                                fontSize: '3rem',
+                                textAlign: 'center'
+                            },
+                        }}
+                        >
+                            Profile Information
+                        </Typography>
+                        <Typography variant="h4" sx={{
+                            marginTop: '10px',
+                            '@media (max-width: 600px)': {
+                                fontSize: '1.5rem',
+                            },
+                        }}
+                        >
+                            <center>
+                                <span>Name:</span> <br/>{name} <br/>
+                                <span>Email:</span> <br/>{email}<br/>
+                                {googleID && (
+                                    <span>Google Login: Enabled.</span>
                                 )}
-                            </Box>
-                        </Grid>
-                    </Grid>
-                </Container>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        '@media (max-width: 600px)': {
-                            justifyContent: 'flex-start',
-                        },
-                    }}
-                >
-                    <Footer/>
-                </Box>
-            </Container>
-        </div>
+                            </center>
+                        </Typography>
+                    </Box>
+                </Grid>
+                <Grid item xs={12} sm={6} lg={4}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginTop: '50px',
+                        }}
+                    >
+                        {!googleID ? (
+                            <Grid container spacing={2} justifyContent="center" alignItems="center">
+                                <Grid item xs={12} sm={6} lg={4}>
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <ChangePassword/>
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12} sm={6} lg={4}>
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}
+                                    >
+                                        <DeleteAccount/>
+                                    </Box>
+                                </Grid>
+                            </Grid>
+                        ) : (
+                            <DeleteAccount/>
+                        )}
+                    </Box>
+                </Grid>
+            </Grid>
+            <Box
+                sx={{
+                    paddingTop: '5px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    position: 'fixed',
+                    '@media (max-width: 600px)': {
+                        justifyContent: 'flex-start',
+                    },
+                }}
+            >
+                <Footer/>
+            </Box>
+        </Container>
     )
 }
 

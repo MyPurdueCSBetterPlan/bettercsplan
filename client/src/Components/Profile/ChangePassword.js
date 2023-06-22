@@ -2,22 +2,19 @@ import {useNavigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
 import alert from "sweetalert2";
 import axios from "axios";
-import {ErrorAction, SuccessAction} from "../../Redux/Actions/GlobalActions";
-import {Button} from "@mui/material";
+import {ErrorAction} from "../../Redux/Actions/GlobalActions";
+import {Button, useTheme} from "@mui/material";
 import React from "react";
+import {buttonStyle} from "../../Themes/ThemeStyles";
+import {ColorModeContext} from "../../Themes/ColorModeContext";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
 function ChangePassword() {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(["token"]);
-
-    const buttonStyle = {
-        border: '2px solid',
-        '&:hover': {
-            border: '2px solid',
-        }
-    }
+    const theme = useTheme();
+    const colorMode = React.useContext(ColorModeContext);
 
     async function handleClick() {
         const {value: formValues} = await alert.fire({
@@ -83,7 +80,7 @@ function ChangePassword() {
 
 
     return (
-        <Button type="contained" onClick={handleClick} sx={buttonStyle}>Change Password</Button>
+        <Button type="contained" onClick={handleClick} sx={buttonStyle(theme.palette.mode)}>Change Password</Button>
     )
 }
 

@@ -1,11 +1,10 @@
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {ErrorAction} from "../../Redux/Actions/GlobalActions";
-import {Button, FormControl, InputLabel, Select, ThemeProvider, ToggleButton} from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import {useState} from "react";
-import './ChooseComponent.css'
-import {createTheme} from "@mui/material/styles";
+import {Box, Button, Grid, TextField, ToggleButton, useTheme} from "@mui/material";
+import React, {useState} from "react";
+import {ColorModeContext} from "../../Themes/ColorModeContext";
+import {buttonStyle} from "../../Themes/ThemeStyles";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -15,6 +14,8 @@ const {REACT_APP_SERVER_URL} = process.env;
  */
 function ChooseOptions() {
     const navigate = useNavigate();
+    const theme = useTheme();
+    const colorMode = React.useContext(ColorModeContext);
 
     //user's years until graduation
     const [years, setYears] = useState(4);
@@ -39,6 +40,10 @@ function ChooseOptions() {
             })
     }
 
+    const handleChange = (event) => {
+        setYears(event.target.value);
+    };
+
     //tells the server to generate the user's schedule and navigates back to the home page on succes
     function generateSchedule() {
         axios.get(
@@ -53,69 +58,100 @@ function ChooseOptions() {
 
     }
 
-    const handleChange = (event) => {
-        setYears(event.target.value);
-    };
+    const yearsUntilGrad = [
+        {
+            value: '0.5',
+            label: '0.5',
+        },
+        {
+            value: '1',
+            label: '1',
+        },
+        {
+            value: '1.5',
+            label: '1.5',
+        },
+        {
+            value: '2',
+            label: '2',
+        },
+        {
+            value: '2.5',
+            label: '2.5',
+        },
+        {
+            value: '3',
+            label: '3',
+        },
+        {
+            value: '3.5',
+            label: '3.5',
+        },
+        {
+            value: '4',
+            label: '4',
+        },
+        {
+            value: '4.5',
+            label: '4.5',
+        },
+        {
+            value: '5',
+            label: '5',
+        },
+    ];
 
-    const theme = createTheme({
-        palette: {
-            primary: {
-                main: '#2f234f'
-            },
-        },
-        typography: {
-            fontFamily: ['Poppins', 'sans-serif'].join(',')
-        }
-    })
-
-    const formStyle = {
-        '& .MuiFormLabel-root': {
-            color: '#2f234f',
-        },
-        '& .MuiOutlinedInput-notchedOutline': {
-            border: '2px solid #2f234f',
-        },
-        '& .MuiSelect-select': {
-            color: '#2f234f',
-        },
-        '& .MuiButtonBase-root': {
-            border: '1px solid #2f234f',
-            color: '#2f234f'
-        },
-
-    }
 
     return (
-        <div className='options-form'>
-            <ThemeProvider theme={theme}>
-                <FormControl onSubmit={saveOptions} sx={formStyle}>
-                    <InputLabel id="grad-years">Years until Graduation</InputLabel>
-                    <Select
-                        labelId="grad-years"
-                        id="grad-years"
-                        value={years}
-                        label="Years until Graduation"
-                        onChange={handleChange}
+        <Box sx={{marginTop: '150px'}}>
+            <Grid container spacing={3} direction="column" justifyContent="center" alignItems="center">
+                <Grid item xs={12} sm={6} lg={4}>
+                    <Box
+                        component="form"
+                        sx={{
+                            '& .MuiTextField-root': {m: 1, width: '25ch'},
+                        }}
+                        noValidate
+                        autoComplete="off"
                     >
-                        <MenuItem value={0.5}>0.5</MenuItem>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={1.5}>1.5</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={2.5}>2.5</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={3.5}>3.5</MenuItem>
-                        <MenuItem value={4}>4</MenuItem>
-                        <MenuItem value={4.5}>4.5</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
-                    </Select>
-                    <ToggleButton value='summer' selected={summer} color='warning' onChange={() => setSummer(!summer)}>
-                        Open to summer classes?
-                    </ToggleButton>
-                    <Button onClick={() => saveOptions()}>GENERATE SCHEDULE</Button>
-                </FormControl>
-            </ThemeProvider>
-        </div>
-
+                        <div>
+                            <TextField
+                                id="grad-years"
+                                select
+                                label="Years until Graduation"
+                                onChange={handleChange}
+                                defaultValue="4"
+                                SelectProps={{
+                                    native: true,
+                                }}
+                                helperText="Please select a year."
+                            >
+                                {yearsUntilGrad.map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </TextField>
+                        </div>
+                    </Box>
+                </Grid>
+                <Grid item xs={12} sm={6} lg={4}>
+                    <Grid container spacing={2} direction="column" justifyContent="center" alignItems="center">
+                        <Grid item xs={12} sm={6} lg={4}>
+                            <ToggleButton value='summer' selected={summer} color='warning'
+                                          onChange={() => setSummer(!summer)}>
+                                Open to summer classes?
+                            </ToggleButton>
+                        </Grid>
+                        <Grid item xs={12} sm={6} lg={4}>
+                            <Button
+                                sx={buttonStyle(theme.palette.mode)}
+                                onClick={() => saveOptions()}>GENERATE SCHEDULE</Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Box>
     )
 }
 
