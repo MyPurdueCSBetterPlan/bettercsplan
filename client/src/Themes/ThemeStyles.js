@@ -1,4 +1,4 @@
-import {amber, grey} from "@mui/material/colors";
+import {amber, blue, grey} from "@mui/material/colors";
 import {useTheme} from "@mui/material";
 import React from "react";
 import {ColorModeContext} from "./ColorModeContext";
@@ -63,6 +63,7 @@ export const getDesignTokens = (mode) => ({
                     fontSize: "30px",
                 },
                 h7: {
+                    fontFamily: "Poppins, sans-serif",
                     fontSize: '16px',
                     fontWeight: '400',
                     color: '#ffffff',
@@ -82,11 +83,10 @@ export const buttonStyle = (mode) => ({
         }
         : {
             border: '2px solid',
-            background: amber[300],
-            color: '#ffffff',
+            color: blue[700],
             '&:hover': {
                 border: '2px solid',
-                background: amber[400],
+                background: blue[50],
             },
         }),
 });

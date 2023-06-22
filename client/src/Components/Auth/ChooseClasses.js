@@ -133,31 +133,35 @@ function ChooseClasses(props) {
                         <Button onClick={clearClasses} sx={buttonStyle(theme.palette.mode)}>Clear</Button>
                         <Button type="submit" onClick={saveClasses} sx={buttonStyle(theme.palette.mode)}>Submit</Button>
                     </ButtonGroup>
-                    <TableContainer component={Paper} variant="outlined" elevation={12}>
-                        <Table>
-                            <TableBody>
-                                {selected.length > 0 ? (
-                                    selected.map((option, index) => (
-                                        <TableRow sx={{
-                                            '&:hover': {
-                                                backgroundColor: '#f5f5f5'
-                                            }
-                                        }} key={index} onClick={() => unselect(option)}>
-                                            <TableCell component="th" scope="row">
-                                                {option}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                ) : (
-                                    <TableRow>
-                                        <TableCell colSpan={1} align="center">
-                                            Empty.
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    <Paper variant="outlined">
+                        <Box sx={{overflow: 'auto', height: '50vh'}}>
+                            <TableContainer>
+                                <Table>
+                                    <TableBody>
+                                        {selected.length > 0 ? (
+                                            selected.map((option, index) => (
+                                                <TableRow sx={{
+                                                    '&:hover': {
+                                                        backgroundColor: '#f5f5f5'
+                                                    }
+                                                }} key={index} onClick={() => unselect(option)}>
+                                                    <TableCell component="th" scope="row">
+                                                        {option}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        ) : (
+                                            <TableRow>
+                                                <TableCell colSpan={1} align="center">
+                                                    Empty.
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Box>
+                    </Paper>
                 </Grid>
             </Grid>
         </Box>
