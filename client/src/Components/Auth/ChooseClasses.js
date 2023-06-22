@@ -32,6 +32,11 @@ function ChooseClasses(props) {
     //updates the filter value
     function handleChange(e) {
 
+        if (e.target.value === "") {
+            setClassList([])
+            return
+        }
+
         axios.post(
             `${REACT_APP_SERVER_URL}/classes`,
             {
@@ -49,15 +54,15 @@ function ChooseClasses(props) {
     }
 
     //selecting a class moves it from the unselected array to the selected array
-    function select(option) {
-        if (!selected.includes(option)) {
-            setSelected((selected) => [...selected, option]);
+    function select(optionClicked) {
+        if (!selected.includes(optionClicked)) {
+            setSelected((selected) => [...selected, optionClicked]);
         }
     }
 
     //unselecting a class moves it from the selected array to the unselected array
-    function unselect(option) {
-        setSelected(selected => selected.filter(option => option !== option))
+    function unselect(optionClicked) {
+        setSelected(selected => selected.filter(option => option !== optionClicked))
     }
 
     //sends array of selected classes to the server and moves on to next page if successful
@@ -78,6 +83,7 @@ function ChooseClasses(props) {
 
     //empties list of selected classes
     function clearClasses() {
+        console.log("clear?")
         setSelected([])
     }
 
@@ -98,31 +104,24 @@ function ChooseClasses(props) {
                         onChange={handleChange}
                         autoComplete="off"
                         sx={{width: '100%', marginBottom: '10px'}}/>
-                    <Paper variant="outlined" elevation={12}>
+                    <Paper variant="outlined">
                         <Box sx={{overflow: 'auto', height: '50vh'}}>
                             <TableContainer>
                                 <Table>
                                     <TableBody>
-                                        {classList.length > 0 ? (
-                                            classList.map((option, index) => (
-                                                <TableRow sx={{
-                                                    '&:hover': {
-                                                        backgroundColor: '#f5f5f5'
-                                                    }
-                                                }}
-                                                          key={index} onClick={() => select(option)}>
-                                                    <TableCell component="th" scope="row">
-                                                        {option}
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))
-                                        ) : (
-                                            <TableRow>
-                                                <TableCell colSpan={1} align="center">
-                                                    Class not found.
+                                        {classList.map((option, index) => (
+                                            <TableRow sx={{
+                                                '&:hover': {
+                                                    backgroundColor: '#f5f5f5'
+                                                }
+                                            }}
+                                                      key={index} onClick={() => select(option)}>
+                                                <TableCell component="th" scope="row">
+                                                    {option}
                                                 </TableCell>
                                             </TableRow>
-                                        )}
+
+                                        ))}
                                     </TableBody>
                                 </Table>
                             </TableContainer>
