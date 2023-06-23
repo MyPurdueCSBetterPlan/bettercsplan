@@ -98,6 +98,7 @@ function Create() {
                     <Grid item xs={12} sm={6} lg={4} justifyContent="center" alignItems="center">
                         <Stepper
                             activeStep={1}
+                            sx={stepperStyle(theme.palette.mode)}
                             alternativeLabel>
                             {steps.map(step =>
                                 <Step>
@@ -130,6 +131,7 @@ function Create() {
                     <Grid item xs={12} sm={6} lg={4}>
                         <Stepper
                             activeStep={2}
+                            sx={stepperStyle(theme.palette.mode)}
                             alternativeLabel>
                             {steps.map(step =>
                                 <Step>

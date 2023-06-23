@@ -99,24 +99,33 @@ export const stepperStyle = (mode) => ({
                     color: "warning.main",
                     fontSize: "2rem",
                     fontFamily: 'Poppins, sans-serif',
+                    "& .MuiStepIcon-text": {
+                        fill: "#ffffff",
+                        fontFamily: 'Poppins, sans-serif'
+                    }
                 },
                 "&.MuiStepLabel-alternativeLabel": {
                     fontSize: '2vw',
                     color: "warning.main",
-                    fontFamily: 'Poppins, sans-serif'
+                    fontFamily: 'Poppins, sans-serif',
+                    "& .MuiStepIcon-text": {
+                        fill: 'white',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
                 },
-                "&.MuiStepConnector-line": {
-                    borderColor: grey[500],
-                },
-                "&.MuiStepIcon-text": {
-                    fill: 'white',
+                "& .MuiStepConnector-line": {
+                    borderColor: '#2f234f',
                 },
             },
             "& .Mui-completed": {
                 "&.MuiStepIcon-root": {
                     color: "#2f234f",
                     fontSize: "2rem",
-                    fontFamily: 'Poppins, sans-serif'
+                    fontFamily: 'Poppins, sans-serif',
+                    "& .MuiStepIcon-text": {
+                        fill: 'white',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
                 },
                 "&.MuiStepLabel-alternativeLabel": {
                     fontSize: '2vw',
@@ -125,13 +134,17 @@ export const stepperStyle = (mode) => ({
                 },
                 "& .MuiStepConnector-line": {
                     color: "#2f234f",
-                }
+                },
             },
             "& .Mui-disabled": {
                 ".MuiStepIcon-root": {
                     color: "#2f234f",
                     fontSize: '2rem',
-                    fontFamily: 'Poppins, sans-serif'
+                    fontFamily: 'Poppins, sans-serif',
+                    "& .MuiStepIcon-text": {
+                        fill: 'white',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
                 },
                 "&.MuiStepLabel-alternativeLabel": {
                     fontSize: '2vw',
