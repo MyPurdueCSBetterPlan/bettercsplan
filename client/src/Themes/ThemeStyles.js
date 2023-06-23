@@ -4,7 +4,7 @@ import React from "react";
 import {ColorModeContext} from "./ColorModeContext";
 
 //#121858 - dark indigo
-//#5c6bc0 - light indigo
+//#b2b9e1 - light indigo
 
 /**
  * Custom Palette dark/light mode
@@ -179,32 +179,32 @@ export const stepperStyle = (mode) => ({
         },
         "& .Mui-completed": {
             "&.MuiStepIcon-root": {
-                color: grey[400],
+                color: 'white',
                 fontSize: "2rem",
                 fontFamily: 'Poppins, sans-serif'
             },
             "&.MuiStepLabel-alternativeLabel": {
                 fontSize: '2vw',
-                color: grey[400],
+                color: 'white',
                 fontFamily: 'Poppins, sans-serif'
             },
             "& .MuiStepConnector-line": {
-                color: grey[400],
+                color: 'white',
             }
         },
         "& .Mui-disabled": {
             ".MuiStepIcon-root": {
-                color: grey[400],
+                color: 'white',
                 fontSize: '2rem',
                 fontFamily: 'Poppins, sans-serif'
             },
             "&.MuiStepLabel-alternativeLabel": {
                 fontSize: '2vw',
-                color: grey[400],
+                color: 'white',
                 fontFamily: 'Poppins, sans-serif'
             },
             "& .MuiStepConnector-line": {
-                color: grey[400],
+                color: 'white',
             }
         }
     })
@@ -238,6 +238,32 @@ export const textInputStyle = (mode) => ({
         '& .MuiFocused': {
             color: '#ffd54f'
         },
+    })
+})
+
+export const overflowListStyle = (mode) => ({
+    ...(mode === 'light' ? {
+        overflow: 'auto',
+        height: '50vh',
+        '&::-webkit-scrollbar': {
+            width: '0.4em',
+            backgroundColor: 'lightgrey',
+        },
+        '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#121858',
+            borderRadius: '2px',
+        }
+    } : {
+        overflow: 'auto',
+        height: '50vh',
+        '&::-webkit-scrollbar': {
+            width: '0.4em',
+            backgroundColor: 'black',
+        },
+        '&::-webkit-scrollbar-thumb': {
+            backgroundColor: amber[300],
+            borderRadius: '2px',
+        }
     })
 })
 

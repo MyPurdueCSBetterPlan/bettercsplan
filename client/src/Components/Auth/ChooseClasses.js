@@ -13,7 +13,7 @@ import {
     TableContainer, TableRow,
     TextField, useTheme
 } from "@mui/material";
-import {buttonStyle, textInputStyle} from "../../Themes/ThemeStyles";
+import {buttonStyle, textInputStyle, overflowListStyle} from "../../Themes/ThemeStyles";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
 import {amber, blue, grey} from "@mui/material/colors";
 
@@ -122,7 +122,7 @@ function ChooseClasses(props) {
                     <Paper variant="outlined" sx={{
                         borderColor: theme.palette.mode === 'light' ? '#121858' : amber[200],
                     }}>
-                        <Box sx={{overflow: 'auto', height: '50vh'}}>
+                        <Box sx={overflowListStyle(theme.palette.mode)}>
                             <TableContainer>
                                 <Table>
                                     <TableBody>
@@ -152,7 +152,7 @@ function ChooseClasses(props) {
                     <Paper variant="outlined" sx={{
                         borderColor: theme.palette.mode === 'light' ? '#121858' : amber[200],
                     }}>
-                        <Box sx={{overflow: 'auto', height: '50vh'}}>
+                        <Box sx={overflowListStyle(theme.palette.mode)}>
                             <TableContainer>
                                 <Table>
                                     <TableBody>

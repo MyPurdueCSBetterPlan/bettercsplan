@@ -4,7 +4,7 @@ import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 import {Box, Button, Grid, TextField, ToggleButton, useTheme} from "@mui/material";
 import React, {useState} from "react";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
-import {buttonStyle} from "../../Themes/ThemeStyles";
+import {buttonStyle, textInputStyle} from "../../Themes/ThemeStyles";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -124,6 +124,7 @@ function ChooseOptions() {
                                 SelectProps={{
                                     native: true,
                                 }}
+                                sx={textInputStyle(theme.palette.mode)}
                                 helperText="Please select a year."
                             >
                                 {yearsUntilGrad.map((option) => (
