@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import axios from "axios";
 import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 import {
+    Alert,
     Box,
     Button,
     ButtonGroup,
@@ -27,6 +28,7 @@ function ChooseClasses(props) {
     const [classList, setClassList] = useState([]);
     const [selected, setSelected] = useState([]);
     const theme = useTheme();
+    const [showAlert, setShowAlert] = useState(false);
     const colorMode = React.useContext(ColorModeContext);
 
     //updates the filter value
@@ -49,7 +51,7 @@ function ChooseClasses(props) {
             })
             .catch(error => {
                 const {message} = error.data
-                ErrorAction(message)
+                ErrorAction(message);
             })
     }
 
@@ -57,6 +59,11 @@ function ChooseClasses(props) {
     function select(optionClicked) {
         if (!selected.includes(optionClicked)) {
             setSelected((selected) => [...selected, optionClicked]);
+        } else { //Already selected
+            setShowAlert(true);
+            setTimeout(() => {
+                setShowAlert(false);
+            }, 2000);
         }
     }
 
@@ -83,18 +90,24 @@ function ChooseClasses(props) {
 
     //empties list of selected classes
     function clearClasses() {
-        console.log("clear?")
         setSelected([])
     }
 
 
     return (
         <Box sx={{
-            marginTop: '60px',
+            marginTop: '30px',
             '@media (max-width: 600px)': {
                 width: '95%',
             },
         }}>
+            <Box sx={{width: '100%', height: '8vh'}}>
+                {showAlert && (
+                    <Box>
+                        <Alert severity="error">Course already selected.</Alert>
+                    </Box>
+                )}
+            </Box>
             <Grid container spacing={20} justifyContent="center" alignItems="center">
                 <Grid item xs={12} sm={6} lg={4}>
                     <TextField
@@ -131,7 +144,8 @@ function ChooseClasses(props) {
                 <Grid item xs={12} sm={6} lg={4}>
                     <ButtonGroup fullWidth sx={{marginBottom: '10px', height: 56}}>
                         <Button onClick={clearClasses} sx={buttonStyle(theme.palette.mode)}>Clear</Button>
-                        <Button type="submit" onClick={saveClasses} sx={buttonStyle(theme.palette.mode)}>Submit</Button>
+                        <Button type="submit" onClick={saveClasses}
+                                sx={buttonStyle(theme.palette.mode)}>Submit</Button>
                     </ButtonGroup>
                     <Paper variant="outlined">
                         <Box sx={{overflow: 'auto', height: '50vh'}}>
