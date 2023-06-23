@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import {buttonStyle} from "../../Themes/ThemeStyles";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
+import {amber, blue, grey} from "@mui/material/colors";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -125,15 +126,13 @@ function ChooseClasses(props) {
                                         {classList.map((option, index) => (
                                             <TableRow sx={{
                                                 '&:hover': {
-                                                    backgroundColor: '#f5f5f5'
-                                                }
-                                            }}
-                                                      key={index} onClick={() => select(option)}>
+                                                    backgroundColor: theme.palette.mode === 'light' ? blue[50] : amber[200],
+                                                },
+                                            }} key={index} onClick={() => select(option)}>
                                                 <TableCell component="th" scope="row">
                                                     {option}
                                                 </TableCell>
                                             </TableRow>
-
                                         ))}
                                     </TableBody>
                                 </Table>
@@ -156,8 +155,8 @@ function ChooseClasses(props) {
                                             selected.map((option, index) => (
                                                 <TableRow sx={{
                                                     '&:hover': {
-                                                        backgroundColor: '#f5f5f5'
-                                                    }
+                                                        backgroundColor: theme.palette.mode === 'light' ? blue[50] : amber[200],
+                                                    },
                                                 }} key={index} onClick={() => unselect(option)}>
                                                     <TableCell component="th" scope="row">
                                                         {option}

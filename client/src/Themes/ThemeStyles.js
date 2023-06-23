@@ -28,6 +28,7 @@ export const getDesignTokens = (mode) => ({
             },
         }),
         text: {
+            fontFamily: "Poppins, sans-serif",
             ...(mode === 'light'
                 ? {
                     primary: grey[900],
@@ -40,10 +41,11 @@ export const getDesignTokens = (mode) => ({
         },
     },
     typography: {
+        fontFamily: "Poppins, sans-serif",
+        textDecoration: 'none',
         ...(mode === 'light'
             ? {
                 h1: {
-                    fontFamily: "Poppins, sans-serif",
                     fontWeight: "bold",
                     color: '#000000',
                     fontSize: "30px",
@@ -52,26 +54,23 @@ export const getDesignTokens = (mode) => ({
                     fontSize: '16px',
                     fontWeight: '400',
                     color: '#000000',
-                    textDecoration: 'none',
                 },
             }
             : {
                 h1: {
-                    fontFamily: "Poppins, sans-serif",
                     fontWeight: "bold",
                     color: '#ffffff',
                     fontSize: "30px",
                 },
                 h7: {
-                    fontFamily: "Poppins, sans-serif",
                     fontSize: '16px',
                     fontWeight: '400',
                     color: '#ffffff',
-                    textDecoration: 'none',
                 },
             }),
     },
 });
+
 
 export const buttonStyle = (mode) => ({
     ...(mode === 'dark'
@@ -94,68 +93,68 @@ export const buttonStyle = (mode) => ({
 export const stepperStyle = (mode) => ({
     padding: 2,
     ...(mode === "light" ? {
-            "& .Mui-active": {
-                "&.MuiStepIcon-root": {
-                    color: "warning.main",
-                    fontSize: "2rem",
-                    fontFamily: 'Poppins, sans-serif',
-                    "& .MuiStepIcon-text": {
-                        fill: "#ffffff",
-                        fontFamily: 'Poppins, sans-serif'
-                    }
-                },
-                "&.MuiStepLabel-alternativeLabel": {
-                    fontSize: '2vw',
-                    color: "warning.main",
-                    fontFamily: 'Poppins, sans-serif',
-                    "& .MuiStepIcon-text": {
-                        fill: 'white',
-                        fontFamily: 'Poppins, sans-serif'
-                    },
-                },
-                "& .MuiStepConnector-line": {
-                    borderColor: '#2f234f',
-                },
-            },
-            "& .Mui-completed": {
-                "&.MuiStepIcon-root": {
-                    color: "#2f234f",
-                    fontSize: "2rem",
-                    fontFamily: 'Poppins, sans-serif',
-                    "& .MuiStepIcon-text": {
-                        fill: 'white',
-                        fontFamily: 'Poppins, sans-serif'
-                    },
-                },
-                "&.MuiStepLabel-alternativeLabel": {
-                    fontSize: '2vw',
-                    color: "#2f234f",
+        "& .Mui-active": {
+            "&.MuiStepIcon-root": {
+                color: "warning.main",
+                fontSize: "2rem",
+                fontFamily: 'Poppins, sans-serif',
+                "& .MuiStepIcon-text": {
+                    fill: "#ffffff",
                     fontFamily: 'Poppins, sans-serif'
-                },
-                "& .MuiStepConnector-line": {
-                    color: "#2f234f",
-                },
-            },
-            "& .Mui-disabled": {
-                ".MuiStepIcon-root": {
-                    color: "#2f234f",
-                    fontSize: '2rem',
-                    fontFamily: 'Poppins, sans-serif',
-                    "& .MuiStepIcon-text": {
-                        fill: 'white',
-                        fontFamily: 'Poppins, sans-serif'
-                    },
-                },
-                "&.MuiStepLabel-alternativeLabel": {
-                    fontSize: '2vw',
-                    color: "#2f234f",
-                    fontFamily: 'Poppins, sans-serif'
-                },
-                "& .MuiStepConnector-line": {
-                    color: "#2f234f",
                 }
+            },
+            "&.MuiStepLabel-alternativeLabel": {
+                fontSize: '2vw',
+                color: "warning.main",
+                fontFamily: 'Poppins, sans-serif',
+                "& .MuiStepIcon-text": {
+                    fill: 'white',
+                    fontFamily: 'Poppins, sans-serif'
+                },
+            },
+            "& .MuiStepConnector-line": {
+                borderColor: '#2f234f',
+            },
+        },
+        "& .Mui-completed": {
+            "&.MuiStepIcon-root": {
+                color: "#2f234f",
+                fontSize: "2rem",
+                fontFamily: 'Poppins, sans-serif',
+                "& .MuiStepIcon-text": {
+                    fill: 'white',
+                    fontFamily: 'Poppins, sans-serif'
+                },
+            },
+            "&.MuiStepLabel-alternativeLabel": {
+                fontSize: '2vw',
+                color: "#2f234f",
+                fontFamily: 'Poppins, sans-serif'
+            },
+            "& .MuiStepConnector-line": {
+                color: "#2f234f",
+            },
+        },
+        "& .Mui-disabled": {
+            ".MuiStepIcon-root": {
+                color: "#2f234f",
+                fontSize: '2rem',
+                fontFamily: 'Poppins, sans-serif',
+                "& .MuiStepIcon-text": {
+                    fill: 'white',
+                    fontFamily: 'Poppins, sans-serif'
+                },
+            },
+            "&.MuiStepLabel-alternativeLabel": {
+                fontSize: '2vw',
+                color: "#2f234f",
+                fontFamily: 'Poppins, sans-serif'
+            },
+            "& .MuiStepConnector-line": {
+                color: "#2f234f",
             }
-        } : {
+        }
+    } : {
         "& .Mui-active": {
             "&.MuiStepIcon-root": {
                 color: "warning.main",
@@ -206,3 +205,5 @@ export const stepperStyle = (mode) => ({
         }
     })
 });
+
+
