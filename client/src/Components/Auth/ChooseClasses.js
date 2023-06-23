@@ -13,7 +13,7 @@ import {
     TableContainer, TableRow,
     TextField, useTheme
 } from "@mui/material";
-import {buttonStyle} from "../../Themes/ThemeStyles";
+import {buttonStyle, textInputStyle} from "../../Themes/ThemeStyles";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
 import {amber, blue, grey} from "@mui/material/colors";
 
@@ -117,8 +117,11 @@ function ChooseClasses(props) {
                         variant="outlined"
                         onChange={handleChange}
                         autoComplete="off"
-                        sx={{width: '100%', marginBottom: '10px'}}/>
-                    <Paper variant="outlined">
+                        fullWidth
+                        sx={textInputStyle(theme.palette.mode)}/>
+                    <Paper variant="outlined" sx={{
+                        borderColor: theme.palette.mode === 'light' ? '#121858' : amber[200],
+                    }}>
                         <Box sx={{overflow: 'auto', height: '50vh'}}>
                             <TableContainer>
                                 <Table>
@@ -126,7 +129,7 @@ function ChooseClasses(props) {
                                         {classList.map((option, index) => (
                                             <TableRow sx={{
                                                 '&:hover': {
-                                                    backgroundColor: theme.palette.mode === 'light' ? blue[50] : amber[200],
+                                                    backgroundColor: theme.palette.mode === 'light' ? '#b2b9e1' : amber[200],
                                                 },
                                             }} key={index} onClick={() => select(option)}>
                                                 <TableCell component="th" scope="row">
@@ -146,7 +149,9 @@ function ChooseClasses(props) {
                         <Button type="submit" onClick={saveClasses}
                                 sx={buttonStyle(theme.palette.mode)}>Submit</Button>
                     </ButtonGroup>
-                    <Paper variant="outlined">
+                    <Paper variant="outlined" sx={{
+                        borderColor: theme.palette.mode === 'light' ? '#121858' : amber[200],
+                    }}>
                         <Box sx={{overflow: 'auto', height: '50vh'}}>
                             <TableContainer>
                                 <Table>
@@ -155,7 +160,7 @@ function ChooseClasses(props) {
                                             selected.map((option, index) => (
                                                 <TableRow sx={{
                                                     '&:hover': {
-                                                        backgroundColor: theme.palette.mode === 'light' ? blue[50] : amber[200],
+                                                        backgroundColor: theme.palette.mode === 'light' ? '#b2b9e1' : amber[200],
                                                     },
                                                 }} key={index} onClick={() => unselect(option)}>
                                                     <TableCell component="th" scope="row">

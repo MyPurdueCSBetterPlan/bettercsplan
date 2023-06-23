@@ -3,6 +3,9 @@ import {useTheme} from "@mui/material";
 import React from "react";
 import {ColorModeContext} from "./ColorModeContext";
 
+//#121858 - dark indigo
+//#5c6bc0 - light indigo
+
 /**
  * Custom Palette dark/light mode
  *
@@ -16,9 +19,10 @@ export const getDesignTokens = (mode) => ({
     palette: {
         mode,
         primary: {
-            ...amber,
-            ...(mode === 'dark' && {
+            ...(mode === 'dark' ? {
                 main: amber[300],
+            } : {
+                main: '#121858'
             }),
         },
         ...(mode === 'dark' && {
@@ -47,13 +51,13 @@ export const getDesignTokens = (mode) => ({
             ? {
                 h1: {
                     fontWeight: "bold",
-                    color: '#000000',
+                    color: '#121858',
                     fontSize: "30px",
                 },
                 h7: {
                     fontSize: '16px',
                     fontWeight: '400',
-                    color: '#000000',
+                    color: '#121858',
                 },
             }
             : {
@@ -82,10 +86,10 @@ export const buttonStyle = (mode) => ({
         }
         : {
             border: '2px solid',
-            color: blue[700],
+            color: "#121858",
             '&:hover': {
                 border: '2px solid',
-                background: blue[50],
+                background: '#b2b9e1',
             },
         }),
 });
@@ -113,12 +117,12 @@ export const stepperStyle = (mode) => ({
                 },
             },
             "& .MuiStepConnector-line": {
-                borderColor: '#2f234f',
+                borderColor: '#121858',
             },
         },
         "& .Mui-completed": {
             "&.MuiStepIcon-root": {
-                color: "#2f234f",
+                color: "#121858",
                 fontSize: "2rem",
                 fontFamily: 'Poppins, sans-serif',
                 "& .MuiStepIcon-text": {
@@ -128,16 +132,16 @@ export const stepperStyle = (mode) => ({
             },
             "&.MuiStepLabel-alternativeLabel": {
                 fontSize: '2vw',
-                color: "#2f234f",
+                color: "#121858",
                 fontFamily: 'Poppins, sans-serif'
             },
             "& .MuiStepConnector-line": {
-                color: "#2f234f",
+                color: "#121858",
             },
         },
         "& .Mui-disabled": {
             ".MuiStepIcon-root": {
-                color: "#2f234f",
+                color: "#121858",
                 fontSize: '2rem',
                 fontFamily: 'Poppins, sans-serif',
                 "& .MuiStepIcon-text": {
@@ -147,11 +151,11 @@ export const stepperStyle = (mode) => ({
             },
             "&.MuiStepLabel-alternativeLabel": {
                 fontSize: '2vw',
-                color: "#2f234f",
+                color: "#121858",
                 fontFamily: 'Poppins, sans-serif'
             },
             "& .MuiStepConnector-line": {
-                color: "#2f234f",
+                color: "#121858",
             }
         }
     } : {
@@ -206,4 +210,34 @@ export const stepperStyle = (mode) => ({
     })
 });
 
+export const helpStyle = (mode) => ({
+    position: 'fixed',
+    bottom: 20,
+    right: 20,
+})
+
+export const textInputStyle = (mode) => ({
+    marginBottom: '10px',
+    ...(mode === 'light' ? {
+        '& .MuiFormLabel-root': {
+            color: '#121858'
+        },
+        '& .MuiInputBase-root .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#121858',
+        },
+        '& .MuiFocused': {
+            color: '#121858'
+        },
+    } : {
+        '& .MuiFormLabel-root': {
+            color: '#ffd54f'
+        },
+        '& .MuiInputBase-root .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#ffd54f',
+        },
+        '& .MuiFocused': {
+            color: '#ffd54f'
+        },
+    })
+})
 

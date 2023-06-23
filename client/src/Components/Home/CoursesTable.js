@@ -171,14 +171,14 @@ function CoursesTable(props) {
                 </List>
             </Dialog>
             <Grid item ref={drop}>
-                <table className='course-table'>
+                <table className='home-table'>
                     <tbody>
                     <tr>
-                        <th colSpan='2'>Courses to Take</th>
+                        <th colSpan='2' className='home-th'>Courses to Take</th>
                     </tr>
                     <tr>
-                        <th>Class</th>
-                        <th>Credits</th>
+                        <th className='home-th'>Class</th>
+                        <th className='home-th'>Credits</th>
                     </tr>
                     {rows.map(row =>
                         <TableRow key={v4()} index={-1} name={row.name} credits={row.credits} delete={removeRow}

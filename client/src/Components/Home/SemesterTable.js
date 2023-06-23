@@ -55,14 +55,14 @@ function SemesterTable(props) {
 
     return (
         <Grid item xs={12} sm={6} md={6} lg={3} sx={{textAlign: 'center'}}>
-            <table ref={drop}>
+            <table ref={drop} className='home-table'>
                 <tbody>
                 <tr>
-                    <th colSpan='2'>{props.semester}</th>
+                    <th className='home-th' colSpan='2'>{props.semester}</th>
                 </tr>
                 <tr>
-                    <th>Class</th>
-                    <th>Credits</th>
+                    <th className='home-th'>Class</th>
+                    <th className='home-th'>Credits</th>
                 </tr>
                 {}
                 {rows.map(row =>

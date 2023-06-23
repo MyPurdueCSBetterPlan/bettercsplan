@@ -1,8 +1,11 @@
-import {Dialog, DialogContent, DialogContentText, Fab} from "@mui/material";
+import {Dialog, DialogContent, DialogContentText, Fab, useTheme} from "@mui/material";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import React, {useState} from "react";
+import {helpStyle} from "../../Themes/ThemeStyles";
 
 function Help() {
+
+    const theme = useTheme();
 
     const [open, setOpen] = useState(false)
 
@@ -19,7 +22,7 @@ function Help() {
 
     return (
         <>
-            <Fab color="primary" aria-label="add" sx={fabStyle}
+            <Fab color='warning' aria-label="add" sx={helpStyle(theme.palette.mode)}
                  size="small" onClick={() => setOpen(true)}>
                 <QuestionMarkIcon/>
             </Fab>

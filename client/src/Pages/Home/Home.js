@@ -17,8 +17,8 @@ import Help from '../../Components/Home/Help'
 import {v4} from 'uuid'
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
-import {Grid, ThemeProvider} from "@mui/material";
-import {createTheme} from "@mui/material/styles";
+import {Grid} from "@mui/material";
+
 
 const {REACT_APP_SERVER_URL} = process.env;
 const ScrollingComponent = withScrolling('div')

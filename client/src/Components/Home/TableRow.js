@@ -30,8 +30,8 @@ function TableRow(props) {
 
     return (
         <tr ref={drag} onClick={() => props.handleClick(name)}>
-            <td>{name}</td>
-            <td>{credits}</td>
+            <td className='home-td'>{name}</td>
+            <td className='home-td'>{credits}</td>
         </tr>
     )
 }

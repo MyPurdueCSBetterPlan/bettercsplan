@@ -1,4 +1,4 @@
-table, th, td {
+.home-table, .home-th, .home-td {
     border: 1px solid #2f234f;
     border-collapse: collapse;
     margin: auto;
