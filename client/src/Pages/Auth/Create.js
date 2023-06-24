@@ -115,7 +115,7 @@ function Create() {
                                 alignItems: 'center',
                             }}
                         >
-                            <Footer page={"CREATE_FORM"}/>
+                            <Footer page={"POSITION_RELATIVE"}/>
                         </Box>
                     </Grid>
                 </Grid>

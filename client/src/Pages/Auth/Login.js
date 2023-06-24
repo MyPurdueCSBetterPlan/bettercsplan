@@ -1,16 +1,24 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from 'react';
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 import {GoogleAuth} from "./GoogleAuth";
 import GoogleButton from 'react-google-button'
 import {useDispatch} from "react-redux";
-import {ErrorAction, InvalidPassword, SuccessActionLogin} from "../../Redux/Actions/GlobalActions";
-import "./AuthForm.css"
+import {ErrorAction, SuccessActionLogin} from "../../Redux/Actions/GlobalActions";
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
-import './AuthForm.css'
-import {Button, Paper, TextField, ThemeProvider} from "@mui/material";
-import {createTheme} from "@mui/material/styles";
+import {
+    Box,
+    Button,
+    Divider,
+    Grid,
+    Paper,
+    TextField,
+    Typography,
+    useTheme
+} from "@mui/material";
+import {buttonStyle, linkStyle, textInputStyle} from "../../Themes/ThemeStyles";
+import {ColorModeContext} from "../../Themes/ColorModeContext";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -19,6 +27,8 @@ const {REACT_APP_SERVER_URL} = process.env;
  * @return {JSX.Element} - Login screen
  */
 function Login() {
+    const theme = useTheme();
+    const colorMode = React.useContext(ColorModeContext);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -31,26 +41,23 @@ function Login() {
         "availability? Our app will tell you if you have not met any prerequisites or if a class is not offered during" +
         " a certain semester. Have any complaints or suggestions? Feel free to contact us!"
 
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-
 
     //called when user presses submit button
     function handleSubmit(e) {
 
-        console.log(email)
-        console.log(password)
-
         //prevents page reload
-        e.preventDefault()
+        e.preventDefault();
+        const data = new FormData(e.currentTarget);
+        console.log(data.email);
+        console.log(data.password);
 
         //sends email and password to server, goes to "/" on success and displays error message on failure
         console.log(REACT_APP_SERVER_URL);
         axios.post(
             `${REACT_APP_SERVER_URL}/login`,
             {
-                "email": email,
-                "password": password,
+                "email": data.get('email'),
+                "password": data.get('password'),
             },
             {withCredentials: true}
         )
@@ -67,76 +74,125 @@ function Login() {
             .catch(() => navigate("/login"));
     }
 
-    function handleEmailChange(e) {
-        e.preventDefault()
-        setEmail(e.target.value)
-    }
-
-    function handlePasswordChange(e) {
-        e.preventDefault()
-        setPassword(e.target.value)
-    }
 
     // called when the user clicks on the Google sign-in button
     function handleGoogleLogin() {
         GoogleAuth(dispatch, navigate, "login");
     }
 
-    const theme = createTheme({
-        palette: {
-            primary: {
-                main: '#2f234f'
-            },
-        },
-        typography: {
-            fontFamily: ['Poppins', 'sans-serif'].join(',')
-        }
-    })
-
-    const fieldStyle = {
-        width: '240px',
-        '& .MuiFormLabel-root': {
-            color: '#2f234f',
-        },
-        '& .MuiInputBase-root .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#2f234f',
-        }
-    }
-
     return (
-        <ThemeProvider theme={theme}>
-            <div className="header">
-                <Header mode={"NOT_USER_LOGIN"}/>
-            </div>
-            <div className="two-split">
-                <Paper className="explanation-box" elevation={10}>
-                    <h2 className='text'>What it Does</h2>
-                    <p className='text'>{explanation}</p>
-                </Paper>
-                <Paper className="Auth-box" elevation={10}>
-                    <h2 className='text'>Login</h2>
-                    <TextField fullWidth={false} id="email" label="Email" variant="outlined"
-                               margin="dense" onChange={handleEmailChange} sx={fieldStyle}/>
-                    <TextField id="password" label="Password" variant="outlined"
-                               margin="dense" onChange={handlePasswordChange} sx={fieldStyle}/>
-                    <div className='google-container'>
-                        <GoogleButton
-                            label='Login with Google'
-                            type="light"
-                            onClick={() => {
-                                handleGoogleLogin()
-                            }}
-                        />
-                    </div>
-                    <Button onClick={handleSubmit} variant='contained'>Submit</Button>
-                    <p className='signup-question text'>Don't have an account? <Link to={"/signup"}>Signup</Link></p>
-                </Paper>
-            </div>
-            <div className="footer">
-                <Footer/>
-            </div>
-        </ThemeProvider>
-
+        <Box>
+            <Grid container spacing={10} direction="column">
+                <Grid item xs={12} sm={6} lg={4}>
+                    <Header mode={"NOT_USER_LOGIN"}/>
+                </Grid>
+                <Grid item xs={12} sm={6} lg={4}>
+                    <Box sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        margin: '0 100px',
+                        '@media (max-width: 600px)': {
+                            margin: '0 30px',
+                        },
+                    }}>
+                        <Grid container spacing={10} justifyContent="center">
+                            <Grid item xs={12} md={6} lg={4}>
+                                <Paper sx={{
+                                    padding: '5%',
+                                    height: '100%',
+                                }} elevation={10}>
+                                    <Typography variant="h1" sx={{
+                                        textAlign: 'center',
+                                        marginBottom: '20px',
+                                    }}>WHAT IT DOES?</Typography>
+                                    <Typography variant="h7">{explanation}</Typography>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <Paper sx={{
+                                    padding: '5%',
+                                    height: '100%',
+                                }} elevation={10}>
+                                    <Typography variant="h1"
+                                                sx={{textAlign: 'center', marginBottom: '20px'}}>LOGIN</Typography>
+                                    <Box component="form" noValidate onSubmit={handleSubmit}>
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            id="email"
+                                            label="Email Address"
+                                            name="email"
+                                            autoComplete="email"
+                                            autoFocus
+                                            sx={textInputStyle(theme.palette.mode)}
+                                        />
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            name="password"
+                                            label="Password"
+                                            type="password"
+                                            id="password"
+                                            autoComplete="current-password"
+                                            sx={textInputStyle(theme.palette.mode)}
+                                        />
+                                        <Button variant="outlined"
+                                                sx={{
+                                                    ...buttonStyle(theme.palette.mode),
+                                                    marginTop: '40px',
+                                                    marginBottom: '10px'
+                                                }}
+                                                type='submit' fullWidth>LOGIN</Button>
+                                        <Box sx={{marginTop: '15px', marginBottom: '15px', textAlign: 'center'}}>
+                                            <Typography variant="h7">
+                                                Don't have an account?
+                                                <a href="/signup" style={linkStyle(theme.palette.mode)}> Sign Up</a>
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                    <Box sx={{display: 'flex', alignItems: 'center'}}>
+                                        <Divider sx={{flexGrow: 1}}/>
+                                        <Typography variant="h6" sx={{px: 2}}>
+                                            OR
+                                        </Typography>
+                                        <Divider sx={{flexGrow: 1}}/>
+                                    </Box>
+                                    <Box sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        marginTop: '20px'
+                                    }}>
+                                        <GoogleButton
+                                            label='Login with Google'
+                                            type={theme.palette.mode === 'dark' ? 'light' : 'dark'}
+                                            onClick={() => {
+                                                handleGoogleLogin()
+                                            }}
+                                        />
+                                    </Box>
+                                </Paper>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Grid>
+            </Grid>
+            <Box
+                sx={{
+                    paddingTop: '5px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    '@media (max-width: 600px)': {
+                        justifyContent: 'flex-start',
+                    },
+                }}
+            >
+                <Footer page={"POSITION_RELATIVE"}/>
+            </Box>
+        </Box>
     );
 }
 

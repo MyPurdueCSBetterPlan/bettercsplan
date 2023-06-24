@@ -265,7 +265,12 @@ const Header = ({mode}) => {
                     <div className="header-icons">
                         <ul>
                             <li>
-                                <FontAwesomeIcon icon={faMoon}/>
+                                <div onClick={colorMode.toggleColorMode}
+                                     style={{cursor: 'pointer'}}>
+                                    {theme.palette.mode === 'dark' ?
+                                        <FontAwesomeIcon icon={faSun} style={{fontSize: '15px'}}/> :
+                                        <FontAwesomeIcon icon={faMoon}/>}
+                                </div>
                             </li>
                             <li>
                                 <div onClick={handleMenu}>
@@ -287,7 +292,7 @@ const Header = ({mode}) => {
                                         {String.fromCharCode(160)} About
                                     </MenuItem>
                                     <MenuItem className="MenuItem">
-                                        <a style={{cursor: 'pointer', textDecoration: 'none', color: 'black'}}
+                                        <a style={{cursor: 'pointer', textDecoration: 'none', color: `${color}`}}
                                            href="mailto:bettercsplan@gmail.com">
                                             <FontAwesomeIcon icon={faEnvelope}/> Contact
                                         </a>
@@ -322,7 +327,12 @@ const Header = ({mode}) => {
                                 </div>
                             </li>
                             <li>
-                                <FontAwesomeIcon icon={faMoon} className="thmode-icon"/>
+                                <div onClick={colorMode.toggleColorMode}
+                                     style={{cursor: 'pointer'}}>
+                                    {theme.palette.mode === 'dark' ?
+                                        <FontAwesomeIcon icon={faSun} style={{fontSize: '15px'}}/> :
+                                        <FontAwesomeIcon icon={faMoon}/>}
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -337,7 +347,12 @@ const Header = ({mode}) => {
                     <div className="header-icons">
                         <ul>
                             <li>
-                                <FontAwesomeIcon icon={faMoon}/>
+                                <div onClick={colorMode.toggleColorMode}
+                                     style={{cursor: 'pointer'}}>
+                                    {theme.palette.mode === 'dark' ?
+                                        <FontAwesomeIcon icon={faSun} style={{fontSize: '15px'}}/> :
+                                        <FontAwesomeIcon icon={faMoon}/>}
+                                </div>
                             </li>
                             <li>
                                 <div onClick={handleMenu}>
@@ -394,7 +409,11 @@ const Header = ({mode}) => {
                                 </div>
                             </li>
                             <li>
-                                <FontAwesomeIcon icon={faMoon} className="thmode-icon"/>
+                                <div onClick={colorMode.toggleColorMode} className="thmode-icon"
+                                     style={{cursor: 'pointer'}}>
+                                    {theme.palette.mode === 'dark' ? <FontAwesomeIcon icon={faSun}/> :
+                                        <FontAwesomeIcon icon={faMoon}/>}
+                                </div>
                             </li>
                         </ul>
                     </div>

@@ -7,9 +7,7 @@ import GoogleButton from "react-google-button";
 import {ErrorAction, InvalidPassword, SuccessActionLogin} from "../../Redux/Actions/GlobalActions";
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
-import './AuthForm.css'
-import {Button, Paper, TextField, ThemeProvider} from "@mui/material";
-import {createTheme} from "@mui/material/styles";
+import {Button, Paper, TextField} from "@mui/material";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -88,29 +86,8 @@ function Signup() {
         GoogleAuth(dispatch, navigate, "signup");
     }
 
-    const theme = createTheme({
-        palette: {
-            primary: {
-                main: '#2f234f'
-            },
-        },
-        typography: {
-            fontFamily: ['Poppins', 'sans-serif'].join(',')
-        }
-    })
-
-    const fieldStyle = {
-        width: '240px',
-        '& .MuiFormLabel-root': {
-            color: '#2f234f',
-        },
-        '& .MuiInputBase-root .MuiOutlinedInput-notchedOutline': {
-            borderColor: '#2f234f',
-        }
-    }
-
     return (
-        <ThemeProvider theme={theme}>
+        <>
             <div className="header">
                 <Header mode={"NOT_USER_SIGNUP"}/>
             </div>
@@ -123,13 +100,13 @@ function Signup() {
                     <div>
                         <h2>Signup Account</h2>
                         <TextField id="name" label="Name" variant="outlined"
-                                   margin="dense" onChange={handleNameChange} sx={fieldStyle}/>
+                                   margin="dense" onChange={handleNameChange}/>
                         <TextField id="email" label="Email" variant="outlined"
-                                   margin="dense" onChange={handleEmailChange} sx={fieldStyle}/>
+                                   margin="dense" onChange={handleEmailChange}/>
                         <TextField id="password" label="Password" variant="outlined"
-                                   margin="dense" onChange={handlePasswordChange} sx={fieldStyle}/>
+                                   margin="dense" onChange={handlePasswordChange}/>
                         <TextField id="confirm-password" label="Confirm Password" variant="outlined"
-                                   margin="dense" onChange={handleConfirmChange} sx={fieldStyle}/>
+                                   margin="dense" onChange={handleConfirmChange}/>
                         <div className='google-container'>
                             <GoogleButton
                                 label='Sign up with Google'
@@ -149,8 +126,7 @@ function Signup() {
             <div className="footer">
                 <Footer/>
             </div>
-        </ThemeProvider>
-
+        </>
     )
 }
 

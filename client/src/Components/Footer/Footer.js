@@ -22,7 +22,7 @@ const Footer = ({page}) => {
     };
 
     return (
-        <Container sx={page === "CREATE_FORM" ? {
+        <Container sx={page === "POSITION_RELATIVE" ? {
             marginTop: 'calc(10% + 60px)',
             position: 'relative',
             bottom: 0,
@@ -43,7 +43,7 @@ const Footer = ({page}) => {
             >
                 <Typography sx={{
                     '@media (max-width: 600px)': {
-                    fontSize: '11px',
+                    fontSize: '10px',
                     textAlign: 'center'
                 },
                 }} variant="caption">

@@ -241,10 +241,18 @@ export const textInputStyle = (mode) => ({
     })
 })
 
-export const overflowListStyle = (mode) => ({
+export const linkStyle = (mode) => ({
     ...(mode === 'light' ? {
-        overflow: 'auto',
-        height: '50vh',
+        color: '#121858',
+    } : {
+        color: '#ffd54f'
+    })
+})
+
+export const overflowListStyle = (mode) => ({
+    overflow: 'auto',
+    height: '50vh',
+    ...(mode === 'light' ? {
         '&::-webkit-scrollbar': {
             width: '0.4em',
             backgroundColor: 'lightgrey',
@@ -254,8 +262,6 @@ export const overflowListStyle = (mode) => ({
             borderRadius: '2px',
         }
     } : {
-        overflow: 'auto',
-        height: '50vh',
         '&::-webkit-scrollbar': {
             width: '0.4em',
             backgroundColor: 'black',
