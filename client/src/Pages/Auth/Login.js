@@ -16,7 +16,7 @@ import {
     TextField,
     Typography,
     useTheme,
-    Container,
+    Container, FormControlLabel, Checkbox,
 } from "@mui/material";
 import {buttonStyle, linkStyle, textInputStyle} from "../../Themes/ThemeStyles";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
@@ -34,6 +34,7 @@ function Login() {
     const dispatch = useDispatch();
     const [errorMessageEmail, setErrorMessageEmail] = useState('');
     const [errorMessagePass, setErrorMessagePass] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const explanation = "This app helps YOU, a Purdue CS major, to build the most stress-free schedule. " +
         "By selecting CS courses that overlap between the tracks you want to pursue and choosing easy courses that" +
@@ -82,6 +83,8 @@ function Login() {
                     navigate("/")
                     SuccessActionLogin(message, name);
                 } else {
+                    setErrorMessageEmail('Incorrect Email.');
+                    setErrorMessagePass('Incorrect Password.');
                     navigate("/login");
                     ErrorAction(message);
                 }
@@ -134,7 +137,7 @@ function Login() {
                                     <Typography variant="h7">{explanation}</Typography>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid item xs={12} md={6} lg={4}>
                                 <Paper sx={{
                                     padding: '5%',
                                     height: '100%',
@@ -162,7 +165,7 @@ function Login() {
                                             fullWidth
                                             name="password"
                                             label="Password"
-                                            type="password"
+                                            type={showPassword ? 'text' : 'password'}
                                             id="password"
                                             autoComplete="current-password"
                                             sx={textInputStyle(theme.palette.mode)}
@@ -170,10 +173,20 @@ function Login() {
                                             helperText={errorMessagePass}
                                             onChange={handleInputPass}
                                         />
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={showPassword}
+                                                    onChange={() => setShowPassword(!showPassword)}
+                                                    color="primary"
+                                                />
+                                            }
+                                            label="Show Password"
+                                        />
                                         <Button variant="outlined"
                                                 sx={{
                                                     ...buttonStyle(theme.palette.mode),
-                                                    marginTop: '40px',
+                                                    marginTop: '20px',
                                                     marginBottom: '10px'
                                                 }}
                                                 type='submit' fullWidth>LOGIN</Button>
