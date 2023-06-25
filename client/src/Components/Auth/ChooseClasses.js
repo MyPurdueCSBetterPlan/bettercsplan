@@ -105,7 +105,7 @@ function ChooseClasses(props) {
             <Box sx={{width: '100%', height: '8vh'}}>
                 {showAlert && (
                     <Box>
-                        <Alert severity="error">Course already selected.</Alert>
+                        <Alert variant="outlined" severity="error">Course already selected.</Alert>
                     </Box>
                 )}
             </Box>

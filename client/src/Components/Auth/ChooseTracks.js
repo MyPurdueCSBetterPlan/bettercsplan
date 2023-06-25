@@ -79,7 +79,7 @@ function ChooseTracks(props) {
                 </ToggleButtonGroup>
                 {emptyFields && (
                     <Box sx={{marginTop: '10px'}}>
-                        <Alert severity="error">Please select at least one track.</Alert>
+                        <Alert variant="outlined" severity="error">Please select at least one track.</Alert>
                     </Box>
                 )}
             </Box>
