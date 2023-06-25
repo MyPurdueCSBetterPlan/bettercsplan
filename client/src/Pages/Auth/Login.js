@@ -31,6 +31,8 @@ function Login() {
     const colorMode = React.useContext(ColorModeContext);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [errorMessageEmail, setErrorMessageEmail] = useState('');
+    const [errorMessagePass, setErrorMessagePass] = useState('');
 
     const explanation = "This app helps YOU, a Purdue CS major, to build the most stress-free schedule. " +
         "By selecting CS courses that overlap between the tracks you want to pursue and choosing easy courses that" +
@@ -47,17 +49,29 @@ function Login() {
 
         //prevents page reload
         e.preventDefault();
-        const data = new FormData(e.currentTarget);
-        console.log(data.email);
-        console.log(data.password);
+        const email = e.target.email.value;
+        const password = e.target.password.value;
+
+        if (!email) { //Field Empty
+            setErrorMessageEmail('Empty field.');
+            if (!password) { // Field Empty
+                setErrorMessagePass('Empty field.');
+            }
+            return;
+        }
+
+        if (!password) { // Field Empty
+            setErrorMessagePass('Empty field.');
+            return;
+        }
 
         //sends email and password to server, goes to "/" on success and displays error message on failure
         console.log(REACT_APP_SERVER_URL);
         axios.post(
             `${REACT_APP_SERVER_URL}/login`,
             {
-                "email": data.get('email'),
-                "password": data.get('password'),
+                "email": email,
+                "password": password,
             },
             {withCredentials: true}
         )
@@ -78,6 +92,15 @@ function Login() {
     // called when the user clicks on the Google sign-in button
     function handleGoogleLogin() {
         GoogleAuth(dispatch, navigate, "login");
+    }
+
+    //Disables error field whenever the user stats typing
+    function handleInputEmail() {
+        setErrorMessageEmail('')
+    }
+
+    function handleInputPass() {
+        setErrorMessagePass('')
     }
 
     return (
@@ -126,6 +149,9 @@ function Login() {
                                             autoComplete="email"
                                             autoFocus
                                             sx={textInputStyle(theme.palette.mode)}
+                                            error={Boolean(errorMessageEmail)}
+                                            helperText={errorMessageEmail}
+                                            onChange={handleInputEmail}
                                         />
                                         <TextField
                                             margin="normal"
@@ -137,6 +163,9 @@ function Login() {
                                             id="password"
                                             autoComplete="current-password"
                                             sx={textInputStyle(theme.palette.mode)}
+                                            error={Boolean(errorMessagePass)}
+                                            helperText={errorMessagePass}
+                                            onChange={handleInputPass}
                                         />
                                         <Button variant="outlined"
                                                 sx={{

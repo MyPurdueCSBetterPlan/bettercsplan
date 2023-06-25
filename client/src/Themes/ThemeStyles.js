@@ -249,6 +249,21 @@ export const linkStyle = (mode) => ({
     })
 })
 
+export const alertStyles = (theme) => ({
+    ".swal2-popup": {
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.text.primary,
+    },
+
+    ".swal2-title": {
+        color: theme.palette.text.primary,
+    },
+
+    ".swal2-content": {
+        color: theme.palette.text.primary,
+    },
+});
+
 export const overflowListStyle = (mode) => ({
     overflow: 'auto',
     height: '50vh',

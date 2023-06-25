@@ -8,9 +8,10 @@ import NotFound from "./Pages/NotFound/NotFound";
 import Profile from "./Pages/Profile/Profile";
 import About from "./Pages/About/About"
 import "./App.css"
-import {CssBaseline, ThemeProvider, useTheme} from "@mui/material";
+import {CssBaseline, GlobalStyles, ThemeProvider, useTheme} from "@mui/material";
 import ThemeMode from "./Themes/ThemeMode";
 import {ColorModeContext} from "./Themes/ColorModeContext";
+import {alertStyles} from "./Themes/ThemeStyles";
 
 
 /**
@@ -28,6 +29,7 @@ function App() {
         <div className="App">
             <ColorModeContext.Provider value={colorMode}>
                 <ThemeProvider theme={newTheme}>
+                    <GlobalStyles styles={alertStyles(newTheme)}/>
                     <CssBaseline/>
                     <Routes>
                         <Route path={"/"} element={<Home/>}/>
