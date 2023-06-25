@@ -7,7 +7,6 @@ import Home from "./Pages/Home/Home";
 import NotFound from "./Pages/NotFound/NotFound";
 import Profile from "./Pages/Profile/Profile";
 import About from "./Pages/About/About"
-import "./App.css"
 import {CssBaseline, GlobalStyles, ThemeProvider, useTheme} from "@mui/material";
 import ThemeMode from "./Themes/ThemeMode";
 import {ColorModeContext} from "./Themes/ColorModeContext";

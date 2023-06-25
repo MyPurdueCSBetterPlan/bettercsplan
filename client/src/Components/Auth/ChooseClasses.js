@@ -97,7 +97,6 @@ function ChooseClasses(props) {
 
     return (
         <Box sx={{
-            marginTop: '30px',
             '@media (max-width: 600px)': {
                 width: '95%',
             },

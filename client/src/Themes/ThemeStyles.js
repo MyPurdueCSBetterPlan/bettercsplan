@@ -266,7 +266,7 @@ export const alertStyles = (theme) => ({
 
 export const overflowListStyle = (mode) => ({
     overflow: 'auto',
-    height: '50vh',
+    height: '40vh',
     ...(mode === 'light' ? {
         '&::-webkit-scrollbar': {
             width: '0.4em',

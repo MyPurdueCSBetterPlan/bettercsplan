@@ -125,7 +125,6 @@ function ChooseOptions() {
                                     native: true,
                                 }}
                                 sx={textInputStyle(theme.palette.mode)}
-                                helperText="Please select a year."
                             >
                                 {yearsUntilGrad.map((option) => (
                                     <option key={option.value} value={option.value}>

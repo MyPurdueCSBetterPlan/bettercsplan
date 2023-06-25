@@ -4,7 +4,7 @@ import ChooseTracks from "../../Components/Auth/ChooseTracks";
 import ChooseOptions from "../../Components/Auth/ChooseOptions";
 import {useCookies} from "react-cookie";
 import {useNavigate} from "react-router-dom";
-import {Box, Container, Grid, Step, StepLabel, Stepper, useTheme} from "@mui/material";
+import {Box, Button, Container, Grid, Step, StepLabel, Stepper, useTheme} from "@mui/material";
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
 import {stepperStyle} from "../../Themes/ThemeStyles";
@@ -40,6 +40,16 @@ function Create() {
             navigate("/login");
         }
     }, [cookies, navigate, removeCookie]);
+
+    //goes back to the previous create page
+    function previousCreate() {
+        if (classInput === true) {
+            setClassInput(false)
+        }
+        else if (tracksInput === true) {
+            setTracksInput(false)
+        }
+    }
 
 
     //displays screen to input tracks, screen to input classes, or screen to input options based on
@@ -107,6 +117,9 @@ function Create() {
                         </Stepper>
                         <ChooseClasses next={() => setClassInput(true)}/>
                     </Grid>
+                    <Grid item>
+                        <Button onClick={previousCreate}>Back</Button>
+                    </Grid>
                     <Grid item xs={12} sm={6} lg={4}>
                         <Box
                             sx={{
@@ -119,6 +132,7 @@ function Create() {
                         </Box>
                     </Grid>
                 </Grid>
+
             </Container>
         )
     } else {
@@ -139,6 +153,9 @@ function Create() {
                                 </Step>)}
                         </Stepper>
                         <ChooseOptions/>
+                    </Grid>
+                    <Grid item>
+                        <Button onClick={previousCreate}>Back</Button>
                     </Grid>
                     <Grid item xs={12} sm={6} lg={4}>
                         <Box
