@@ -15,7 +15,8 @@ import {
     Paper,
     TextField,
     Typography,
-    useTheme
+    useTheme,
+    Container,
 } from "@mui/material";
 import {buttonStyle, linkStyle, textInputStyle} from "../../Themes/ThemeStyles";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
@@ -107,7 +108,9 @@ function Login() {
         <Box>
             <Grid container spacing={10} direction="column">
                 <Grid item xs={12} sm={6} lg={4}>
-                    <Header mode={"NOT_USER_LOGIN"}/>
+                    <Container fixed>
+                        <Header mode={"NOT_USER_LOGIN"}/>
+                    </Container>
                 </Grid>
                 <Grid item xs={12} sm={6} lg={4}>
                     <Box sx={{
