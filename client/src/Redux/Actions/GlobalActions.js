@@ -55,7 +55,7 @@ const InvalidPassword = (message) => {
             title: `Oops...`,
             html:
                 'Ensure that you are following the format:<br>' +
-                'test<br>' +
+                '- <br>' +
                 'test<br><br>' +
                 'Invalid password... <br>',
             icon: 'error',
