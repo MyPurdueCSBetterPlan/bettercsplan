@@ -35,12 +35,12 @@ module.exports.Signup = async (req, res) => {
             return res.json({message: "All fields are required.", status: false});
         }
 
-        if (!validator.isEmail(email)) {
-            return res.json({message: "Ensure that you are writing a valid email.", status: false});
+        if (name.length < 2 || name.length > 15) {
+            return res.json({ message: "Invalid name.", status: false });
         }
 
-        if (!validator.isStrongPassword(password)) {
-            return res.json({message: "Ensure that you are writing a valid password.", status: false});
+        if (!validator.isEmail(email)) {
+            return res.json({message: "Ensure that you are writing a valid email.", status: false});
         }
 
         // Regular sign-up process

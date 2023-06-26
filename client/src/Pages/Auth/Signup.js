@@ -4,7 +4,7 @@ import axios from "axios";
 import {GoogleAuth} from "./GoogleAuth";
 import {useDispatch} from "react-redux";
 import GoogleButton from "react-google-button";
-import {InvalidPassword, SuccessActionLogin} from "../../Redux/Actions/GlobalActions";
+import {ErrorAction, SuccessActionLogin} from "../../Redux/Actions/GlobalActions";
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
 import {
@@ -36,7 +36,8 @@ function Signup() {
     const [errorMessageEmail, setErrorMessageEmail] = useState('');
     const [errorMessagePass, setErrorMessagePass] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [password, setPassword] = useState("");
+    const [password, setPassword] = useState('');
+    const [passwordStatus, setPasswordStatus] = useState('');
 
     const explanation = "MyBetterCSPlan, we only store the information that is necessary for our website to " +
         "function properly. This includes your name, email address, an encrypted version of your password, the list " +
@@ -52,18 +53,60 @@ function Signup() {
     }
 
     function handleInputPass(e) {
-        e.preventDefault()
+        e.preventDefault();
         const passwordValue = e.target.form.elements['password'].value;
-        const confirmValue = e.target.form.elements['password-ver'].value;
-        if (passwordValue !== confirmValue) {
-            setErrorMessagePass("Passwords don't match.");
-        } else {
-            setErrorMessagePass('');
-        }
+        const confirmValue = e.target.form.elements['passwordVer'].value;
 
-        setPassword(passwordValue);
+        if (passwordValue !== "" && confirmValue !== "") {
+            if (passwordValue !== confirmValue) {
+                setErrorMessagePass("Passwords don't match.");
+                setPasswordStatus(''); // Clear password status
+            } else {
+                const passwordStrengthOptions = {
+                    length: 0,
+                    hasUpperCase: false,
+                    hasLowerCase: false,
+                    hasDigit: false,
+                    hasSpecialChar: false,
+                };
+
+                passwordStrengthOptions.length = passwordValue.length >= 8;
+                passwordStrengthOptions.hasUpperCase = /[A-Z]+/.test(passwordValue);
+                passwordStrengthOptions.hasLowerCase = /[a-z]+/.test(passwordValue);
+                passwordStrengthOptions.hasDigit = /[0-9]+/.test(passwordValue);
+                passwordStrengthOptions.hasSpecialChar = /[^A-Za-z0-9]+/.test(passwordValue);
+
+                let powerScore = Object.values(passwordStrengthOptions).filter((value) => value);
+
+                let strength =
+                    powerScore.length === 5
+                        ? "Strong"
+                        : powerScore.length >= 2
+                            ? "Medium"
+                            : "Weak";
+
+                setErrorMessagePass('');
+                setPasswordStatus("Your password is " + strength);
+                setPassword(passwordValue);
+            }
+        } else {
+            if (passwordValue === "" && confirmValue === "") {
+                setErrorMessagePass(''); // Clear error message
+                setPasswordStatus(''); // Clear password status
+            } else {
+                setErrorMessagePass("Passwords don't match.");
+                setPasswordStatus(''); // Clear password status
+            }
+        }
     }
 
+
+    const getHelperTextColor = (type) => {
+        if (type.includes("Strong")) return "#8BC926";
+        if (type.includes("Medium")) return "#ff8800";
+        if (type.includes("Weak")) return "#FF0054";
+        return "#f44336"
+    };
 
     //called when user presses submit button
     function handleSubmit(e) {
@@ -71,34 +114,62 @@ function Signup() {
         //prevents page reload
         e.preventDefault()
         const email = e.target.email.value;
-        const name = e.target.name.value;
+        const name = e.target.username.value;
+        const passwordValue = e.target.password.value;
+        const confirmValue = e.target.passwordVer.value;
+        let emptyField = false;
 
-        //check for password confirmation
-        if (errorMessagePass !== null) {
-            return
+
+        if (!email) {
+            setErrorMessageEmail("Empty field.");
+            emptyField = true;
+        }
+        if (!name) {
+            setErrorMessageName("Empty field.");
+            emptyField = true;
         }
 
-        //sends username and password to server, goes to "/" on success and displays error message on failure
-        axios.post(
-            `${REACT_APP_SERVER_URL}/signup`,
-            {
-                "email": email,
-                "name": name,
-                "password": password,
-            },
-            {withCredentials: true}
-        )
-            .then((response) => {
-                const {message, success, name} = response.data
-                if (success) {
-                    SuccessActionLogin(message, name);
-                    navigate("/")
-                } else {
-                    navigate("/signup")
-                    InvalidPassword(message);
-                }
-            })
-            .catch(() => navigate("/login"));
+        if (!passwordValue || !confirmValue) {
+            setErrorMessagePass("Empty field.");
+            emptyField = true;
+        }
+
+        if (!emptyField) {
+            if (passwordValue !== confirmValue) {
+                setErrorMessagePass("Passwords don't match.");
+                return;
+            } else {
+                setErrorMessagePass('');
+            }
+            //sends username and password to server, goes to "/" on success and displays error message on failure
+            axios.post(
+                `${REACT_APP_SERVER_URL}/signup`,
+                {
+                    "email": email,
+                    "name": name,
+                    "password": password,
+                },
+                {withCredentials: true}
+            )
+                .then((response) => {
+                    const {message, success, name} = response.data
+                    if (success) {
+                        SuccessActionLogin(message, name);
+                        navigate("/")
+                    } else {
+                        navigate("/signup")
+                        if (message === "This account already exist.") {
+                            setErrorMessageEmail("This email already exist.");
+                        } else if (message === "Ensure that you are writing a valid email.") {
+                            setErrorMessageEmail("Invalid email.");
+                        } else if (message === "Invalid name.") {
+                            setErrorMessageName("Name too long. Please use between (2 to 10) characters.");
+                        }
+                        ErrorAction(message);
+                    }
+                })
+                .catch(() => navigate("/login"));
+        }
     }
 
     // called when the user clicks on the Google sign-in button
@@ -178,17 +249,20 @@ function Signup() {
                                             id="password"
                                             sx={textInputStyle(theme.palette.mode)}
                                             error={Boolean(errorMessagePass)}
-                                            helperText={errorMessagePass}
-                                            onChange={handleInputEmail}
+                                            helperText={
+                                                <span style={{color: getHelperTextColor(passwordStatus)}}>
+                                                    {errorMessagePass || passwordStatus}</span>
+                                            }
+                                            onChange={handleInputPass}
                                         />
                                         <TextField
                                             margin="normal"
                                             required
                                             fullWidth
-                                            name="password-ver"
+                                            name="passwordVer"
                                             label="Confirm Password"
                                             type={showPassword ? 'text' : 'password'}
-                                            id="password-ver"
+                                            id="passwordVer"
                                             sx={textInputStyle(theme.palette.mode)}
                                             error={Boolean(errorMessagePass)}
                                             helperText={errorMessagePass}
