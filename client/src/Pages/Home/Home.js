@@ -17,7 +17,8 @@ import Help from '../../Components/Home/Help'
 import {v4} from 'uuid'
 import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
-import {Grid} from "@mui/material";
+import {Box, Container, Grid, useTheme} from "@mui/material";
+import {scrollableAreaStyle} from "../../Themes/ThemeStyles";
 
 
 const {REACT_APP_SERVER_URL} = process.env;
@@ -28,6 +29,8 @@ const ScrollingComponent = withScrolling('div')
  * @constructor
  */
 function Home() {
+    const theme = useTheme();
+
     const navigate = useNavigate()
 
     //cookies for user authentication purposes
@@ -215,30 +218,42 @@ function Home() {
 
 
     return (
-        <>
-            <div className="header">
-                <Header mode={"USER_VERIFIED"}/>
-            </div>
-            <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
-                <ScrollingComponent className='scrollable-area'>
-                    <Grid container justifyContent="center">
-                        <Grid container item xs={6} sm={6} md={3} alignItems="center" direction="column">
-                            <CoursesTable courses={coursesToTake} add={removeClass} replace={replaceClass}
-                                          replaceSequence={replaceSequence}/>
-                        </Grid>
-                        <Grid container item xs={6} sm={6} md={9} rowSpacing={10}>
-                            {semesters.map((name, index) => <SemesterTable key={v4()} index={index} semester={name}
-                                                                           courses={schedule[index]} add={addClass}
-                                                                           move={moveClass}/>)}
-                        </Grid>
-                    </Grid>
-                </ScrollingComponent>
-            </DndProvider>
-            <div className="footer">
-                <Footer/>
-            </div>
+        <Container fixed>
+            <Grid container spacing={2} direction='column'>
+                <Grid item xs={12} sm={6} lg={4}>
+                    <Header mode={"USER_VERIFIED"}/>
+                </Grid>
+                <Grid item xs={12} sm={6} lg={4}>
+                    <Box sx={scrollableAreaStyle(theme.palette.mode)}>
+                        <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
+                            <ScrollingComponent>
+                                <Grid container justifyContent="center" spacing={6}>
+                                    <CoursesTable courses={coursesToTake} add={removeClass} replace={replaceClass}
+                                                  replaceSequence={replaceSequence}/>
+                                    <Grid container item xs={6} sm={6} md={9} spacing={2}>
+                                        {semesters.map((name, index) => <SemesterTable key={v4()} index={index} semester={name}
+                                                                                       courses={schedule[index]} add={addClass}
+                                                                                       move={moveClass}/>)}
+                                    </Grid>
+                                </Grid>
+                            </ScrollingComponent>
+                        </DndProvider>
+                    </Box>
+                </Grid>
+                <Grid item xs={12} sm={6} lg={4}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Footer/>
+                    </Box>
+                </Grid>
+            </Grid>
             <Help/>
-        </>
+        </Container>
     )
 }
 

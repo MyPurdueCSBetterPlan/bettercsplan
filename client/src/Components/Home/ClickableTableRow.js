@@ -1,4 +1,5 @@
 import {useDrag} from "react-dnd";
+import {TableCell, TableRow} from "@mui/material";
 
 /**
  *
@@ -10,7 +11,7 @@ import {useDrag} from "react-dnd";
  * @param props.delete - deletes this TableRow
  * @return {JSX.Element} - row (class name + credits) for a table (either CoursesTable or SemesterTable)
  */
-function TableRow(props) {
+function ClickableTableRow(props) {
     const name = props.name
     const credits = props.credits
     const index = props.index
@@ -29,11 +30,11 @@ function TableRow(props) {
     }))
 
     return (
-        <tr ref={drag} onClick={() => props.handleClick(name)}>
-            <td className='home-td'>{name}</td>
-            <td className='home-td'>{credits}</td>
-        </tr>
+        <TableRow ref={drag} onClick={() => props.handleClick(name)}>
+            <TableCell>{name}</TableCell>
+            <TableCell align='right'>{credits}</TableCell>
+        </TableRow>
     )
 }
 
-export default TableRow
+export default ClickableTableRow

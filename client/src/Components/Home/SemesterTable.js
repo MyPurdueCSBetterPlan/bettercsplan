@@ -1,9 +1,9 @@
 import "./Table.css"
-import TableRow from "./TableRow";
+import ClickableTableRow from "./ClickableTableRow";
 import {useDrop} from "react-dnd";
 import {useEffect, useState} from "react";
 import {v4} from 'uuid'
-import {Grid} from "@mui/material";
+import {Grid, Table, TableCell, TableRow, TableHead, TableContainer, Paper} from "@mui/material";
 
 function SemesterTable(props) {
 
@@ -11,7 +11,7 @@ function SemesterTable(props) {
     const [rows, setRows] = useState([])
 
     //on a table row drop, the rows are updated and a certain function is called based on where the row came from
-    //note that on a drop, the original table_row is deleted (look at TableRow.js)
+    //note that on a drop, the original table_row is deleted (look at ClickableTableRow.js)
     const [, drop] = useDrop(() => ({
         accept: 'TABLE_ROW',
         drop: async (draggedRow) => {
@@ -54,23 +54,24 @@ function SemesterTable(props) {
     }, [props.courses])
 
     return (
-        <Grid item xs={12} sm={6} md={6} lg={3} sx={{textAlign: 'center'}}>
-            <table ref={drop} className='home-table'>
-                <tbody>
-                <tr>
-                    <th className='home-th' colSpan='2'>{props.semester}</th>
-                </tr>
-                <tr>
-                    <th className='home-th'>Class</th>
-                    <th className='home-th'>Credits</th>
-                </tr>
-                {}
+        <Grid item xs={12} sm={6} md={6} lg={3}>
+            <TableContainer component={Paper}>
+                <Table ref={drop}>
+                <TableHead>
+                    <TableRow>
+                        <TableCell colSpan={2} align='center'>{props.semester}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell>Class</TableCell>
+                        <TableCell align='right'>Credits</TableCell>
+                    </TableRow>
+                </TableHead>
                 {rows.map(row =>
-                    <TableRow key={v4()} index={props.index} name={row.name} credits={row.credits} delete={removeRow}
-                              handleClick={() => {
-                              }}/>)}
-                </tbody>
-            </table>
+                    <ClickableTableRow key={v4()} index={props.index} name={row.name} credits={row.credits} delete={removeRow}
+                                       handleClick={() => {
+                                       }}/>)}
+            </Table>
+            </TableContainer>
         </Grid>
     )
 }

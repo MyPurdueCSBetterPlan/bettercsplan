@@ -288,3 +288,25 @@ export const overflowListStyle = (mode) => ({
     })
 })
 
+export const scrollableAreaStyle = (mode) => ({
+    overflow: 'auto',
+    height: 'calc(100vh - 140px)',
+    padding: '15px',
+    '&::-webkit-scrollbar': {
+        width: '10px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+        borderRadius: '10px',
+    },
+    ...(mode === 'light' ? {
+        boxShadow: '0px 0px 5px #2f234f',
+        '&::-webkit-scrollbar-thumb': {
+            background: '#2f234f'
+        }
+    } : {
+        boxShadow: `0px 0px 5px ${amber[300]}`,
+        '&::-webkit-scrollbar-thumb': {
+            background: amber[300],
+        }
+    })
+})

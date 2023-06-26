@@ -1,10 +1,23 @@
-import TableRow from "./TableRow";
+import ClickableTableRow from "./ClickableTableRow";
 import "./Table.css"
 import {useEffect, useState} from "react";
 import {useDrop} from "react-dnd";
 import {v4} from 'uuid'
 import axios from "axios";
-import {Dialog, DialogTitle, Grid, List, ListItem, ListItemButton, ListItemText} from "@mui/material";
+import {
+    Dialog,
+    DialogTitle,
+    Grid,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemText,
+    Table, TableBody,
+    TableCell, TableContainer,
+    TableHead,
+    TableRow,
+    Paper
+} from "@mui/material";
 import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 
 const {REACT_APP_SERVER_URL} = process.env;
@@ -30,7 +43,7 @@ function CoursesTable(props) {
     const [alternates, setAlternates] = useState([])
 
     //on a table_row drop, the rows are updated and the add function is called (updates server data)
-    //note that on a drop, the original table_row is deleted (look at TableRow.js)
+    //note that on a drop, the original table_row is deleted (look at ClickableTableRow.js)
     const [, drop] = useDrop(() => ({
         accept: 'TABLE_ROW',
         drop: (draggedRow) => {
@@ -170,22 +183,26 @@ function CoursesTable(props) {
 
                 </List>
             </Dialog>
-            <Grid item ref={drop}>
-                <table className='home-table'>
-                    <tbody>
-                    <tr>
-                        <th colSpan='2' className='home-th'>Courses to Take</th>
-                    </tr>
-                    <tr>
-                        <th className='home-th'>Class</th>
-                        <th className='home-th'>Credits</th>
-                    </tr>
-                    {rows.map(row =>
-                        <TableRow key={v4()} index={-1} name={row.name} credits={row.credits} delete={removeRow}
-                                  handleClick={showAlternatives}/>
-                    )}
-                    </tbody>
-                </table>
+            <Grid item xs={6} sm={6} md={3} ref={drop}>
+                <TableContainer component={Paper}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell colSpan={2} align='center'>Courses To Take</TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell>Class</TableCell>
+                                <TableCell align='right'>Credits</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows.map(row =>
+                                <ClickableTableRow key={v4()} index={-1} name={row.name} credits={row.credits} delete={removeRow}
+                                                   handleClick={showAlternatives}/>
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </Grid>
         </>
 
