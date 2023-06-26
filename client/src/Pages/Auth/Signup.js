@@ -25,18 +25,26 @@ import {ColorModeContext} from "../../Themes/ColorModeContext";
 const {REACT_APP_SERVER_URL} = process.env;
 
 /**
- * @return {JSX.Element} - Signup screen
+ * @return {JSX.Element} - Sign-up page where users can create a new account.
  */
 function Signup() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
+
+    // Declare state variables for error messages
     const [errorMessageName, setErrorMessageName] = useState('');
     const [errorMessageEmail, setErrorMessageEmail] = useState('');
     const [errorMessagePass, setErrorMessagePass] = useState('');
+
+    // Declare state variable for showing/hiding password
     const [showPassword, setShowPassword] = useState(false);
+
+    // Declare state variable for password input
     const [password, setPassword] = useState('');
+
+    // Declare state variable for password status
     const [passwordStatus, setPasswordStatus] = useState('');
 
     const explanation = "MyBetterCSPlan, we only store the information that is necessary for our website to " +
@@ -44,24 +52,29 @@ function Signup() {
         "of courses you need to take, and your schedule. That’s all we keep!"
 
 
+    // Function to handle input change for name field
     function handleInputName() {
         setErrorMessageName('')
     }
 
+    // Function to handle input change for email field
     function handleInputEmail() {
         setErrorMessageEmail('')
     }
 
+    // Function to handle input change for the password field also check the password strength.
     function handleInputPass(e) {
         e.preventDefault();
+
         const passwordValue = e.target.form.elements['password'].value;
         const confirmValue = e.target.form.elements['passwordVer'].value;
 
         if (passwordValue !== "" && confirmValue !== "") {
-            if (passwordValue !== confirmValue) {
+            if (passwordValue !== confirmValue) { // Set error message if passwords don't match
                 setErrorMessagePass("Passwords don't match.");
                 setPasswordStatus(''); // Clear password status
             } else {
+                // Calculate password power based on these options.
                 const passwordStrengthOptions = {
                     length: 0,
                     hasUpperCase: false,
@@ -88,12 +101,15 @@ function Signup() {
                 setErrorMessagePass('');
                 setPasswordStatus("Your password is " + strength);
                 setPassword(passwordValue);
+                // Clear error message and set password status
             }
         } else {
             if (passwordValue === "" && confirmValue === "") {
+                // Clear error message and password status if both inputs are empty
                 setErrorMessagePass(''); // Clear error message
                 setPasswordStatus(''); // Clear password status
             } else {
+                // Set error message if either password and confirm password does not match
                 setErrorMessagePass("Passwords don't match.");
                 setPasswordStatus(''); // Clear password status
             }
@@ -101,11 +117,12 @@ function Signup() {
     }
 
 
+// Function to determine helper text color based on password power type
     const getHelperTextColor = (type) => {
-        if (type.includes("Strong")) return "#8BC926";
-        if (type.includes("Medium")) return "#ff8800";
-        if (type.includes("Weak")) return "#FF0054";
-        return "#f44336"
+        if (type.includes("Strong")) return "#8BC926";    // If type includes "Strong", return green color.
+        if (type.includes("Medium")) return "#ff8800";    // If type includes "Medium", return orange color.
+        if (type.includes("Weak")) return "#FF0054";       // If type includes "Weak", return red color.
+        return "#f44336";  //Returnred color if the type is not match passwords.
     };
 
     //called when user presses submit button
@@ -113,6 +130,8 @@ function Signup() {
 
         //prevents page reload
         e.preventDefault()
+
+        //Values from the form
         const email = e.target.email.value;
         const name = e.target.username.value;
         const passwordValue = e.target.password.value;
@@ -120,6 +139,7 @@ function Signup() {
         let emptyField = false;
 
 
+        // Check for empty fields and set error messages
         if (!email) {
             setErrorMessageEmail("Empty field.");
             emptyField = true;
@@ -134,13 +154,15 @@ function Signup() {
             emptyField = true;
         }
 
+        //Send information to the server if no empty fields.
         if (!emptyField) {
-            if (passwordValue !== confirmValue) {
+            if (passwordValue !== confirmValue) { //Check if password matches.
                 setErrorMessagePass("Passwords don't match.");
                 return;
             } else {
                 setErrorMessagePass('');
             }
+
             //sends username and password to server, goes to "/" on success and displays error message on failure
             axios.post(
                 `${REACT_APP_SERVER_URL}/signup`,

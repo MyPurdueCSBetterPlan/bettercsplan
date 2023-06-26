@@ -32,8 +32,12 @@ function Login() {
     const colorMode = React.useContext(ColorModeContext);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    // Declare state variables for error messages
     const [errorMessageEmail, setErrorMessageEmail] = useState('');
     const [errorMessagePass, setErrorMessagePass] = useState('');
+
+    // Declare state variable for showing/hiding password
     const [showPassword, setShowPassword] = useState(false);
 
     const explanation = "This app helps YOU, a Purdue CS major, to build the most stress-free schedule. " +
@@ -51,10 +55,14 @@ function Login() {
 
         //prevents page reload
         e.preventDefault();
+
+        //Values from the form
         const email = e.target.email.value;
         const password = e.target.password.value;
 
-        if (!email) { //Field Empty
+        // Check for empty fields and set error messages
+
+        if (!email) {
             setErrorMessageEmail('Empty field.');
             if (!password) { // Field Empty
                 setErrorMessagePass('Empty field.');
@@ -62,13 +70,12 @@ function Login() {
             return;
         }
 
-        if (!password) { // Field Empty
+        if (!password) {
             setErrorMessagePass('Empty field.');
             return;
         }
 
         //sends email and password to server, goes to "/" on success and displays error message on failure
-        console.log(REACT_APP_SERVER_URL);
         axios.post(
             `${REACT_APP_SERVER_URL}/login`,
             {
@@ -98,11 +105,12 @@ function Login() {
         GoogleAuth(dispatch, navigate, "login");
     }
 
-    //Disables error field whenever the user stats typing
+    //Disables texthelper error field whenever the user stats typing
     function handleInputEmail() {
         setErrorMessageEmail('')
     }
 
+    //Disables texthelper error field whenever the user stats typing
     function handleInputPass() {
         setErrorMessagePass('')
     }

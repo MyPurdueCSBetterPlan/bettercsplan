@@ -4,7 +4,15 @@ import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
-//It will handle the Google interaction with the server
+/**
+ * Performs Google authentication for sign-up or login.
+ *
+ * @param {Function} dispatch - Redux dispatch function
+ * @param {Function} navigate - Function to navigate to a different page
+ * @param {string} mode - Authentication mode ('signup' or 'login')
+ * @returns {void}
+ */
+
 export function GoogleAuth(dispatch, navigate, mode) {
 
     const width = 500;
