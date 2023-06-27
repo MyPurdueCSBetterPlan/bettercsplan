@@ -16,7 +16,9 @@ import {
     TableCell, TableContainer,
     TableHead,
     TableRow,
-    Paper
+    Paper,
+    DialogContent,
+    DialogContentText, ListSubheader
 } from "@mui/material";
 import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 
@@ -41,6 +43,8 @@ function CoursesTable(props) {
 
     //alternatives for clicked class
     const [alternates, setAlternates] = useState([])
+
+    const [desc, setDesc] = useState("")
 
     //on a table_row drop, the rows are updated and the add function is called (updates server data)
     //note that on a drop, the original table_row is deleted (look at ClickableTableRow.js)
@@ -90,22 +94,18 @@ function CoursesTable(props) {
             {withCredentials: true}
         )
             .then(response => {
-                const {isSeq, alternates, replacements} = response.data
+                const {description, isSeq, alternates, replacements} = response.data
+                setDesc(description)
                 if (!isSeq) {
                     setIsSeq(false)
                     setReplace(name)
                     setAlternates(alternates)
-                    if (alternates.length !== 0) {
-                        setOpen(true)
-                    }
                 } else {
                     setIsSeq(true)
                     setReplace(replacements)
                     setAlternates(alternates)
-                    if (alternates.length !== 0) {
-                        setOpen(true)
-                    }
                 }
+                setOpen(true)
 
             })
             .catch(error => {
@@ -154,34 +154,46 @@ function CoursesTable(props) {
         <>
             <Dialog open={open} onClose={closeDialog}>
                 {isSeq ?
-                    (<DialogTitle sx={{fontFamily: "'Poppins', sans-serif"}}>Choose an alternative
-                        for {replace.length === 1 ? (replace) : (replace[0] + " + " + replace[1])}</DialogTitle>) :
-                    (<DialogTitle sx={{fontFamily: "'Poppins', sans-serif"}}>Choose an Alternative
-                        for {replace}</DialogTitle>)}
-                <List>
-                    {isSeq ?
-                        (alternates.map(altSequence => (
-                            <ListItem disableGutters>
-                                <ListItemButton onClick={() => {
-                                    handleAlternateClickSequence(altSequence)
-                                }}>
-                                    <ListItemText
-                                        primary={altSequence.length === 1 ? (altSequence[0].name) : (altSequence[0].name + " " + altSequence[1].name)}/>
-                                </ListItemButton>
-                            </ListItem>
-                        ))) :
-                        (alternates.map(alternate => (
-                            <ListItem disableGutters>
-                                <ListItemButton onClick={() => {
-                                    handleAlternateClick(alternate.name, alternate.credits)
-                                }}>
-                                    <ListItemText primary={alternate.name}
-                                                  sx={{'& .MuiTypography-root': {fontFamily: "'Poppins', sans-serif"}}}/>
-                                </ListItemButton>
-                            </ListItem>
-                        )))}
-
-                </List>
+                    (<DialogTitle>{replace.length === 1 ? (replace) : (replace[0])}</DialogTitle>) :
+                    (<DialogTitle>{replace}</DialogTitle>)}
+                <DialogContent>
+                    <DialogContentText>
+                        {desc}
+                    </DialogContentText>
+                    <List dense disablePadding={true}>
+                        {alternates.length !== 0 ?
+                            (isSeq ?
+                                (<ListSubheader disableGutters>
+                                    Alternatives to {replace.length === 1 ? (replace) : (replace[0] + " + " + replace[1])}
+                                </ListSubheader>) :
+                                (<ListSubheader disableGutters>
+                                    Alternatives to {replace}
+                                </ListSubheader>)) :
+                            (<></>)
+                        }
+                        {isSeq ?
+                            (alternates.map(altSequence => (
+                                <ListItem key={v4()} disablePadding={true}>
+                                    <ListItemButton onClick={() => {
+                                        handleAlternateClickSequence(altSequence)
+                                    }}>
+                                        <ListItemText
+                                            primary={altSequence.length === 1 ? (altSequence[0].name) : (altSequence[0].name + " " + altSequence[1].name)}/>
+                                    </ListItemButton>
+                                </ListItem>
+                            ))) :
+                            (alternates.map(alternate => (
+                                <ListItem disableGutters key={v4()}>
+                                    <ListItemButton onClick={() => {
+                                        handleAlternateClick(alternate.name, alternate.credits)
+                                    }}>
+                                        <ListItemText primary={alternate.name}
+                                                      sx={{'& .MuiTypography-root': {fontFamily: "'Poppins', sans-serif"}}}/>
+                                    </ListItemButton>
+                                </ListItem>
+                            )))}
+                    </List>
+                </DialogContent>
             </Dialog>
             <Grid item xs={6} sm={6} md={3} ref={drop}>
                 <TableContainer component={Paper}>

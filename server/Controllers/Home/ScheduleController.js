@@ -575,11 +575,27 @@ module.exports.RemoveClass = async (req, res) => {
 }
 
 /**
- * This function will return any alternatives available for the given course back to the client
+ * This function will return any alternatives available for the given course back to the client.
+ * It also will get the description for the class
  */
 module.exports.getAlternatives = async(req, res) => {
     try {
         const {className} = req.body
+
+        //sqlite database
+        const db = new sqlite3.Database("classes.db")
+
+        //gets the description of the class
+        let desc = ""
+        await new Promise((res, rej) => {
+            db.get('SELECT description FROM classesList WHERE class_id = ?',
+                [className],
+                (err, row) => {
+                    desc = row.description
+                    res()
+                })
+        })
+        db.close()
 
         //gets user data from MongoDB
         const user = await User.findOne({email: req.email})
@@ -630,8 +646,8 @@ module.exports.getAlternatives = async(req, res) => {
             })
             db.close()
 
-            console.log(sci_alt_credits)
             return res.status(200).json({
+                description: desc,
                 isSeq: true,
                 replacements: replacements,
                 alternates: sci_alt_credits
@@ -642,11 +658,9 @@ module.exports.getAlternatives = async(req, res) => {
         else {
             const lang_alt = user.lang_alt
             let isLang = false
-            console.log(lang_alt)
 
             for (let i = 0; i < lang_alt.length; i++) {
                 if (lang_alt[i].includes(className)) {
-                    console.log('found?')
                     let found = true
                     for (let j = 0; j < lang_alt[i].length; j++) {
                         if (!coursesToTake.includes(lang_alt[i][j]) && !taken.includes(lang_alt[i][j])) {
@@ -675,6 +689,7 @@ module.exports.getAlternatives = async(req, res) => {
                 }
 
                 return res.status(200).json({
+                    description: desc,
                     isSeq: true,
                     replacements: replacements,
                     alternates: lang_alt_credits
@@ -746,6 +761,7 @@ module.exports.getAlternatives = async(req, res) => {
         }
 
         return res.status(200).json({
+            description: desc,
             isSeq: false,
             alternates: alternates
         })
@@ -753,7 +769,7 @@ module.exports.getAlternatives = async(req, res) => {
 
     }
     catch {
-        return res.status(400).json({message: "Unable to get alternatives"})
+        return res.status(400).json({message: "Unable to get description and/or alternatives"})
     }
 
 }

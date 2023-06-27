@@ -3,7 +3,7 @@ import ClickableTableRow from "./ClickableTableRow";
 import {useDrop} from "react-dnd";
 import {useEffect, useState} from "react";
 import {v4} from 'uuid'
-import {Grid, Table, TableCell, TableRow, TableHead, TableContainer, Paper} from "@mui/material";
+import {Grid, Table, TableCell, TableRow, TableHead, TableContainer, Paper, TableBody} from "@mui/material";
 
 function SemesterTable(props) {
 
@@ -66,10 +66,12 @@ function SemesterTable(props) {
                         <TableCell align='right'>Credits</TableCell>
                     </TableRow>
                 </TableHead>
-                {rows.map(row =>
-                    <ClickableTableRow key={v4()} index={props.index} name={row.name} credits={row.credits} delete={removeRow}
-                                       handleClick={() => {
-                                       }}/>)}
+                <TableBody>
+                    {rows.map(row =>
+                        <ClickableTableRow key={v4()} index={props.index} name={row.name} credits={row.credits} delete={removeRow}
+                                           handleClick={() => {
+                                           }}/>)}
+                </TableBody>
             </Table>
             </TableContainer>
         </Grid>
