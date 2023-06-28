@@ -6,7 +6,7 @@ import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import {TouchBackend} from 'react-dnd-touch-backend'
 import {isMobile} from "react-device-detect"
-import withScrolling from 'react-dnd-scrolling'
+import withScrolling, {createVerticalStrength} from 'react-dnd-scrolling'
 
 import axios from "axios";
 import SemesterTable from "../../Components/Home/SemesterTable";
@@ -23,6 +23,7 @@ import {scrollableAreaStyle} from "../../Themes/ThemeStyles";
 
 const {REACT_APP_SERVER_URL} = process.env;
 const ScrollingComponent = withScrolling('div')
+const vStrength = createVerticalStrength(600)
 
 /**
  * @return {JSX.Element} - Home screen for a user that displays their schedule and courses to take
@@ -226,7 +227,7 @@ function Home() {
                 <Grid item xs={12} sm={6} lg={4}>
                     <Box sx={scrollableAreaStyle(theme.palette.mode)}>
                         <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
-                            <ScrollingComponent>
+                            <ScrollingComponent verticalStrength={vStrength} style={{marginTop: '10px', paddingBottom: '20px'}}>
                                 <Grid container justifyContent="center" spacing={6}>
                                     <CoursesTable courses={coursesToTake} add={removeClass} replace={replaceClass}
                                                   replaceSequence={replaceSequence}/>

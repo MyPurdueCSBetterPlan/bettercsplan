@@ -163,10 +163,10 @@ function CoursesTable(props) {
                     <List dense disablePadding={true}>
                         {alternates.length !== 0 ?
                             (isSeq ?
-                                (<ListSubheader disableGutters>
+                                (<ListSubheader disableGutters sx={{backgroundColor: 'inherit', color: 'inherit'}}>
                                     Alternatives to {replace.length === 1 ? (replace) : (replace[0] + " + " + replace[1])}
                                 </ListSubheader>) :
-                                (<ListSubheader disableGutters>
+                                (<ListSubheader disableGutters sx={{backgroundColor: 'inherit', color: 'inherit'}}>
                                     Alternatives to {replace}
                                 </ListSubheader>)) :
                             (<></>)
