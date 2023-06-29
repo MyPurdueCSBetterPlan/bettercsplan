@@ -550,24 +550,281 @@ module.exports.RemoveClass = async (req, res) => {
         //gets user data from mongoDB
         const user = await User.findOne({email: req.email})
 
-        let schedule = user.schedule
-        let coursesToTake = user.coursesToTake
+        let scheduleNames = user.schedule
+        let courseNames = user.coursesToTake
+
+
+        //TODO: duplicated code from HomeController.js...maybe reuse instead of copy/paste
+        const db = new sqlite3.Database("classes.db")
+
+        const coursesWithCredits = []
+        let semestersAllowed = ""
+
+        //gets the credit hours for each course name in the user's coursesToTake list (courseNames) to take
+        //creates an object for each course containing the name and credit hours and pushes to coursesWithCredits array
+        await new Promise(async (resolve, reject) => {
+            for (let i = 0; i < courseNames.length; i++) {
+                await new Promise((res, rej) => {
+                    db.get('SELECT credit_hours, semesters_offered FROM classesList WHERE class_id = ?',
+                        [courseNames[i]],
+                        (err, row) => {
+                            coursesWithCredits.push({name: courseNames[i], credits: row.credit_hours})
+                            if (courseNames[i] === className) {
+                                semestersAllowed = row.semesters_offered
+                            }
+                            res()
+                        })
+                })
+            }
+            resolve()
+        })
+
+        const scheduleWithCredits = []
+        //gets the credit hours for each course name in the user's schedule
+        //creates an object for each course containing the name and credit hours and pushes to the schedule array
+        await new Promise(async (resolve, reject) => {
+            for (let i = 0; i < scheduleNames.length; i++) {
+                scheduleWithCredits.push([])
+                for (let j = 0; j < scheduleNames[i].length; j++) {
+                    await new Promise((res, rej) => {
+                        db.get('SELECT credit_hours FROM classesList WHERE class_id = ?',
+                            [scheduleNames[i][j]],
+                            (err, row) => {
+                                scheduleWithCredits[i].push({name: scheduleNames[i][j], credits: row.credit_hours})
+                                res()
+                            })
+                    })
+                }
+            }
+            resolve()
+        })
+        db.close()
+
+
+
+        //flattened list of courses in schedule
+        let scheduleNamesList = user.schedule.flat()
+
+
+        //makes sure that class can be removed
+        if (className === 'MA 16100') {
+            if (scheduleNamesList.includes('CS 18000') || scheduleNamesList.includes('CS 18200') ||
+                scheduleNamesList.includes('MA 16200')) {
+                return res.status(200).json({
+                    message: "MA 16100 is a prereq for CS 18000, CS 18200, and MA 16200. Remove those classes first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'MA 16200') {
+            if (scheduleNamesList.includes('STAT 35000') || scheduleNamesList.includes('MA 26100')) {
+                return res.status(200).json({
+                    message: "MA 16200 is a prereq for STAT 35000 and MA 26100. Remove those classes first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'STAT 35000') {
+
+            //checking if schedule contains MA 26500 and its placement relative to STAT 35000
+            let replaceable = false
+            if (scheduleNamesList.includes('MA 26500')) {
+                for (let i = 0; i < scheduleNames.length; i++) {
+                    if (scheduleNames[i].includes('MA 26500')) {
+                        replaceable = true
+                    }
+                    if (scheduleNames[i].includes('STAT 35000')) {
+                        break
+                    }
+                }
+            }
+
+            if (scheduleNamesList.includes('CS 37300') || (scheduleNamesList.includes('CS 35500') && !replaceable)){
+                return res.status(200).json({
+                    message: "STAT 35000 is a prereq for CS 37300 and CS 35500. Remove those classes first.",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'MA 26100') {
+            if (scheduleNamesList.includes('MA 26500') || scheduleNamesList.includes('CS 38100')) {
+                return res.status(200).json({
+                    message: "MA 26100 is a prereq for MA 26500 and CS 38100. Remove those classes first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'MA 26500') {
+
+            //checking if schedule contains STAT 35000 and its placement relative to MA 26500
+            let replaceable = false
+            if (scheduleNamesList.includes('STAT 35000')) {
+                for (let i = 0; i < scheduleNames.length; i++) {
+                    if (scheduleNames[i].includes('STAT 35000')) {
+                        replaceable = true
+                    }
+                    if (scheduleNames[i].includes('MA 26500')) {
+                        break
+                    }
+                }
+            }
+
+            if (scheduleNamesList.includes('CS 31400') || (scheduleNamesList.includes('CS 35500') && !replaceable)) {
+                return res.status(200).json({
+                    message: "MA 26500 is a prereq for CS 31400 and CS 35500. Remove those classes first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'CS 18000') {
+            if (scheduleNamesList.includes('CS 18200') || scheduleNamesList.includes('CS 24000') ||
+                scheduleNamesList.includes('CS 31400')) {
+                return res.status(200).json({
+                    message: "CS 18000 is a prereq for CS 18200, CS 24000, and CS 31400. Remove those classes first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'CS 18200') {
+            if (scheduleNamesList.includes('CS 25000') || scheduleNamesList.includes('CS 25100')) {
+                return res.status(200).json({
+                    message: "CS 18200 is a prereq for CS 25000 and CS 25100. Remove those classes first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'CS 24000') {
+            if (scheduleNamesList.includes('CS 25000') || scheduleNamesList.includes('CS 25100') ||
+                scheduleNamesList.includes('CS 33400')) {
+                return res.status(200).json({
+                    message: "CS 24000 is a prereq for CS 25000, CS 25100, and CS 33400. Remove those classes first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'CS 25000') {
+            if (scheduleNamesList.includes('CS 25200')) {
+                return res.status(200).json({
+                    message: "CS 25000 is a prereq for CS 25200. Remove that class first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'CS 25100') {
+            if (scheduleNamesList.includes('CS 25200') || scheduleNamesList.includes('CS 40800') ||
+                scheduleNamesList.includes('CS 44800') || scheduleNamesList.includes('CS 47100') ||
+                scheduleNamesList.includes('CS 47300') || scheduleNamesList.includes('CS 34800') ||
+                scheduleNamesList.includes('CS 30700') || scheduleNamesList.includes('CS 37300') ||
+                scheduleNamesList.includes('CS 38100') || scheduleNamesList.includes('CS 35500')){
+                return res.status(200).json({
+                    message: "CS 25100 is a prereq for CS 25200, CS 40800, CS 44800, CS 47100, CS 47300, CS 34800, " +
+                        "CS 30700, CS 37300, CS 38100, and CS 35500. Remove these classes first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'CS 25200') {
+            if (scheduleNamesList.includes('CS 48900') || scheduleNamesList.includes('CS 35400') ||
+                scheduleNamesList.includes('CS 35200')) {
+                return res.status(200).json({
+                    message: "CS 25200 is a prereq for CS 48900, CS 35400, and CS 35200. Remove these classes first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'CS 30700') {
+            if (scheduleNamesList.includes('CS 40700')) {
+                return res.status(200).json({
+                    message: "CS 30700 is a prereq for CS 40700. Remove this class first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'CS 35400') {
+            if (scheduleNamesList.includes('CS 42200') || scheduleNamesList.includes('CS 42600')) {
+                return res.status(200).json({
+                    message: "CS 35400 is a prereq for CS 42200 and CS 42600. Remove these classes first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'CS 35200') {
+            if (scheduleNamesList.includes('CS 45600') || scheduleNamesList.includes('CS 35300')) {
+                return res.status(200).json({
+                    message: "CS 35200 is a prereq for CS 45600 and CS 35300. Remove these classes first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'CS 38100') {
+            if (scheduleNamesList.includes('CS 48300')) {
+                return res.status(200).json({
+                    message: "CS 38100 is a prereq for CS 48300. Remove this class first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'CS 33400') {
+            if (scheduleNamesList.includes('CS 43400')) {
+                return res.status(200).json({
+                    message: "CS 33400 is a prereq for CS 43400. Remove this class first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
 
         //removes class from the schedule
-        for (let i = 0; i < schedule.length; i++) {
-            if (schedule[i].includes(className)) {
-                schedule[i].splice(schedule[i].indexOf(className), 1)
+        for (let i = 0; i < scheduleNames.length; i++) {
+            if (scheduleNames[i].includes(className)) {
+                scheduleNames[i].splice(scheduleNames[i].indexOf(className), 1)
                 break
             }
         }
 
         //adds class back to coursesToTake list
-        coursesToTake.push(className)
+        courseNames.push(className)
 
         //updates user data on MongoDB
-        await User.updateOne({email: req.email}, {schedule: schedule, coursesToTake: coursesToTake})
+        await User.updateOne({email: req.email}, {schedule: scheduleNames, coursesToTake: courseNames})
 
-        return res.status(200).json()
+        return res.status(200).json({
+            message: 'Removed class successfully',
+            success: true,
+            coursesToTake: coursesWithCredits,
+            schedule: scheduleWithCredits
+        })
     }
     catch {
         return res.status(400).json({message: "Schedule was not able to be updated"})

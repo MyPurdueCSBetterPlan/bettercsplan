@@ -140,6 +140,15 @@ function Home() {
             },
             {withCredentials: true}
         )
+            .then((response) => {
+                const {message, success, coursesToTake, schedule} = response.data
+                console.log("????")
+                if(!success) {
+                    ErrorAction(message)
+                    setCoursesToTake(coursesToTake)
+                    setSchedule(schedule)
+                }
+            })
             .catch(error => {
                 const {message} = error.data
                 ErrorAction(message)
