@@ -10,12 +10,23 @@ import {ColorModeContext} from "../../Themes/ColorModeContext";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
+
+/**
+ * Renders a button component to delete the user's account. When clicked, it displays a confirmation dialog
+ * and if the user clicks in confirm, it will delete de account.
+ *
+ * @return {JSX.Element} - The rendered delete account button.
+ */
+
 function DeleteAccount() {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(["token"]);
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
 
+
+
+    //Handles the click for the delete account button.
     function handleClick() {
         alert.fire({
             title: 'Are you sure?',
