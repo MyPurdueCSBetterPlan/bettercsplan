@@ -74,34 +74,38 @@ function Signup() {
                 setErrorMessagePass("Passwords don't match.");
                 setPasswordStatus(''); // Clear password status
             } else {
-                // Calculate password power based on these options.
-                const passwordStrengthOptions = {
-                    length: 0,
-                    hasUpperCase: false,
-                    hasLowerCase: false,
-                    hasDigit: false,
-                    hasSpecialChar: false,
-                };
+                if (passwordValue.length >= 4) {
+                    // Calculate password power based on these options.
+                    const passwordStrengthOptions = {
+                        length: 0,
+                        hasUpperCase: false,
+                        hasLowerCase: false,
+                        hasDigit: false,
+                        hasSpecialChar: false,
+                    };
 
-                passwordStrengthOptions.length = passwordValue.length >= 8;
-                passwordStrengthOptions.hasUpperCase = /[A-Z]+/.test(passwordValue);
-                passwordStrengthOptions.hasLowerCase = /[a-z]+/.test(passwordValue);
-                passwordStrengthOptions.hasDigit = /[0-9]+/.test(passwordValue);
-                passwordStrengthOptions.hasSpecialChar = /[^A-Za-z0-9]+/.test(passwordValue);
+                    passwordStrengthOptions.length = passwordValue.length >= 8;
+                    passwordStrengthOptions.hasUpperCase = /[A-Z]+/.test(passwordValue);
+                    passwordStrengthOptions.hasLowerCase = /[a-z]+/.test(passwordValue);
+                    passwordStrengthOptions.hasDigit = /[0-9]+/.test(passwordValue);
+                    passwordStrengthOptions.hasSpecialChar = /[^A-Za-z0-9]+/.test(passwordValue);
 
-                let powerScore = Object.values(passwordStrengthOptions).filter((value) => value);
+                    let powerScore = Object.values(passwordStrengthOptions).filter((value) => value);
 
-                let strength =
-                    powerScore.length === 5
-                        ? "Strong"
-                        : powerScore.length >= 2
-                            ? "Medium"
-                            : "Weak";
+                    let strength =
+                        powerScore.length === 5
+                            ? "Strong"
+                            : powerScore.length >= 2
+                                ? "Medium"
+                                : "Weak";
 
-                setErrorMessagePass('');
-                setPasswordStatus("Your password is " + strength);
-                setPassword(passwordValue);
-                // Clear error message and set password status
+                    setErrorMessagePass('');
+                    setPasswordStatus("Your password is " + strength);
+                    setPassword(passwordValue);
+                    // Clear error message and set password status
+                } else {
+                    setErrorMessagePass("Invalid password length. Max (4-20 Chars).");
+                }
             }
         } else {
             if (passwordValue === "" && confirmValue === "") {
@@ -121,8 +125,8 @@ function Signup() {
     const getHelperTextColor = (type) => {
         if (type.includes("Strong")) return "#8BC926";    // If type includes "Strong", return green color.
         if (type.includes("Medium")) return "#ff8800";    // If type includes "Medium", return orange color.
-        if (type.includes("Weak")) return "#FF0054";       // If type includes "Weak", return red color.
-        return "#f44336";  //Returnred color if the type is not match passwords.
+        if (type.includes("Weak")) return theme.palette.error.main;       // If type includes "Weak", return red color.
+        return theme.palette.error.main;  //Returnred color if the type is not match passwords.
     };
 
     //called when user presses submit button
@@ -161,6 +165,11 @@ function Signup() {
                 return;
             } else {
                 setErrorMessagePass('');
+            }
+
+            if (passwordValue.length < 4) {
+                setErrorMessagePass("Invalid password length. Max (4-20 Chars).");
+                return;
             }
 
             //sends username and password to server, goes to "/" on success and displays error message on failure

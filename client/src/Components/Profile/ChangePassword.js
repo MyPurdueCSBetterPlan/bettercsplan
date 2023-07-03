@@ -2,14 +2,12 @@ import {useNavigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
 import alert from "sweetalert2";
 import axios from "axios";
-import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 import {
     Box,
     Button, Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle, FormControlLabel, TextField, Typography,
     useTheme
 } from "@mui/material";
@@ -30,100 +28,180 @@ function ChangePassword() {
     const [open, setOpen] = useState(false)
 
     // Declare state variables for error messages
-    const [errorMessagePass, setErrorMessagePass] = useState('');
+    const [errorMessageOldPass, setErrorMessageOldPass] = useState('');
+
+    // Declare state variables for error messages
+    const [errorMessageNewPass, setErrorMessageNewPass] = useState('');
 
     // Declare state variable for showing/hiding password
     const [showPassword, setShowPassword] = useState(false);
 
-    // Declare state variable for password input
-    const [password, setPassword] = useState('');
+    // Declare state variable for new password input
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    // Declare state variable for old password input
+    const [oldPassword, setOldPassword] = useState('');
 
     // Declare state variable for password status
     const [passwordStatus, setPasswordStatus] = useState('');
 
 
-    async function handleClick() {
-        const {value: formValues} = await alert.fire({
-            title: 'Change Password',
-            html:
-                '<input id="oldPassword" type="password" placeholder="Enter your old password" class="swal2-input">' +
-                '<input id="newPassword" type="password" placeholder="Enter your new password" class="swal2-input">' +
-                '<input id="confirmPassword" type="password" placeholder="Confirm your new password" class="swal2-input">',
-            focusConfirm: false,
-            preConfirm: () => {
-                return [
-                    document.getElementById('oldPassword').value,
-                    document.getElementById('newPassword').value,
-                    document.getElementById('confirmPassword').value
-                ]
+    function handleSubmit(e) {
+        //prevents page reload
+        e.preventDefault()
+
+        //Values from the form
+
+        let emptyField = false;
+
+        //Check for empty fields
+        if (!oldPassword) {
+            setErrorMessageOldPass("Empty field.");
+            emptyField = true;
+        }
+
+        if (!newPassword || !confirmPassword) {
+            setErrorMessageNewPass("Empty field.");
+            emptyField = true;
+        }
+
+        if (!emptyField) {
+            if (newPassword !== confirmPassword) { //Check if password matches.
+                setErrorMessageNewPass("Passwords don't match.");
+                return;
+            } else {
+                setErrorMessageNewPass('');
             }
-        })
-        if (formValues) {
-            const jsonString = JSON.stringify(formValues);
-            const parsedObject = JSON.parse(jsonString);
-            const oldPassword = parsedObject[Object.keys(parsedObject)[0]];
-            const newPassword = parsedObject[Object.keys(parsedObject)[1]];
-            const confirmPassword = parsedObject[Object.keys(parsedObject)[2]];
-            if ((oldPassword !== null) && (oldPassword !== "") && (newPassword !== null) && (newPassword !== "") &&
-                (confirmPassword !== null) && (confirmPassword !== "")) {
-                if (newPassword !== confirmPassword) {
-                    ErrorAction("Ensure that the passwords match.");
-                    return;
-                }
-                axios.post(
-                    `${REACT_APP_SERVER_URL}/profile/changepass`,
-                    {
-                        "oldPassword": oldPassword,
-                        "newPassword": newPassword,
-                    },
-                    {withCredentials: true}
-                )
-                    .then((response) => {
-                        const {message, status} = response.data;
-                        if (!status) {
-                            ErrorAction(message);
-                        } else {
-                            alert.fire({
-                                title: `Password Changed!`,
-                                text: `Please login again...`,
-                                icon: 'success',
-                                showConfirmButton: false,
-                                timer: 1500,
-                            });
-                            removeCookie("token", []);
-                            navigate("/login");
-                        }
-                    })
-                    .catch(() => {
+
+            if (newPassword.length < 4) {
+                setErrorMessageNewPass("Invalid password length. Max (4-20 Chars).");
+                return;
+            }
+            if (newPassword === oldPassword) {
+                setErrorMessageNewPass("Invalid Password. Please enter a new password.");
+                return;
+            }
+            axios.post(
+                `${REACT_APP_SERVER_URL}/profile/changepass`,
+                {
+                    "oldPassword": oldPassword,
+                    "newPassword": newPassword,
+                },
+                {withCredentials: true}
+            )
+                .then((response) => {
+                    const {message, status} = response.data;
+                    if (!status) {
+                        setErrorMessageOldPass(message);
+                    } else {
+                        setOpen(false);
+                        alert.fire({
+                            title: `Password Changed!`,
+                            text: `Please login again...`,
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 1500,
+                        });
                         removeCookie("token", []);
                         navigate("/login");
-                    })
-            } else {
-                ErrorAction("Passwords field is required.");
+                    }
+                })
+                .catch(() => {
+                    removeCookie("token", []);
+                    navigate("/login");
+                })
+        }
+    }
+
+    function handleInputOldPass(e) {
+        const password = e.target.form.elements['oldpassword'].value;
+        if (password === "") {
+            setErrorMessageOldPass("");
+        } else {
+            setOldPassword(password);
+            if (!oldPassword) {
+                setErrorMessageOldPass("");
             }
         }
     }
 
-    function handleSubmit(e) {
-    }
 
+    // Function to handle input change for new the password field also check the password strength.
+    function handleInputNewPass(e) {
+        e.preventDefault();
 
-    // Function to handle input change for the password field also check the password strength.
-    function handleInputPass(e) {
+        const passwordValue = e.target.form.elements['newpassword'].value;
+        const confirmValue = e.target.form.elements['newpasswordVer'].value;
 
+        if (passwordValue !== "" && confirmValue !== "") {
+            if (passwordValue !== confirmValue) { // Set error message if passwords don't match
+                setErrorMessageNewPass("Passwords don't match.");
+                setPasswordStatus(''); // Clear password status
+            } else {
+                if (passwordValue.length >= 4) {
+                    // Calculate password power based on these options.
+                    const passwordStrengthOptions = {
+                        length: 0,
+                        hasUpperCase: false,
+                        hasLowerCase: false,
+                        hasDigit: false,
+                        hasSpecialChar: false,
+                    };
+
+                    passwordStrengthOptions.length = passwordValue.length >= 8;
+                    passwordStrengthOptions.hasUpperCase = /[A-Z]+/.test(passwordValue);
+                    passwordStrengthOptions.hasLowerCase = /[a-z]+/.test(passwordValue);
+                    passwordStrengthOptions.hasDigit = /[0-9]+/.test(passwordValue);
+                    passwordStrengthOptions.hasSpecialChar = /[^A-Za-z0-9]+/.test(passwordValue);
+
+                    let powerScore = Object.values(passwordStrengthOptions)
+                        .filter((value) => value);
+
+                    let strength =
+                        powerScore.length === 5
+                            ? "Strong"
+                            : powerScore.length >= 2
+                                ? "Medium"
+                                : "Weak";
+
+                    setErrorMessageNewPass('');
+                    setPasswordStatus("Your password is " + strength);
+                    setNewPassword(passwordValue);
+                    setConfirmPassword(confirmValue);
+                    // Clear error message and set password status
+                } else {
+                    setErrorMessageNewPass("Invalid password length. Max (4-20 Chars).");
+                }
+            }
+        } else {
+            if (passwordValue === "" && confirmValue === "") {
+                // Clear error message and password status if both inputs are empty
+                setErrorMessageNewPass(''); // Clear error message
+                setPasswordStatus(''); // Clear password status
+            } else {
+                // Set error message if either password and confirm password does not match
+                setErrorMessageNewPass("Passwords don't match.");
+                setPasswordStatus(''); // Clear password status
+            }
+        }
     }
 
     // Function to determine helper text color based on password power type
     const getHelperTextColor = (type) => {
         if (type.includes("Strong")) return "#8BC926";    // If type includes "Strong", return green color.
         if (type.includes("Medium")) return "#ff8800";    // If type includes "Medium", return orange color.
-        if (type.includes("Weak")) return "#FF0054";       // If type includes "Weak", return red color.
-        return "#f44336";  //Returnred color if the type is not match passwords.
+        if (type.includes("Weak")) return theme.palette.error.main;       // If type includes "Weak", return red color.
+        return theme.palette.error.main;  //Returnred color if the type is not match passwords.
     };
 
     return (
         <>
-            <Button type="contained" onClick={() => setOpen(true)} sx={buttonStyle(theme.palette.mode)}>Change Password</Button>
+            <Button type="contained"
+                    onClick={() => setOpen(true)}
+                    sx={buttonStyle(theme.palette.mode)}>
+                Change Password
+            </Button>
             <Dialog open={open} onClose={() => setOpen(false)}>
                 <DialogContent>
                     <DialogTitle id="alert-dialog-title">
@@ -134,46 +212,43 @@ function ChangePassword() {
                             margin="normal"
                             required
                             fullWidth
-                            name="oldPassword"
+                            name="oldpassword"
                             label="Old password"
                             type={showPassword ? 'text' : 'password'}
-                            id="oldPassword"
+                            id="oldpassword"
                             sx={textInputStyle(theme.palette.mode)}
-                            error={Boolean(errorMessagePass)}
-                            helperText={
-                                <span style={{color: getHelperTextColor(passwordStatus)}}>
-                                                    {errorMessagePass || passwordStatus}</span>
-                            }
-                            onChange={handleInputPass}
+                            error={Boolean(errorMessageOldPass)}
+                            helperText={errorMessageOldPass}
+                            onChange={handleInputOldPass}
                         />
                         <TextField
                             margin="normal"
                             required
                             fullWidth
-                            name="newPassword"
+                            name="newpassword"
                             label="New password"
                             type={showPassword ? 'text' : 'password'}
-                            id="newPassword"
+                            id="newpassword"
                             sx={textInputStyle(theme.palette.mode)}
-                            error={Boolean(errorMessagePass)}
+                            error={Boolean(errorMessageNewPass)}
                             helperText={
                                 <span style={{color: getHelperTextColor(passwordStatus)}}>
-                                                    {errorMessagePass || passwordStatus}</span>
+                                                    {errorMessageNewPass || passwordStatus}</span>
                             }
-                            onChange={handleInputPass}
+                            onChange={handleInputNewPass}
                         />
                         <TextField
                             margin="normal"
                             required
                             fullWidth
-                            name="newPasswordVer"
+                            name="newpasswordVer"
                             label="Confirm new Password"
                             type={showPassword ? 'text' : 'password'}
-                            id="mewPasswordVer"
+                            id="newpasswordVer"
                             sx={textInputStyle(theme.palette.mode)}
-                            error={Boolean(errorMessagePass)}
-                            helperText={errorMessagePass}
-                            onChange={handleInputPass}
+                            error={Boolean(errorMessageNewPass)}
+                            helperText={errorMessageNewPass}
+                            onChange={handleInputNewPass}
                         />
                         <FormControlLabel
                             control={
@@ -185,11 +260,12 @@ function ChangePassword() {
                             }
                             label="Show Passwords"
                         />
+                        <DialogActions sx={{justifyContent: 'center'}}>
+                            <Button sx={buttonStyle(theme.palette.mode)}
+                                    onClick={() => setOpen(false)}>Cancel</Button>
+                            <Button type='submit' sx={buttonStyle(theme.palette.mode)}>Submit</Button>
+                        </DialogActions>
                     </Box>
-                    <DialogActions sx={{justifyContent: 'center'}}>
-                        <Button sx={buttonStyle(theme.palette.mode)} onClick={() => setOpen(false)}>Cancel</Button>
-                        <Button type='submit' sx={buttonStyle(theme.palette.mode)}>Submit</Button>
-                    </DialogActions>
                 </DialogContent>
             </Dialog>
         </>

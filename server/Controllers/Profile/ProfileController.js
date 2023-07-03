@@ -100,10 +100,6 @@ module.exports.ChangePassword = async (req, res) => {
             return res.json({message: "Incorrect password...", status: false});
         }
 
-        if (!validator.isStrongPassword(newPassword)) { //Password is not valid
-            return res.json({message: "Ensure that you are writing a valid password.", status: false});
-        }
-
         const hashedPassword = await bcrypt.hash(newPassword, 12);
 
         await User.updateOne({email: req.email}, {password: hashedPassword})
