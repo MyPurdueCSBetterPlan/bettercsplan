@@ -1,6 +1,5 @@
 import axios from "axios";
 import React from 'react'
-import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 import {Alert, Box, Button, ToggleButton, ToggleButtonGroup, useTheme} from "@mui/material";
 import {useState} from "react";
 import {buttonStyle} from "../../Themes/ThemeStyles";
@@ -10,17 +9,33 @@ const {REACT_APP_SERVER_URL} = process.env;
 
 /**
  *
- * @param props.next - the next functional component to be returned after saving tracks (ChooseClasses)
+ * @param next - the next functional component to be returned after saving tracks (ChooseClasses)
+ * @param setIsFetching State the page loading status.
+ * @param setUnexpectedError Show error in case an unexpected error with the server.
  * @return {JSX.Element} - menu where user can select/save their desired tracks
  *
  */
-function ChooseTracks(props) {
+
+function ChooseTracks({next, setIsFetching, setUnexpectedError}) {
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
 
+    //LoadingPage Status
+    const fetchingTimeout= 3000;
+
+    //Declare tracks options state
+    const [tracks, setTracks] = useState([]);
+
+    //Declare empty fields state
+    const [emptyFields, setEmptyFields] = useState(false); // Track selection fields empty
+
     //Sends array of track names to the server and moves on to next page if successful
     function saveTracks(e) {
-        e.preventDefault()
+        e.preventDefault();
+
+        const loadingDelay = setTimeout(() => {
+            setIsFetching(true);
+        }, fetchingTimeout);
 
         if (tracks.length === 0) {
             setEmptyFields(true);
@@ -32,16 +47,14 @@ function ChooseTracks(props) {
                 },
                 {withCredentials: true}
             )
-                .then(props.next)
-                .catch(error => {
-                    const {message} = error.data
-                    ErrorAction(message)
+                .then(() => {
+                    clearTimeout(loadingDelay);
+                    next();
                 })
+                .catch(() => setUnexpectedError(true))
+                .finally(() => setIsFetching(false));
         }
     }
-
-    const [tracks, setTracks] = useState([]);
-    const [emptyFields, setEmptyFields] = useState(false); // Track selection fields empty
 
     const handleChange = (event, newTracks) => {
         setEmptyFields(false);
@@ -50,7 +63,7 @@ function ChooseTracks(props) {
 
 
     return (
-        <form onSubmit={saveTracks}>
+        <Box component="form" noValidate onSubmit={saveTracks}>
             <Box sx={{
                 marginTop: '60px',
             }}>
@@ -88,7 +101,7 @@ function ChooseTracks(props) {
             }}>
                 <Button variant="outlined" sx={buttonStyle(theme.palette.mode)} type='submit' fullWidth>SUBMIT</Button>
             </Box>
-        </form>
+        </Box>
     )
 }
 

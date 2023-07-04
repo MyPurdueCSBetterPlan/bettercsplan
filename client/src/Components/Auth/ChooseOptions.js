@@ -1,6 +1,5 @@
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
-import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 import {Box, Button, Grid, TextField, ToggleButton, useTheme} from "@mui/material";
 import React, {useState} from "react";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
@@ -9,13 +8,20 @@ import {buttonStyle, textInputStyle} from "../../Themes/ThemeStyles";
 const {REACT_APP_SERVER_URL} = process.env;
 
 /**
+ * @param setIsFetching State the page loading status.
+ * @param setUnexpectedError Show error in case an unexpected error with the server.
+ *
  * @return {JSX.Element} - Menu where the user can choose their schedule options: years to graduate and
  * desire to take summer classes
  */
-function ChooseOptions() {
+
+function ChooseOptions({setIsFetching, setUnexpectedError}) {
     const navigate = useNavigate();
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
+
+    //LoadingPage Status
+    const fetchingTimeout= 3000;
 
     //user's years until graduation
     const [years, setYears] = useState(4);
@@ -25,6 +31,11 @@ function ChooseOptions() {
 
     //sends the user's options to the server to be saved
     function saveOptions() {
+
+        const loadingDelay = setTimeout(() => {
+            setIsFetching(true);
+        }, fetchingTimeout);
+
         axios.post(
             `${REACT_APP_SERVER_URL}/options`,
             {
@@ -33,11 +44,12 @@ function ChooseOptions() {
             },
             {withCredentials: true}
         )
-            .then(generateSchedule)
-            .catch(error => {
-                const {message} = error.data
-                ErrorAction(message)
+            .then(response => {
+                clearTimeout(loadingDelay);
+                generateSchedule();
             })
+            .catch(() => setUnexpectedError(true))
+            .finally(() => setIsFetching(false));
     }
 
     const handleChange = (event) => {
@@ -46,16 +58,20 @@ function ChooseOptions() {
 
     //tells the server to generate the user's schedule and navigates back to the home page on succes
     function generateSchedule() {
+        const loadingDelay = setTimeout(() => {
+            setIsFetching(true);
+        }, fetchingTimeout);
+
         axios.get(
             `${REACT_APP_SERVER_URL}/generate`,
             {withCredentials: true}
         )
-            .then(() => navigate("/"))
-            .catch(error => {
-                const {message} = error.data
-                ErrorAction(message)
+            .then(response => {
+                clearTimeout(loadingDelay);
+                navigate("/");
             })
-
+            .catch(() => setUnexpectedError(true))
+            .finally(() => setIsFetching(false));
     }
 
     const yearsUntilGrad = [

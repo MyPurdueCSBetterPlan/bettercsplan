@@ -74,7 +74,7 @@ function ChangePassword() {
                 setErrorMessageNewPass('');
             }
 
-            if (newPassword.length < 4) {
+            if (newPassword.length < 4 || newPassword > 20) {
                 setErrorMessageNewPass("Invalid password length. Max (4-20 Chars).");
                 return;
             }
@@ -139,7 +139,7 @@ function ChangePassword() {
                 setErrorMessageNewPass("Passwords don't match.");
                 setPasswordStatus(''); // Clear password status
             } else {
-                if (passwordValue.length >= 4) {
+                if (passwordValue.length >= 4 && passwordValue.length <= 20) {
                     // Calculate password power based on these options.
                     const passwordStrengthOptions = {
                         length: 0,

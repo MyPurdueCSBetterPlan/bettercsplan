@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import axios from "axios";
-import {ErrorAction} from "../../Redux/Actions/GlobalActions";
 import {
     Alert,
     Box,
@@ -15,30 +14,42 @@ import {
 } from "@mui/material";
 import {buttonStyle, textInputStyle, overflowListStyle} from "../../Themes/ThemeStyles";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
-import {amber, blue, grey} from "@mui/material/colors";
+import {amber} from "@mui/material/colors";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
 /**
- * @param props.next - The next functional component to be rendered after classes are saved (ChooseOptions)
+ * @param next - The next functional component to be rendered after classes are saved (ChooseOptions)
+ * @param setIsFetching State the page loading status.
+ * @param setUnexpectedError Show error in case an unexpected error with the server.
  * @return {JSX.Element} - Menu where the user can search for classes using a filter and select them
  * as classes they have already taken
  */
 
-function ChooseClasses(props) {
+function ChooseClasses({next, setIsFetching, setUnexpectedError}) {
     const [classList, setClassList] = useState([]);
     const [selected, setSelected] = useState([]);
+
     const theme = useTheme();
-    const [showAlert, setShowAlert] = useState(false);
     const colorMode = React.useContext(ColorModeContext);
+
+    //Error boxes.
+    const [showAlert, setShowAlert] = useState(false);
+
+    //LoadingPage Status
+    const fetchingTimeout= 3000;
 
     //updates the filter value
     function handleChange(e) {
 
         if (e.target.value === "") {
-            setClassList([])
-            return
+            setClassList([]);
+            return;
         }
+
+        const loadingDelay = setTimeout(() => {
+            setIsFetching(true);
+        }, fetchingTimeout);
 
         axios.post(
             `${REACT_APP_SERVER_URL}/classes`,
@@ -48,12 +59,11 @@ function ChooseClasses(props) {
             {withCredentials: true}
         )
             .then(response => {
-                setClassList(response.data.classes)
+                clearTimeout(loadingDelay);
+                setClassList(response.data.classes);
             })
-            .catch(error => {
-                const {message} = error.data
-                ErrorAction(message);
-            })
+            .catch(() => setUnexpectedError(true))
+            .finally(() => setIsFetching(false));
     }
 
     //selecting a class moves it from the unselected array to the selected array
@@ -70,11 +80,17 @@ function ChooseClasses(props) {
 
     //unselecting a class moves it from the selected array to the unselected array
     function unselect(optionClicked) {
-        setSelected(selected => selected.filter(option => option !== optionClicked))
+        setSelected(selected => selected.filter(option => option !== optionClicked));
     }
 
     //sends array of selected classes to the server and moves on to next page if successful
     function saveClasses() {
+
+        const loadingDelay = setTimeout(() => {
+            setIsFetching(true);
+        }, fetchingTimeout);
+
+
         axios.post(
             `${REACT_APP_SERVER_URL}/taken`,
             {
@@ -82,16 +98,17 @@ function ChooseClasses(props) {
             },
             {withCredentials: true}
         )
-            .then(props.next)
-            .catch((error) => {
-                const {message} = error.data
-                ErrorAction(message)
+            .then(response => {
+                clearTimeout(loadingDelay);
+                next();
             })
+            .catch(() => setUnexpectedError(true))
+            .finally(() => setIsFetching(false));
     }
 
     //empties list of selected classes
     function clearClasses() {
-        setSelected([])
+        setSelected([]);
     }
 
 

@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import {buttonStyle, linkStyle, textInputStyle} from "../../Themes/ThemeStyles";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
+import FetchingStatus from "../../Components/Utils/FetchingStatus";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -37,6 +38,11 @@ function Signup() {
     const [errorMessageName, setErrorMessageName] = useState('');
     const [errorMessageEmail, setErrorMessageEmail] = useState('');
     const [errorMessagePass, setErrorMessagePass] = useState('');
+
+    //Loading status page
+    const [isFetching, setIsFetching] = useState(false);
+    const [unexpectedError, setUnexpectedError] = useState(false);
+    const fetchingTimeout= 3000;
 
     // Declare state variable for showing/hiding password
     const [showPassword, setShowPassword] = useState(false);
@@ -74,7 +80,7 @@ function Signup() {
                 setErrorMessagePass("Passwords don't match.");
                 setPasswordStatus(''); // Clear password status
             } else {
-                if (passwordValue.length >= 4) {
+                if (passwordValue.length >= 4 && passwordValue.length <= 20) {
                     // Calculate password power based on these options.
                     const passwordStrengthOptions = {
                         length: 0,
@@ -167,10 +173,20 @@ function Signup() {
                 setErrorMessagePass('');
             }
 
-            if (passwordValue.length < 4) {
+            if (passwordValue.length < 4 || passwordValue.length > 20) {
                 setErrorMessagePass("Invalid password length. Max (4-20 Chars).");
                 return;
             }
+
+            if (name.length < 2 || name.length > 15) {
+                setErrorMessageName("Invalid name length. Max (2-15 Chars).");
+                return;
+            }
+
+            const loadingDelay = setTimeout(() => {
+                setIsFetching(true);
+            }, fetchingTimeout);
+
 
             //sends username and password to server, goes to "/" on success and displays error message on failure
             axios.post(
@@ -183,6 +199,7 @@ function Signup() {
                 {withCredentials: true}
             )
                 .then((response) => {
+                    clearTimeout(loadingDelay)
                     const {message, success, name} = response.data
                     if (success) {
                         SuccessActionLogin(message, name);
@@ -193,13 +210,14 @@ function Signup() {
                             setErrorMessageEmail("This email already exist.");
                         } else if (message === "Ensure that you are writing a valid email.") {
                             setErrorMessageEmail("Invalid email.");
-                        } else if (message === "Invalid name.") {
-                            setErrorMessageName("Name too long. Please use between (2 to 10) characters.");
+                        } else if (message === "Invalid name length. Max (2-15 Chars).") {
+                            setErrorMessageName("Invalid name length. Max (2-15 Chars).");
                         }
                         ErrorAction(message);
                     }
                 })
-                .catch(() => navigate("/login"));
+                .catch(() => setUnexpectedError(true))
+                .finally(() => setIsFetching(false));
         }
     }
 
@@ -209,162 +227,166 @@ function Signup() {
     }
 
     return (
-        <Box>
-            <Grid container spacing={10} direction="column">
-                <Grid item xs={12} sm={6} lg={4}>
-                    <Container fixed>
-                        <Header mode={"NOT_USER_SIGNUP"}/>
-                    </Container>
-                </Grid>
-                <Grid item xs={12} sm={6} lg={4}>
-                    <Box sx={{
-                        margin: '0 200px',
-                        '@media (max-width: 600px)': {
-                            margin: '0 30px',
-                        },
-                    }}>
-                        <Grid container spacing={3} direction="column" alignItems="center" justifyContent="center">
-                            <Grid item xs={12} md={6} lg={4}>
-                                <Paper sx={{
-                                    padding: '1%',
-                                    width: '100%',
-                                }} elevation={10}>
-                                    <Typography variant="h1" sx={{
-                                        textAlign: 'center',
-                                        marginBottom: '20px',
-                                    }}>WHAT WE SAVE?</Typography>
-                                    <Typography variant="h7">{explanation}</Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={4}>
-                                <Paper sx={{
-                                    padding: '3%',
-                                    width: '100%',
-                                }} elevation={10}>
-                                    <Typography variant="h1"
-                                                sx={{textAlign: 'center', marginBottom: '20px'}}>SIGN UP</Typography>
-                                    <Box component="form" noValidate onSubmit={handleSubmit}>
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            id="username"
-                                            label="Username"
-                                            name="username"
-                                            autoFocus
-                                            sx={textInputStyle(theme.palette.mode)}
-                                            error={Boolean(errorMessageName)}
-                                            helperText={errorMessageName}
-                                            onChange={handleInputName}
-                                        />
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            id="email"
-                                            label="Email Address"
-                                            name="email"
-                                            autoFocus
-                                            sx={textInputStyle(theme.palette.mode)}
-                                            error={Boolean(errorMessageEmail)}
-                                            helperText={errorMessageEmail}
-                                            onChange={handleInputEmail}
-                                        />
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            name="password"
-                                            label="Password"
-                                            type={showPassword ? 'text' : 'password'}
-                                            id="password"
-                                            sx={textInputStyle(theme.palette.mode)}
-                                            error={Boolean(errorMessagePass)}
-                                            helperText={
-                                                <span style={{color: getHelperTextColor(passwordStatus)}}>
+        <>
+            <Box>
+                <Grid container spacing={10} direction="column">
+                    <Grid item xs={12} sm={6} lg={4}>
+                        <Container fixed>
+                            <Header mode={"NOT_USER_SIGNUP"}/>
+                        </Container>
+                    </Grid>
+                    <Grid item xs={12} sm={6} lg={4}>
+                        <Box sx={{
+                            margin: '0 200px',
+                            '@media (max-width: 600px)': {
+                                margin: '0 30px',
+                            },
+                        }}>
+                            <Grid container spacing={3} direction="column" alignItems="center" justifyContent="center">
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <Paper sx={{
+                                        padding: '1%',
+                                        width: '100%',
+                                    }} elevation={10}>
+                                        <Typography variant="h1" sx={{
+                                            textAlign: 'center',
+                                            marginBottom: '20px',
+                                        }}>WHAT WE SAVE?</Typography>
+                                        <Typography variant="h7">{explanation}</Typography>
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <Paper sx={{
+                                        padding: '3%',
+                                        width: '100%',
+                                    }} elevation={10}>
+                                        <Typography variant="h1"
+                                                    sx={{textAlign: 'center', marginBottom: '20px'}}>SIGN
+                                            UP</Typography>
+                                        <Box component="form" noValidate onSubmit={handleSubmit}>
+                                            <TextField
+                                                margin="normal"
+                                                required
+                                                fullWidth
+                                                id="username"
+                                                label="Username"
+                                                name="username"
+                                                autoFocus
+                                                sx={textInputStyle(theme.palette.mode)}
+                                                error={Boolean(errorMessageName)}
+                                                helperText={errorMessageName}
+                                                onChange={handleInputName}
+                                            />
+                                            <TextField
+                                                margin="normal"
+                                                required
+                                                fullWidth
+                                                id="email"
+                                                label="Email Address"
+                                                name="email"
+                                                autoFocus
+                                                sx={textInputStyle(theme.palette.mode)}
+                                                error={Boolean(errorMessageEmail)}
+                                                helperText={errorMessageEmail}
+                                                onChange={handleInputEmail}
+                                            />
+                                            <TextField
+                                                margin="normal"
+                                                required
+                                                fullWidth
+                                                name="password"
+                                                label="Password"
+                                                type={showPassword ? 'text' : 'password'}
+                                                id="password"
+                                                sx={textInputStyle(theme.palette.mode)}
+                                                error={Boolean(errorMessagePass)}
+                                                helperText={
+                                                    <span style={{color: getHelperTextColor(passwordStatus)}}>
                                                     {errorMessagePass || passwordStatus}</span>
-                                            }
-                                            onChange={handleInputPass}
-                                        />
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            name="passwordVer"
-                                            label="Confirm Password"
-                                            type={showPassword ? 'text' : 'password'}
-                                            id="passwordVer"
-                                            sx={textInputStyle(theme.palette.mode)}
-                                            error={Boolean(errorMessagePass)}
-                                            helperText={errorMessagePass}
-                                            onChange={handleInputPass}
-                                        />
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    checked={showPassword}
-                                                    onChange={() => setShowPassword(!showPassword)}
-                                                    color="primary"
-                                                />
-                                            }
-                                            label="Show Password"
-                                        />
-                                        <Button
-                                            variant="outlined"
-                                            sx={{
-                                                ...buttonStyle(theme.palette.mode),
-                                                marginTop: '20px',
-                                                marginBottom: '10px'
-                                            }}
-                                            type='submit' fullWidth>SIGN UP</Button>
-                                        <Box sx={{marginTop: '15px', marginBottom: '15px', textAlign: 'center'}}>
-                                            <Typography variant="h7">
-                                                Do you already have an account?
-                                                <a href="/login" style={linkStyle(theme.palette.mode)}> Login</a>
-                                            </Typography>
+                                                }
+                                                onChange={handleInputPass}
+                                            />
+                                            <TextField
+                                                margin="normal"
+                                                required
+                                                fullWidth
+                                                name="passwordVer"
+                                                label="Confirm Password"
+                                                type={showPassword ? 'text' : 'password'}
+                                                id="passwordVer"
+                                                sx={textInputStyle(theme.palette.mode)}
+                                                error={Boolean(errorMessagePass)}
+                                                helperText={errorMessagePass}
+                                                onChange={handleInputPass}
+                                            />
+                                            <FormControlLabel
+                                                control={
+                                                    <Checkbox
+                                                        checked={showPassword}
+                                                        onChange={() => setShowPassword(!showPassword)}
+                                                        color="primary"
+                                                    />
+                                                }
+                                                label="Show Password"
+                                            />
+                                            <Button
+                                                variant="outlined"
+                                                sx={{
+                                                    ...buttonStyle(theme.palette.mode),
+                                                    marginTop: '20px',
+                                                    marginBottom: '10px'
+                                                }}
+                                                type='submit' fullWidth>SIGN UP</Button>
+                                            <Box sx={{marginTop: '15px', marginBottom: '15px', textAlign: 'center'}}>
+                                                <Typography variant="h7">
+                                                    Do you already have an account?
+                                                    <a href="/login" style={linkStyle(theme.palette.mode)}> Login</a>
+                                                </Typography>
+                                            </Box>
                                         </Box>
-                                    </Box>
-                                    <Box sx={{display: 'flex', alignItems: 'center'}}>
-                                        <Divider sx={{flexGrow: 1}}/>
-                                        <Typography variant="h6" sx={{px: 2}}>
-                                            OR
-                                        </Typography>
-                                        <Divider sx={{flexGrow: 1}}/>
-                                    </Box>
-                                    <Box sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        marginTop: '20px'
-                                    }}>
-                                        <GoogleButton
-                                            label='Sign up with Google'
-                                            type={theme.palette.mode === 'dark' ? 'light' : 'dark'}
-                                            onClick={() => {
-                                                handleGoogleLogin()
-                                            }}
-                                        />
-                                    </Box>
-                                </Paper>
+                                        <Box sx={{display: 'flex', alignItems: 'center'}}>
+                                            <Divider sx={{flexGrow: 1}}/>
+                                            <Typography variant="h6" sx={{px: 2}}>
+                                                OR
+                                            </Typography>
+                                            <Divider sx={{flexGrow: 1}}/>
+                                        </Box>
+                                        <Box sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginTop: '20px'
+                                        }}>
+                                            <GoogleButton
+                                                label='Sign up with Google'
+                                                type={theme.palette.mode === 'dark' ? 'light' : 'dark'}
+                                                onClick={() => {
+                                                    handleGoogleLogin()
+                                                }}
+                                            />
+                                        </Box>
+                                    </Paper>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </Box>
+                        </Box>
+                    </Grid>
                 </Grid>
-            </Grid>
-            <Box
-                sx={{
-                    paddingTop: '5px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    '@media (max-width: 600px)': {
-                        justifyContent: 'flex-start',
-                    },
-                }}
-            >
-                <Footer page={"POSITION_RELATIVE"}/>
+                <Box
+                    sx={{
+                        paddingTop: '5px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        '@media (max-width: 600px)': {
+                            justifyContent: 'flex-start',
+                        },
+                    }}
+                >
+                    <Footer page={"POSITION_RELATIVE"}/>
+                </Box>
             </Box>
-        </Box>
+            <FetchingStatus isFetching={isFetching} unexpectedError={unexpectedError}/>
+        </>
     )
 }
 

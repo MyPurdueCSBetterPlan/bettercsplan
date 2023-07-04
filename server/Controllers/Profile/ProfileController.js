@@ -95,9 +95,16 @@ module.exports.ChangePassword = async (req, res) => {
         const user = await User.findOne({email: req.email});
         const {oldPassword, newPassword} = req.body;
 
+        if (!oldPassword || !newPassword) {
+            return res.json({message: "All fields are required.", status: false});
+        }
         const auth = await bcrypt.compare(oldPassword, user.password);
         if (!auth) { //Password provided by the client is not valid.
-            return res.json({message: "Incorrect password...", status: false});
+            return res.json({message: "Incorrect password. Try again...", status: false});
+        }
+
+        if (oldPassword.length < 4 || oldPassword.length > 20) {
+            return res.json({ message: "Invalid password length. Max (4-20 Chars).", status: false });
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 12);

@@ -36,7 +36,11 @@ module.exports.Signup = async (req, res) => {
         }
 
         if (name.length < 2 || name.length > 15) {
-            return res.json({ message: "Invalid name.", status: false });
+            return res.json({ message: "Invalid name length. Max (2-15 Chars).", status: false });
+        }
+
+        if (password.length < 4 || password.length > 20) {
+            return res.json({ message: "Invalid password length. Max (4-20 Chars).", status: false });
         }
 
         if (!validator.isEmail(email)) {

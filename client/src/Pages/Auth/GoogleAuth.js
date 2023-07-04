@@ -13,7 +13,7 @@ const {REACT_APP_SERVER_URL} = process.env;
  * @returns {void}
  */
 
-export function GoogleAuth(dispatch, navigate, mode) {
+export function GoogleAuth({dispatch, navigate, mode}) {
 
     const width = 500;
     const height = 600;

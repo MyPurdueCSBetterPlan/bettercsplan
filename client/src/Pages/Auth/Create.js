@@ -9,6 +9,7 @@ import Header from "../../Components/Header/Header";
 import Footer from "../../Components/Footer/Footer";
 import {stepperStyle} from "../../Themes/ThemeStyles";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
+import FetchingStatus from "../../Components/Utils/FetchingStatus";
 
 
 /**
@@ -18,6 +19,7 @@ import {ColorModeContext} from "../../Themes/ColorModeContext";
 function Create() {
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
+
 
     //array to store user's selected tracks
     const [tracksInput, setTracksInput] = useState(false);
@@ -33,6 +35,10 @@ function Create() {
     //steps for Material-UI stepper
     const steps = ["Choose Tracks", "List Classes Taken", "Choose Options"]
 
+    //Loading status page
+    const [isFetching, setIsFetching] = useState(false);
+    const [unexpectedError, setUnexpectedError] = useState(false);
+
     //Checks if the user is logged in or not
     useEffect(() => {
         //if no token exists, go to login page
@@ -45,8 +51,7 @@ function Create() {
     function previousCreate() {
         if (classInput === true) {
             setClassInput(false)
-        }
-        else if (tracksInput === true) {
+        } else if (tracksInput === true) {
             setTracksInput(false)
         }
     }
@@ -56,120 +61,134 @@ function Create() {
     //which ones the user has/has-not already done
     if (tracksInput === false) {
         return (
-            <Container fixed>
-                <Grid container spacing={2} direction="column">
-                    <Grid item xs={12} sm={6} lg={4}>
-                        <Header mode={"USER_CREATE_PROMPS"}/>
-                    </Grid>
-                    <Grid item xs={12} sm={6} lg={4} justifyContent="center" alignItems="center">
-                        <Stepper
-                            activeStep={0}
-                            sx={stepperStyle(theme.palette.mode)}
-                            alternativeLabel>
-                            {steps.map(step =>
-                                <Step>
-                                    <StepLabel key={step}>{step}</StepLabel>
-                                </Step>)}
-                        </Stepper>
-                        <Box sx={{
-                            '@media (max-width: 600px)': {
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                flexDirection: 'column',
-                                width: '100%',
-                            },
-                        }}>
-                            <ChooseTracks next={() => setTracksInput(true)}/>
-                        </Box>
+            <>
+                <Container fixed>
+                    <Grid container spacing={2} direction="column">
+                        <Grid item xs={12} sm={6} lg={4}>
+                            <Header mode={"USER_CREATE_PROMPS"}/>
+                        </Grid>
+                        <Grid item xs={12} sm={6} lg={4} justifyContent="center" alignItems="center">
+                            <Stepper
+                                activeStep={0}
+                                sx={stepperStyle(theme.palette.mode)}
+                                alternativeLabel>
+                                {steps.map((step, index) => (
+                                    <Step key={index}>
+                                        <StepLabel>{step}</StepLabel>
+                                    </Step>
+                                ))}
+                            </Stepper>
+                            <Box sx={{
+                                '@media (max-width: 600px)': {
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    flexDirection: 'column',
+                                    width: '100%',
+                                },
+                            }}>
+                                <ChooseTracks next={() => setTracksInput(true)} setIsFetching={setIsFetching}
+                                              setUnexpectedError={setUnexpectedError}/>
+                            </Box>
 
+                        </Grid>
+                        <Grid item xs={12} sm={6} lg={4}>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Footer/>
+                            </Box>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4}>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <Footer/>
-                        </Box>
-                    </Grid>
-                </Grid>
-            </Container>
+                </Container>
+                <FetchingStatus isFetching={isFetching} unexpectedError={unexpectedError}/>
+            </>
         )
     } else if (classInput === false) {
         return (
-            <Container fixed>
-                <Grid container spacing={2} direction="column">
-                    <Grid item xs={12} sm={6} lg={4}>
-                        <Header mode={"USER_CREATE_PROMPS"}/>
+            <>
+                <Container fixed>
+                    <Grid container spacing={2} direction="column">
+                        <Grid item xs={12} sm={6} lg={4}>
+                            <Header mode={"USER_CREATE_PROMPS"}/>
+                        </Grid>
+                        <Grid item xs={12} sm={6} lg={4} justifyContent="center" alignItems="center">
+                            <Stepper
+                                activeStep={1}
+                                sx={stepperStyle(theme.palette.mode)}
+                                alternativeLabel>
+                                {steps.map((step, index) => (
+                                    <Step key={index}>
+                                        <StepLabel>{step}</StepLabel>
+                                    </Step>
+                                ))}
+                            </Stepper>
+                            <ChooseClasses next={() => setClassInput(true)} setIsFetching={setIsFetching}
+                                           setUnexpectedError={setUnexpectedError}/>
+                        </Grid>
+                        <Grid item>
+                            <Button onClick={previousCreate}>Back</Button>
+                        </Grid>
+                        <Grid item xs={12} sm={6} lg={4}>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Footer page={"POSITION_RELATIVE"}/>
+                            </Box>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4} justifyContent="center" alignItems="center">
-                        <Stepper
-                            activeStep={1}
-                            sx={stepperStyle(theme.palette.mode)}
-                            alternativeLabel>
-                            {steps.map(step =>
-                                <Step>
-                                    <StepLabel key={step}>{step}</StepLabel>
-                                </Step>)}
-                        </Stepper>
-                        <ChooseClasses next={() => setClassInput(true)}/>
-                    </Grid>
-                    <Grid item>
-                        <Button onClick={previousCreate}>Back</Button>
-                    </Grid>
-                    <Grid item xs={12} sm={6} lg={4}>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <Footer page={"POSITION_RELATIVE"}/>
-                        </Box>
-                    </Grid>
-                </Grid>
-
-            </Container>
+                </Container>
+                <FetchingStatus isFetching={isFetching} unexpectedError={unexpectedError}/>
+            </>
         )
     } else {
         return (
-            <Container fixed>
-                <Grid container spacing={2} direction="column">
-                    <Grid item xs={12} sm={6} lg={4}>
-                        <Header mode={"USER_CREATE_PROMPS"}/>
+            <>
+                <Container fixed>
+                    <Grid container spacing={2} direction="column">
+                        <Grid item xs={12} sm={6} lg={4}>
+                            <Header mode={"USER_CREATE_PROMPS"}/>
+                        </Grid>
+                        <Grid item xs={12} sm={6} lg={4}>
+                            <Stepper
+                                activeStep={2}
+                                sx={stepperStyle(theme.palette.mode)}
+                                alternativeLabel>
+                                {steps.map((step, index) => (
+                                    <Step key={index}>
+                                        <StepLabel>{step}</StepLabel>
+                                    </Step>
+                                ))}
+                            </Stepper>
+                            <ChooseOptions setIsFetching={setIsFetching}
+                                           setUnexpectedError={setUnexpectedError}/>
+                        </Grid>
+                        <Grid item>
+                            <Button onClick={previousCreate}>Back</Button>
+                        </Grid>
+                        <Grid item xs={12} sm={6} lg={4}>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Footer/>
+                            </Box>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4}>
-                        <Stepper
-                            activeStep={2}
-                            sx={stepperStyle(theme.palette.mode)}
-                            alternativeLabel>
-                            {steps.map(step =>
-                                <Step>
-                                    <StepLabel key={step}>{step}</StepLabel>
-                                </Step>)}
-                        </Stepper>
-                        <ChooseOptions/>
-                    </Grid>
-                    <Grid item>
-                        <Button onClick={previousCreate}>Back</Button>
-                    </Grid>
-                    <Grid item xs={12} sm={6} lg={4}>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <Footer/>
-                        </Box>
-                    </Grid>
-                </Grid>
-            </Container>
+                </Container>
+                <FetchingStatus isFetching={isFetching} unexpectedError={unexpectedError}/>
+            </>
         )
     }
 }
