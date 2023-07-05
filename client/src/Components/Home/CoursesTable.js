@@ -33,18 +33,21 @@ const {REACT_APP_SERVER_URL} = process.env;
 function CoursesTable(props) {
 
     //rows displayed under the courses table
-    const [rows, setRows] = useState(props.courses)
+    const [rows, setRows] = useState(props.courses);
 
     //class(es) that alternatives are listed for
-    const [replace, setReplace] = useState("")
+    const [replace, setReplace] = useState("");
 
     //used to track whether the current class to "replace" is part of a sequence
-    const [isSeq, setIsSeq] = useState(false)
+    const [isSeq, setIsSeq] = useState(false);
 
     //alternatives for clicked class
-    const [alternates, setAlternates] = useState([])
+    const [alternates, setAlternates] = useState([]);
 
-    const [desc, setDesc] = useState("")
+    const [desc, setDesc] = useState("");
+
+    //boolean to track whether the dialog is open or not
+    const [open, setOpen] = useState(false);
 
     //on a table_row drop, the rows are updated and the add function is called (updates server data)
     //note that on a drop, the original table_row is deleted (look at ClickableTableRow.js)
@@ -53,16 +56,14 @@ function CoursesTable(props) {
         drop: (draggedRow) => {
             setRows(rows => [...rows, {name: draggedRow.name, credits: draggedRow.credits}])
             if (draggedRow.index !== -1) {
-                props.add(draggedRow.name)
+                props.add(draggedRow.name);
             }
         },
         collect: monitor => ({
             isOver: !!monitor.isOver()
         })
-    }))
+    }));
 
-    //boolean to track whether the dialog is open or not
-    const [open, setOpen] = useState(false)
 
     //removes only THE FIRST OCCURRENCE of the row that has the given name
     function removeRow(name) {
@@ -80,8 +81,8 @@ function CoursesTable(props) {
 
     //reloads the page when courses are given from the server
     useEffect(() => {
-        setRows(props.courses)
-    }, [props.courses])
+        setRows(props.courses);
+    }, [props.courses]);
 
 
     //shows the user a list of alternatives for the class w/ the name given by the argument
@@ -95,17 +96,17 @@ function CoursesTable(props) {
         )
             .then(response => {
                 const {description, isSeq, alternates, replacements} = response.data
-                setDesc(description)
+                setDesc(description);
                 if (!isSeq) {
-                    setIsSeq(false)
-                    setReplace(name)
-                    setAlternates(alternates)
+                    setIsSeq(false);
+                    setReplace(name);
+                    setAlternates(alternates);
                 } else {
-                    setIsSeq(true)
-                    setReplace(replacements)
-                    setAlternates(alternates)
+                    setIsSeq(true);
+                    setReplace(replacements);
+                    setAlternates(alternates);
                 }
-                setOpen(true)
+                setOpen(true);
 
             })
             .catch(error => {
@@ -116,13 +117,13 @@ function CoursesTable(props) {
 
     //updates table rows and tells the server to update data when an alternate is clicked
     function handleAlternateClick(alternateName, alternateCredits) {
-        setOpen(false)
-        props.replace(replace, alternateName)
+        setOpen(false);
+        props.replace(replace, alternateName);
         setRows(rows => {
             for (let i = 0; i < rows.length; i++) {
                 if (rows[i].name === replace) {
-                    rows[i].name = alternateName
-                    rows[i].credits = alternateCredits
+                    rows[i].name = alternateName;
+                    rows[i].credits = alternateCredits;
                 }
             }
             return rows
@@ -136,18 +137,18 @@ function CoursesTable(props) {
             setRows(rows => {
                 for (let j = 0; j < rows.length; j++) {
                     if (rows[j].name === replace[i]) {
-                        rows[j].name = alternates[i].name
-                        rows[j].credits = alternates[i].credits
+                        rows[j].name = alternates[i].name;
+                        rows[j].credits = alternates[i].credits;
                     }
                 }
-                return rows
+                return rows;
             })
         }
     }
 
     //closes the dialog
     function closeDialog() {
-        setOpen(false)
+        setOpen(false);
     }
 
     return (

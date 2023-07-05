@@ -14,10 +14,11 @@ import {
 import React, {useState} from "react";
 import {buttonStyle, textInputStyle} from "../../Themes/ThemeStyles";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
+import {clear} from "@testing-library/user-event/dist/clear";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
-function ChangePassword() {
+function ChangePassword({setIsFetching, setUnexpectedError, fetchingTimeout}) {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(["token"]);
 
@@ -25,7 +26,7 @@ function ChangePassword() {
     const colorMode = React.useContext(ColorModeContext);
 
     //Dialog status
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
 
     // Declare state variables for error messages
     const [errorMessageOldPass, setErrorMessageOldPass] = useState('');
@@ -49,7 +50,7 @@ function ChangePassword() {
 
     function handleSubmit(e) {
         //prevents page reload
-        e.preventDefault()
+        e.preventDefault();
 
         //Values from the form
 
@@ -82,6 +83,11 @@ function ChangePassword() {
                 setErrorMessageNewPass("Invalid Password. Please enter a new password.");
                 return;
             }
+
+            const loadingDelay = setTimeout(() => {
+                setIsFetching(true);
+            }, fetchingTimeout);
+
             axios.post(
                 `${REACT_APP_SERVER_URL}/profile/changepass`,
                 {
@@ -91,6 +97,7 @@ function ChangePassword() {
                 {withCredentials: true}
             )
                 .then((response) => {
+                    clearTimeout(loadingDelay);
                     const {message, status} = response.data;
                     if (!status) {
                         setErrorMessageOldPass(message);
@@ -107,10 +114,8 @@ function ChangePassword() {
                         navigate("/login");
                     }
                 })
-                .catch(() => {
-                    removeCookie("token", []);
-                    navigate("/login");
-                })
+                .catch(() => setUnexpectedError(true))
+                .finally(() => setIsFetching(false));
         }
     }
 

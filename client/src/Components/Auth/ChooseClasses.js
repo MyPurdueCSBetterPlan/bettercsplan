@@ -98,7 +98,7 @@ function ChooseClasses({next, setIsFetching, setUnexpectedError}) {
             },
             {withCredentials: true}
         )
-            .then(response => {
+            .then(() => {
                 clearTimeout(loadingDelay);
                 next();
             })

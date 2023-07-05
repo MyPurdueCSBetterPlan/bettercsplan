@@ -44,7 +44,7 @@ function ChooseOptions({setIsFetching, setUnexpectedError}) {
             },
             {withCredentials: true}
         )
-            .then(response => {
+            .then(() => {
                 clearTimeout(loadingDelay);
                 generateSchedule();
             })
@@ -66,7 +66,7 @@ function ChooseOptions({setIsFetching, setUnexpectedError}) {
             `${REACT_APP_SERVER_URL}/generate`,
             {withCredentials: true}
         )
-            .then(response => {
+            .then(() => {
                 clearTimeout(loadingDelay);
                 navigate("/");
             })

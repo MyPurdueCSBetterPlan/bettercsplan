@@ -33,7 +33,7 @@ function Create() {
     const navigate = useNavigate();
 
     //steps for Material-UI stepper
-    const steps = ["Choose Tracks", "List Classes Taken", "Choose Options"]
+    const steps = ["Choose Tracks", "List Classes Taken", "Choose Options"];
 
     //Loading status page
     const [isFetching, setIsFetching] = useState(false);
@@ -50,9 +50,9 @@ function Create() {
     //goes back to the previous create page
     function previousCreate() {
         if (classInput === true) {
-            setClassInput(false)
+            setClassInput(false);
         } else if (tracksInput === true) {
-            setTracksInput(false)
+            setTracksInput(false);
         }
     }
 

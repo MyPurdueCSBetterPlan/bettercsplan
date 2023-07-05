@@ -11,23 +11,24 @@ import {TableCell, TableRow} from "@mui/material";
  * @param props.delete - deletes this TableRow
  * @return {JSX.Element} - row (class name + credits) for a table (either CoursesTable or SemesterTable)
  */
+
 function ClickableTableRow(props) {
-    const name = props.name
-    const credits = props.credits
-    const index = props.index
+    const name = props.name;
+    const credits = props.credits;
+    const index = props.index;
     const [, drag] = useDrag(() => ({
         type: 'TABLE_ROW',
         item: {name, credits, index},
         end: (item, monitor) => {
-            console.log(monitor.getDropResult())
+            console.log(monitor.getDropResult());
             if (monitor.getDropResult()) {
-                props.delete(name)
+                props.delete(name);
             }
         },
         collect: monitor => ({
             isDragging: monitor.isDragging()
         })
-    }))
+    }));
 
     return (
         <TableRow ref={drag} onClick={() => props.handleClick(name)}>

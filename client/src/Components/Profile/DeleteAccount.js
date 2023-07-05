@@ -18,7 +18,7 @@ const {REACT_APP_SERVER_URL} = process.env;
  * @return {JSX.Element} - The rendered delete account button.
  */
 
-function DeleteAccount() {
+function DeleteAccount({setIsFetching, setUnexpectedError, fetchingTimeout}) {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(["token"]);
     const theme = useTheme();
@@ -38,12 +38,18 @@ function DeleteAccount() {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
+                const loadingDelay = setTimeout(() => {
+                    setIsFetching(true);
+                }, fetchingTimeout);
+
+
                 axios.post(
                     `${REACT_APP_SERVER_URL}/profile/deleteacc`,
                     {},
                     {withCredentials: true}
                 )
                     .then((response) => {
+                        clearTimeout(loadingDelay)
                         const {success} = response.data;
                         if (!success) {
                             ErrorAction("Something went wrong... Try Again!");
@@ -52,10 +58,8 @@ function DeleteAccount() {
                             navigate("/login");
                         }
                     })
-                    .catch(() => {
-                        removeCookie("token", []);
-                        navigate("/login");
-                    })
+                    .catch(() => setUnexpectedError(true))
+                    .finally(() => setIsFetching(false));
             }
         })
     }
