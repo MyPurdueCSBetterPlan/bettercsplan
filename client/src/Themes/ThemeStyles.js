@@ -54,7 +54,6 @@ export const getDesignTokens = (mode) => ({
                     color: '#121858',
                     fontSize: "30px",
                 },
-
                 h7: {
                     fontSize: '16px',
                     fontWeight: '400',
