@@ -107,7 +107,10 @@ function Login() {
                     ErrorAction(message);
                 }
             })
-            .catch(() => setUnexpectedError(true))
+            .catch(() => {
+                setIsFetching(true);
+                setUnexpectedError(true);
+            })
             .finally(() => setIsFetching(false));
     }
 

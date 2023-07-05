@@ -62,7 +62,10 @@ function ChooseClasses({next, setIsFetching, setUnexpectedError}) {
                 clearTimeout(loadingDelay);
                 setClassList(response.data.classes);
             })
-            .catch(() => setUnexpectedError(true))
+            .catch(() => {
+                setIsFetching(true);
+                setUnexpectedError(true);
+            })
             .finally(() => setIsFetching(false));
     }
 
@@ -102,7 +105,10 @@ function ChooseClasses({next, setIsFetching, setUnexpectedError}) {
                 clearTimeout(loadingDelay);
                 next();
             })
-            .catch(() => setUnexpectedError(true))
+            .catch(() => {
+                setIsFetching(true);
+                setUnexpectedError(true);
+            })
             .finally(() => setIsFetching(false));
     }
 

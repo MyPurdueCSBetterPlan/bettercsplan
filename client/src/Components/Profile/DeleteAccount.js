@@ -58,7 +58,10 @@ function DeleteAccount({setIsFetching, setUnexpectedError, fetchingTimeout}) {
                             navigate("/login");
                         }
                     })
-                    .catch(() => setUnexpectedError(true))
+                    .catch(() => {
+                        setIsFetching(true);
+                        setUnexpectedError(true);
+                    })
                     .finally(() => setIsFetching(false));
             }
         })

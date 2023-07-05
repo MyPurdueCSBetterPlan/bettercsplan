@@ -48,7 +48,10 @@ function ChooseOptions({setIsFetching, setUnexpectedError}) {
                 clearTimeout(loadingDelay);
                 generateSchedule();
             })
-            .catch(() => setUnexpectedError(true))
+            .catch(() => {
+                setIsFetching(true);
+                setUnexpectedError(true);
+            })
             .finally(() => setIsFetching(false));
     }
 
@@ -70,7 +73,11 @@ function ChooseOptions({setIsFetching, setUnexpectedError}) {
                 clearTimeout(loadingDelay);
                 navigate("/");
             })
-            .catch(() => setUnexpectedError(true))
+            .catch(() => {
+                clearTimeout(loadingDelay);
+                setIsFetching(true);
+                setUnexpectedError(true);
+            })
             .finally(() => setIsFetching(false));
     }
 

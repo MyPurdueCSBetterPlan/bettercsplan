@@ -74,7 +74,12 @@ function Profile() {
                     navigate("/login")
                 }
             })
-            .catch(() => setUnexpectedError(true))
+            .catch(() => {
+                setEmail("Not available");
+                setName("Not available");
+                setIsFetching(true);
+                setUnexpectedError(true);
+            })
             .finally(() => setIsFetching(false));
     }, [cookies, navigate, removeCookie]);
 

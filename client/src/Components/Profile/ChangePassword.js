@@ -114,7 +114,11 @@ function ChangePassword({setIsFetching, setUnexpectedError, fetchingTimeout}) {
                         navigate("/login");
                     }
                 })
-                .catch(() => setUnexpectedError(true))
+                .catch(() => {
+                    setIsFetching(true);
+                    setOpen(false);
+                    setUnexpectedError(true);
+                })
                 .finally(() => setIsFetching(false));
         }
     }
@@ -144,7 +148,7 @@ function ChangePassword({setIsFetching, setUnexpectedError, fetchingTimeout}) {
                 setErrorMessageNewPass("Passwords don't match.");
                 setPasswordStatus(''); // Clear password status
             } else {
-                if (passwordValue.length >= 4 && passwordValue.length <= 20) {
+                if (passwordValue.length > 3 && passwordValue.length <= 20) {
                     // Calculate password power based on these options.
                     const passwordStrengthOptions = {
                         length: 0,
