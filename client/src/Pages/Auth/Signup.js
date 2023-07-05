@@ -60,12 +60,12 @@ function Signup() {
 
     // Function to handle input change for name field
     function handleInputName() {
-        setErrorMessageName('')
+        setErrorMessageName('');
     }
 
     // Function to handle input change for email field
     function handleInputEmail() {
-        setErrorMessageEmail('')
+        setErrorMessageEmail('');
     }
 
     // Function to handle input change for the password field also check the password strength.
@@ -80,38 +80,43 @@ function Signup() {
                 setErrorMessagePass("Passwords don't match.");
                 setPasswordStatus(''); // Clear password status
             } else {
-                if (passwordValue.length >= 4 && passwordValue.length <= 20) {
-                    // Calculate password power based on these options.
-                    const passwordStrengthOptions = {
-                        length: 0,
-                        hasUpperCase: false,
-                        hasLowerCase: false,
-                        hasDigit: false,
-                        hasSpecialChar: false,
-                    };
+                if (!passwordValue.includes(" ")) {
+                    if (passwordValue.length >= 4 && passwordValue.length <= 20) {
+                        // Calculate password power based on these options.
+                        const passwordStrengthOptions = {
+                            length: 0,
+                            hasUpperCase: false,
+                            hasLowerCase: false,
+                            hasDigit: false,
+                            hasSpecialChar: false,
+                        };
 
-                    passwordStrengthOptions.length = passwordValue.length >= 8;
-                    passwordStrengthOptions.hasUpperCase = /[A-Z]+/.test(passwordValue);
-                    passwordStrengthOptions.hasLowerCase = /[a-z]+/.test(passwordValue);
-                    passwordStrengthOptions.hasDigit = /[0-9]+/.test(passwordValue);
-                    passwordStrengthOptions.hasSpecialChar = /[^A-Za-z0-9]+/.test(passwordValue);
+                        passwordStrengthOptions.length = passwordValue.length >= 8;
+                        passwordStrengthOptions.hasUpperCase = /[A-Z]+/.test(passwordValue);
+                        passwordStrengthOptions.hasLowerCase = /[a-z]+/.test(passwordValue);
+                        passwordStrengthOptions.hasDigit = /[0-9]+/.test(passwordValue);
+                        passwordStrengthOptions.hasSpecialChar = /[^A-Za-z0-9]+/.test(passwordValue);
 
-                    let powerScore = Object.values(passwordStrengthOptions).filter((value) => value);
+                        let powerScore = Object.values(passwordStrengthOptions)
+                            .filter((value) => value);
 
-                    let strength =
-                        powerScore.length === 5
-                            ? "Strong"
-                            : powerScore.length >= 2
-                                ? "Medium"
-                                : "Weak";
+                        let strength =
+                            powerScore.length === 5
+                                ? "Strong"
+                                : powerScore.length >= 2
+                                    ? "Medium"
+                                    : "Weak";
 
-                    setErrorMessagePass('');
-                    setPasswordStatus("Your password is " + strength);
-                    setPassword(passwordValue);
-                    // Clear error message and set password status
+                        setErrorMessagePass('');
+                        setPasswordStatus("Your password is " + strength);
+                        // Clear error message and set password status
+                    } else {
+                        setErrorMessagePass("Invalid password length. Max (4-20 Chars).");
+                    }
                 } else {
-                    setErrorMessagePass("Invalid password length. Max (4-20 Chars).");
+                    setErrorMessagePass("Invalid password. It can't contain spaces.");
                 }
+                setPassword(passwordValue);
             }
         } else {
             if (passwordValue === "" && confirmValue === "") {
@@ -173,12 +178,17 @@ function Signup() {
                 setErrorMessagePass('');
             }
 
-            if (passwordValue.length < 4 || passwordValue.length > 20) {
+            if (!/^.{4,20}$/.test(passwordValue)) {
                 setErrorMessagePass("Invalid password length. Max (4-20 Chars).");
                 return;
             }
 
-            if (name.length < 2 || name.length > 15) {
+            if (passwordValue.includes(" ")) {
+                setErrorMessagePass("Invalid password. It can't contain spaces.");
+                return;
+            }
+
+            if (!/^.{2,15}$/.test(name)) {
                 setErrorMessageName("Invalid name length. Max (2-15 Chars).");
                 return;
             }
@@ -199,13 +209,13 @@ function Signup() {
                 {withCredentials: true}
             )
                 .then((response) => {
-                    clearTimeout(loadingDelay)
+                    clearTimeout(loadingDelay);
                     const {message, success, name} = response.data
                     if (success) {
                         SuccessActionLogin(message, name);
                         navigate("/")
                     } else {
-                        navigate("/signup")
+                        navigate("/signup");
                         if (message === "This account already exist.") {
                             setErrorMessageEmail("This email already exist.");
                         } else if (message === "Ensure that you are writing a valid email.") {

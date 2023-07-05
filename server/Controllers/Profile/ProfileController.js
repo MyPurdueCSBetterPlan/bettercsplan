@@ -103,7 +103,7 @@ module.exports.ChangePassword = async (req, res) => {
             return res.json({message: "Incorrect password. Try again...", status: false});
         }
 
-        if (oldPassword.length < 4 || oldPassword.length > 20) {
+        if (newPassword.length < 4 || newPassword.length > 20) {
             return res.json({ message: "Invalid password length. Max (4-20 Chars).", status: false });
         }
 

@@ -75,7 +75,12 @@ function ChangePassword({setIsFetching, setUnexpectedError, fetchingTimeout}) {
                 setErrorMessageNewPass('');
             }
 
-            if (newPassword.length < 4 || newPassword > 20) {
+            if (newPassword.includes(" ")) {
+                setErrorMessageNewPass("Invalid password. It can't contain spaces.");
+                return;
+            }
+
+            if (!/^.{4,20}$/.test(newPassword)) {
                 setErrorMessageNewPass("Invalid password length. Max (4-20 Chars).");
                 return;
             }
@@ -123,6 +128,17 @@ function ChangePassword({setIsFetching, setUnexpectedError, fetchingTimeout}) {
         }
     }
 
+    function clearFields() {
+        setErrorMessageNewPass("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setOldPassword("");
+        setErrorMessageOldPass("");
+        setOpen(false);
+        setShowPassword(false);
+        setPasswordStatus("");
+    }
+
     function handleInputOldPass(e) {
         const password = e.target.form.elements['oldpassword'].value;
         if (password === "") {
@@ -140,7 +156,7 @@ function ChangePassword({setIsFetching, setUnexpectedError, fetchingTimeout}) {
     function handleInputNewPass(e) {
         e.preventDefault();
 
-        const passwordValue = e.target.form.elements['newpassword'].value;
+        const passwordValue = e.target.form.elements['newpassword'].value.trim();
         const confirmValue = e.target.form.elements['newpasswordVer'].value;
 
         if (passwordValue !== "" && confirmValue !== "") {
@@ -148,40 +164,44 @@ function ChangePassword({setIsFetching, setUnexpectedError, fetchingTimeout}) {
                 setErrorMessageNewPass("Passwords don't match.");
                 setPasswordStatus(''); // Clear password status
             } else {
-                if (passwordValue.length > 3 && passwordValue.length <= 20) {
-                    // Calculate password power based on these options.
-                    const passwordStrengthOptions = {
-                        length: 0,
-                        hasUpperCase: false,
-                        hasLowerCase: false,
-                        hasDigit: false,
-                        hasSpecialChar: false,
-                    };
+                if (!passwordValue.includes(" ")) {
+                    if (passwordValue.length >= 4 && passwordValue.length <= 20) {
+                        // Calculate password power based on these options.
+                        const passwordStrengthOptions = {
+                            length: 0,
+                            hasUpperCase: false,
+                            hasLowerCase: false,
+                            hasDigit: false,
+                            hasSpecialChar: false,
+                        };
 
-                    passwordStrengthOptions.length = passwordValue.length >= 8;
-                    passwordStrengthOptions.hasUpperCase = /[A-Z]+/.test(passwordValue);
-                    passwordStrengthOptions.hasLowerCase = /[a-z]+/.test(passwordValue);
-                    passwordStrengthOptions.hasDigit = /[0-9]+/.test(passwordValue);
-                    passwordStrengthOptions.hasSpecialChar = /[^A-Za-z0-9]+/.test(passwordValue);
+                        passwordStrengthOptions.length = passwordValue.length >= 8;
+                        passwordStrengthOptions.hasUpperCase = /[A-Z]+/.test(passwordValue);
+                        passwordStrengthOptions.hasLowerCase = /[a-z]+/.test(passwordValue);
+                        passwordStrengthOptions.hasDigit = /[0-9]+/.test(passwordValue);
+                        passwordStrengthOptions.hasSpecialChar = /[^A-Za-z0-9]+/.test(passwordValue);
 
-                    let powerScore = Object.values(passwordStrengthOptions)
-                        .filter((value) => value);
+                        let powerScore = Object.values(passwordStrengthOptions)
+                            .filter((value) => value);
 
-                    let strength =
-                        powerScore.length === 5
-                            ? "Strong"
-                            : powerScore.length >= 2
-                                ? "Medium"
-                                : "Weak";
+                        let strength =
+                            powerScore.length === 5
+                                ? "Strong"
+                                : powerScore.length >= 2
+                                    ? "Medium"
+                                    : "Weak";
 
-                    setErrorMessageNewPass('');
-                    setPasswordStatus("Your password is " + strength);
-                    setNewPassword(passwordValue);
-                    setConfirmPassword(confirmValue);
-                    // Clear error message and set password status
+                        setErrorMessageNewPass('');
+                        setPasswordStatus("Your password is " + strength);
+                        // Clear error message and set password status
+                    } else {
+                        setErrorMessageNewPass("Invalid password length. Max (4-20 Chars).");
+                    }
                 } else {
-                    setErrorMessageNewPass("Invalid password length. Max (4-20 Chars).");
+                    setErrorMessageNewPass("Invalid password. It can't contain spaces.");
                 }
+                setNewPassword(passwordValue);
+                setConfirmPassword(confirmValue);
             }
         } else {
             if (passwordValue === "" && confirmValue === "") {
@@ -211,11 +231,10 @@ function ChangePassword({setIsFetching, setUnexpectedError, fetchingTimeout}) {
                     sx={buttonStyle(theme.palette.mode)}>
                 Change Password
             </Button>
-            <Dialog open={open} onClose={() => setOpen(false)}>
+            <Dialog open={open} onClose={() => clearFields()}>
                 <DialogContent>
-                    <DialogTitle id="alert-dialog-title">
-                        <Typography sx={{textAlign: 'center'}} variant="h1">Change Password</Typography>
-                    </DialogTitle>
+                    <Typography sx={{textAlign: 'center', marginBottom: '20px'}} variant="h1">Change
+                        Password</Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit}>
                         <TextField
                             margin="normal"
