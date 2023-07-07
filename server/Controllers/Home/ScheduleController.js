@@ -612,6 +612,8 @@ module.exports.RemoveClass = async (req, res) => {
 
 
         //makes sure that class can be removed
+        const prefix = className.split(" ")[0]
+        const number = className.split(" ")[1]
         if (className === 'MA 16100') {
             if (scheduleNamesList.includes('CS 18000') || scheduleNamesList.includes('CS 18200') ||
                 scheduleNamesList.includes('MA 16200')) {
@@ -809,8 +811,204 @@ module.exports.RemoveClass = async (req, res) => {
                 })
             }
         }
+        else if (className === 'BIOL 11000') {
+            if (scheduleNamesList.includes('BIOL 11100')) {
+                return res.status(200).json({
+                    message: "BIOL 11000 is a prereq for BIOL 11100. Remove this class first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'BIOL 12100') {
+            if (scheduleNamesList.includes('BIOL 13100')) {
+                return res.status(200).json({
+                    message: "BIOL 12100 is a prereq for BIOL 13100. Remove this class first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'BIOL 13100') {
+            if (scheduleNamesList.includes('BIOL 13500')) {
+                return res.status(200).json({
+                    message: "BIOL 13100 is a prereq for BIOL 13500. Remove this class first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'CHM 11500') {
+            if (scheduleNamesList.includes('CHM 11600')) {
+                return res.status(200).json({
+                    message: "CHM 11500 is a prereq for CHM 11600. Remove this class first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'CHM 12500') {
+            if (scheduleNamesList.includes('CHM 12600')) {
+                return res.status(200).json({
+                    message: "CHM 12500 is a prereq for CHM 12600. Remove this class first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'EAPS 11100') {
+            if (scheduleNamesList.includes('EAPS 11200')) {
+                return res.status(200).json({
+                    message: "EAPS 11100 is a prereq for EAPS 11200. Remove this class first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'PHYS 22000') {
 
-        //TODO: classes that are not CS and not math (ex: science)
+            //checking if schedule contains PHYS 17200 and PHYS 23300 and their placement relative to PHYS 22200
+            let PHYS221Met = false
+            let PHYS234Met = false
+            if (scheduleNamesList.includes('PHYS 17200')) {
+                for (let i = 0; i < scheduleNames.length; i++) {
+                    if (scheduleNames[i].includes('PHYS 17200')) {
+                        PHYS221Met = true
+                        PHYS234Met = true
+                    }
+                    if (scheduleNames[i].includes('PHYS 22000')) {
+                        break
+                    }
+                }
+            }
+            if (scheduleNamesList.includes('PHYS 23300') && !PHYS234Met) {
+                for (let i = 0; i < scheduleNames.length; i++) {
+                    if (scheduleNames[i].includes('PHYS 23300')) {
+                        PHYS234Met = true
+                    }
+                    if (scheduleNames[i].includes('PHYS 22000')) {
+                        break
+                    }
+                }
+            }
+
+            if ((scheduleNamesList.includes('PHYS 22100') && !PHYS221Met) ||
+                (scheduleNamesList.includes('PHYS 23400') && !PHYS234Met)) {
+                return res.status(200).json({
+                    message: "PHYS 22000 is a prereq for PHYS 22100 and PHYS 23400. Remove those classes first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'PHYS 17200') {
+
+            //checking if schedule contains PHYS 22000 and PHYS 23300 and their placement relative to PHYS 17200
+            let PHYS221Met = false
+            let PHYS234Met = false
+            if (scheduleNamesList.includes('PHYS 22000')) {
+                for (let i = 0; i < scheduleNames.length; i++) {
+                    if (scheduleNames[i].includes('PHYS 22000')) {
+                        PHYS221Met = true
+                        PHYS234Met = true
+                    }
+                    if (scheduleNames[i].includes('PHYS 17200')) {
+                        break
+                    }
+                }
+            }
+            if (scheduleNamesList.includes('PHYS 23300') && !PHYS234Met) {
+                for (let i = 0; i < scheduleNames.length; i++) {
+                    if (scheduleNames[i].includes('PHYS 23300')) {
+                        PHYS234Met = true
+                    }
+                    if (scheduleNames[i].includes('PHYS 17200')) {
+                        break
+                    }
+                }
+            }
+
+            if ((scheduleNamesList.includes('PHYS 22100') && !PHYS221Met) ||
+                (scheduleNamesList.includes('PHYS 23400') && !PHYS234Met) ||
+                scheduleNamesList.includes('PHYS 27200') ||
+                scheduleNamesList.includes('PHYS 24100')) {
+                return res.status(200).json({
+                    message: "PHYS 17200 is a prereq for PHYS 22100, PHYS 27200, PHYS 23400, and PHYS 24100. " +
+                        "Remove those classes first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (className === 'PHYS 23300') {
+
+            //checking if schedule contains PHYS 17200 and PHYS 22000 and their placement relative to PHYS 23400
+            let PHYS234Met = false
+
+            if (scheduleNamesList.includes('PHYS 17200') || scheduleNamesList.includes('PHYS 22000')) {
+                for (let i = 0; i < scheduleNames.length; i++) {
+                    if (scheduleNames[i].includes('PHYS 17200') || scheduleNames[i].includes('PHYS 22000')) {
+                        PHYS234Met = true
+                    }
+                    if (scheduleNames[i].includes('PHYS 22000')) {
+                        break
+                    }
+                }
+            }
+            if (scheduleNamesList.includes('PHYS 23400') && !PHYS234Met) {
+                return res.status(200).json({
+                    message: "PHYS 23300 is a prereq for PHYS 23400. Remove this class first",
+                    success: false,
+                    coursesToTake: coursesWithCredits,
+                    schedule: scheduleWithCredits
+                })
+            }
+        }
+        else if (prefix === "ASL" || prefix === "ARAB" || prefix === "CHNS" || prefix === "FR" || prefix === "GER" ||
+            prefix === "GREK" || prefix === "HEBR" || prefix === "ITAL" || prefix === "JPNS" || prefix === "KOR" ||
+            prefix === "LATN" || prefix === "PTGS" || prefix === "RUSS" || prefix === "SPAN") {
+            if (number === '20100') {
+                const dependent = prefix + ' 20200'
+                if (scheduleNamesList.includes(dependent)) {
+                    return res.status(200).json({
+                        message: "20100-level language courses are prereqs for 20200-level language courses",
+                        success: false,
+                        coursesToTake: coursesWithCredits,
+                        schedule: scheduleWithCredits
+                    })
+                }
+            }
+            else if (number === '10200') {
+                const dependent = prefix + ' 20100'
+                if (scheduleNamesList.includes(dependent)) {
+                    return res.status(200).json({
+                        message: "10200-level language courses are prereqs for 20100-level language courses",
+                        success: false,
+                        coursesToTake: coursesWithCredits,
+                        schedule: scheduleWithCredits
+                    })
+                }
+            }
+            else if (number === '10100') {
+                const dependent = prefix + ' 10200'
+                if (scheduleNamesList.includes(dependent)) {
+                    return res.status(200).json({
+                        message: "10100-level language courses are prereqs for 10200-level language courses",
+                        success: false,
+                        coursesToTake: coursesWithCredits,
+                        schedule: scheduleWithCredits
+                    })
+                }
+            }
+        }
 
         //removes class from the schedule
         for (let i = 0; i < scheduleNames.length; i++) {
