@@ -14,11 +14,12 @@ const sqlite3 = require("sqlite3");
  * @param res - response sent back to the client. The response contains:
  *              * message - describes whether successful or not
  *              * success - true/false based on whether successful or not
+ * @param next - calls removeOldClass in case the user is moving a class from one semester to another
  *
  */
-module.exports.AddClass = async (req, res) => {
+module.exports.AddClass = async (req, res, next) => {
     try {
-        const {semIndex, className} = req.body
+        const {semIndex, className, move} = req.body
 
         //gets user data from MongoDB
         const user = await User.findOne({email: req.email})
@@ -257,10 +258,9 @@ module.exports.AddClass = async (req, res) => {
             }
         }
         else if (className === "MA 16200") {
-            if (!taken.includes("MA 16100") && !previousSemClasses.includes("MA 16100") &&
-                !currentSemClasses.includes("MA 16100")) {
+            if (!taken.includes("MA 16100") && !previousSemClasses.includes("MA 16100")) {
                 return res.status(200).json({
-                    message: "MA 16100 must be taken before or concurrently",
+                    message: "MA 16100 must be taken before",
                     success: false,
                     coursesToTake: coursesWithCredits,
                     schedule: scheduleWithCredits
@@ -281,7 +281,7 @@ module.exports.AddClass = async (req, res) => {
             if (!taken.includes("MA 26100") && !previousSemClasses.includes("MA 26100") &&
                 !currentSemClasses.includes("MA 26100")) {
                 return res.status(200).json({
-                    message: "MA 26100 must be taken before",
+                    message: "MA 26100 must be taken before or concurrently",
                     success: false,
                     coursesToTake: coursesWithCredits,
                     schedule: scheduleWithCredits
@@ -521,6 +521,11 @@ module.exports.AddClass = async (req, res) => {
 
         //updating user's data in mongoDB
         await User.updateOne({email: req.email}, {schedule: schedule, coursesToTake: coursesToTake})
+
+        if (move) {
+            return next()
+        }
+
         return res.status(200).json({
             message: "Successfully updated schedule",
             success: true
@@ -805,6 +810,8 @@ module.exports.RemoveClass = async (req, res) => {
             }
         }
 
+        //TODO: classes that are not CS and not math (ex: science)
+
         //removes class from the schedule
         for (let i = 0; i < scheduleNames.length; i++) {
             if (scheduleNames[i].includes(className)) {
@@ -828,6 +835,421 @@ module.exports.RemoveClass = async (req, res) => {
     }
     catch {
         return res.status(400).json({message: "Schedule was not able to be updated"})
+    }
+}
+
+module.exports.removeOldClass = async(req, res) => {
+    //try to remove the class that's not in the semIndex
+    try {
+        const {semIndex, className} = req.body
+
+        //gets user data from MongoDB
+        const user = await User.findOne({email: req.email})
+
+        let scheduleNames = user.schedule
+
+        const db = new sqlite3.Database("classes.db")
+        const scheduleWithCredits = []
+        //gets the credit hours for each course name in the user's schedule
+        //creates an object for each course containing the name and credit hours and pushes to the schedule array
+        await new Promise(async (resolve, reject) => {
+            for (let i = 0; i < scheduleNames.length; i++) {
+                scheduleWithCredits.push([])
+                for (let j = 0; j < scheduleNames[i].length; j++) {
+                    await new Promise((res, rej) => {
+                        db.get('SELECT credit_hours FROM classesList WHERE class_id = ?',
+                            [scheduleNames[i][j]],
+                            (err, row) => {
+                                scheduleWithCredits[i].push({name: scheduleNames[i][j], credits: row.credit_hours})
+                                res()
+                            })
+                    })
+                }
+            }
+            resolve()
+        })
+        db.close()
+
+        //semester index of the duplicate class that needs to be removed
+        let removeSemIndex
+
+        for (let iterateSemIndex = 0; iterateSemIndex < scheduleNames.length; iterateSemIndex++) {
+            if (scheduleNames[iterateSemIndex].includes(className) && iterateSemIndex !== semIndex) {
+                removeSemIndex = iterateSemIndex
+            }
+        }
+
+        //if the class was moved to an earlier semester, there should not be an issue w/ removing the duplicate
+        //if condition below deals with the case in which the class is moved to a later semester
+        console.log('remove from sem ', removeSemIndex)
+        console.log('add to sem ', semIndex)
+
+        if(removeSemIndex < semIndex) {
+            console.log("check for errors")
+            if (className === 'MA 16100') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if ((scheduleNames[i].includes('CS 18000') && i !== semIndex) ||
+                        scheduleNames[i].includes('CS 18200') ||
+                        scheduleNames[i].includes('MA 16200')) {
+
+                        //remove newly added MA 16100
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('MA 16100'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'MA 16100'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "MA 16100 is a prereq for CS 18000 (may be taken concurrently), " +
+                                "CS 18200, and MA 16200",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'MA 16200') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if ((scheduleNames[i].includes('STAT 35000')) ||
+                        scheduleNames[i].includes('MA 26100')) {
+
+                        //remove newly added MA 16200
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('MA 16200'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'MA 16200'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "MA 16200 is a prereq for STAT 35000 and MA 26100",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'STAT 35000') {
+
+                let MA265Pre = false
+                //iterate from index 0 to semIndex at most (index of CS 35500 if comes before)
+                for (let i = 0; i < semIndex; i++) {
+                    if (scheduleNames[i].includes('CS 35500')) {
+                        break
+                    }
+                    if (scheduleNames[i].includes('MA 26500')) {
+                        MA265Pre = true
+                    }
+                }
+
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if ((scheduleNames[i].includes('CS 37300') && i !== semIndex) ||
+                        (scheduleNames[i].includes('CS 35500') && !MA265Pre)) {
+
+                        //remove newly added STAT 35000
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('STAT 35000'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'STAT 35000'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "STAT 35000 is a prereq for CS 37300 (may be taken concurrently) and either " +
+                                "STAT 35000 or MA 26500 can be used as a prereq for CS 35500",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'MA 26100') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if ((scheduleNames[i].includes('MA 26500') && i !== semIndex) ||
+                        scheduleNames[i].includes('CS 38100')) {
+
+                        //remove newly added MA 26100
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('MA 26100'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'MA 26100'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "MA 26100 is a prereq for MA 26500 (may be taken concurrently) " +
+                                "and CS 38100",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'MA 26500') {
+                let STAT350Pre = false
+                //iterate from index 0 to semIndex at most (index of CS 35500 if it comes before)
+                for (let i = 0; i < semIndex; i++) {
+                    if (scheduleNames[i].includes('CS 35500')) {
+                        break
+                    }
+                    if (scheduleNames[i].includes('STAT 35000')) {
+                        STAT350Pre = true
+                    }
+                }
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('CS 31400') ||
+                        (scheduleNames[i].includes('CS 35500') && !STAT350Pre) ||
+                        scheduleNames[i].includes('CS 33400')) {
+
+                        //remove newly added MA 16100
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('MA 26500'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'MA 26500'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "MA 26500 is a prereq for CS 31400 and CS 33400, and either MA 26500 or " +
+                                "STAT 35000 can be used as a prereq for CS 35500",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'CS 18000') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('CS 18200') ||
+                        scheduleNames[i].includes('CS 24000') ||
+                        scheduleNames[i].includes('CS 31400')) {
+
+                        //remove newly added CS 18000
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('CS 18000'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'CS 18000'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "CS 18000 is a prereq for CS 18200, CS 24000, and CS 31400",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'CS 18200') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('CS 25100') ||
+                        scheduleNames[i].includes('CS 25000')) {
+
+                        //remove newly added CS 18200
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('CS 18200'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'CS 18200'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "CS 18200 is a prereq for CS 25000 and CS 25100",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'CS 24000') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('CS 25000') ||
+                        scheduleNames[i].includes('CS 25100') ||
+                        scheduleNames[i].includes('CS 33400')) {
+
+                        //remove newly added CS 24000
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('CS 24000'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'CS 24000'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "CS 24000 is a prereq for CS 25000, CS 25100, and CS 33400",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'CS 25000') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('CS 25200')) {
+
+                        //remove newly added CS 25000
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('CS 25000'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'CS 25000'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "CS 25000 is a prereq for CS 25200",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'CS 25100') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('CS 25200') ||
+                        scheduleNames[i].includes('CS 40800') ||
+                        scheduleNames[i].includes('CS 44800') ||
+                        scheduleNames[i].includes('CS 47100') ||
+                        scheduleNames[i].includes('CS 47300') ||
+                        scheduleNames[i].includes('CS 34800') ||
+                        scheduleNames[i].includes('CS 30700') ||
+                        scheduleNames[i].includes('CS 35500') ||
+                        scheduleNames[i].includes('CS 38100') ||
+                        scheduleNames[i].includes('CS 37300')
+                        ) {
+
+                        //remove newly added CS 25100
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('CS 25100'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'CS 25100'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "CS 25100 is a prereq for CS 40800, CS 44800, CS 47100, CS 47300, CS 34800, " +
+                                "CS 30700, CS 35500, CS 38100, CS 37300",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'CS 25200') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('CS 48900') ||
+                        scheduleNames[i].includes('CS 35400') ||
+                        scheduleNames[i].includes('CS 35200')) {
+
+                        //remove newly added CS 25200
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('CS 25200'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'CS 25200'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "CS 25200 is a prereq for CS 48900, CS 35400, CS 35200",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'CS 30700') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('CS 40700')) {
+
+                        //remove newly added CS 30700
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('CS 30700'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'CS 30700'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "CS 30700 is a prereq for CS 40700",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'CS 35400') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if ((scheduleNames[i].includes('CS 42200') && i !== semIndex) ||
+                        (scheduleNames[i].includes('CS 42600') && i !== semIndex)) {
+
+                        //remove newly added CS 35400
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('CS 35400'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'CS 35400'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "CS 35400 is a prereq for CS 42200 (may be taken concurrently) and CS 42600" +
+                                " (may be taken concurrently)",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'CS 35200') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if ((scheduleNames[i].includes('CS 45600') && i !== semIndex) ||
+                        scheduleNames[i].includes('CS 35300')) {
+
+                        //remove newly added CS 35200
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('CS 35200'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'CS 35200'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "CS 35200 is a prereq for CS 45600 (may be taken concurrently) and CS 35300",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'CS 38100') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('CS 48300')) {
+
+                        //remove newly added CS 38100
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('CS 38100'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'CS 38100'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "CS 38100 is a prereq for CS 48300",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'CS 33400') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('CS 43400')) {
+
+                        //remove newly added CS 33400
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('CS 33400'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'CS 33400'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "CS 33400 is a prereq for CS 43400",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+        }
+
+        console.log('move allowed')
+        //update mongodb
+        scheduleNames[removeSemIndex].splice(scheduleNames[removeSemIndex].indexOf(className), 1)
+        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+        //updated schedule w/ credits and return
+        for (let i = 0; i < scheduleWithCredits[removeSemIndex].length; i++) {
+            if (scheduleWithCredits[removeSemIndex][i].name === className) {
+                scheduleWithCredits[removeSemIndex].splice(i, 1)
+                break
+            }
+        }
+        return res.status(200).json({
+            message: 'Moved class successfully',
+            success: true,
+            schedule: scheduleWithCredits
+        })
+    }
+    catch {
+        return res.status(400).json({message: "There was an unexpected error...unfortunately, you will have to remake your schedule"})
     }
 }
 

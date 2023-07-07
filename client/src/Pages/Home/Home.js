@@ -113,7 +113,8 @@ function Home() {
             `${REACT_APP_SERVER_URL}/schedule-add`,
             {
                 semIndex: semIndex,
-                className: className
+                className: className,
+                move: false,
             },
             {withCredentials: true}
         )
@@ -158,37 +159,20 @@ function Home() {
     //called when a class is moved from one semester table to another
     async function moveClass(semIndex, className) {
         axios.post(
-            `${REACT_APP_SERVER_URL}/schedule-remove`,
+            `${REACT_APP_SERVER_URL}/schedule-move`,
             {
-                className: className
+                semIndex: semIndex,
+                className: className,
+                move: true,
             },
             {withCredentials: true}
         )
-            .then(() => {
-                axios.post(
-                    `${REACT_APP_SERVER_URL}/schedule-add`,
-                    {
-                        semIndex: semIndex,
-                        className: className
-                    },
-                    {withCredentials: true}
-                )
-                    .then((response) => {
-                        const {message, success, coursesToTake, schedule} = response.data
-                        if (!success) {
-                            ErrorAction(message)
-                            setCoursesToTake(coursesToTake)
-                            setSchedule(schedule)
-                        }
-                    })
-                    .catch(error => {
-                        const {message} = error.data
-                        ErrorAction(message)
-                    })
-            })
-            .catch(error => {
-                const {message} = error.data
-                ErrorAction(message)
+            .then(response => {
+                const {message, success, schedule} = response.data
+                if (!success) {
+                    ErrorAction(message)
+                    setSchedule(schedule)
+                }
             })
     }
 
