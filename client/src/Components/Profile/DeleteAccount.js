@@ -15,6 +15,10 @@ const {REACT_APP_SERVER_URL} = process.env;
  * Renders a button component to delete the user's account. When clicked, it displays a confirmation dialog
  * and if the user clicks in confirm, it will delete de account.
  *
+ * @param {function} setIsFetching - A function to set the state for fetching status.
+ * @param {function} setUnexpectedError - A function to set the state for unexpected error status.
+ * @param {number} fetchingTimeout - The timeout duration for setting the fetching status.
+ *
  * @return {JSX.Element} - The rendered delete account button.
  */
 

@@ -16,6 +16,7 @@ import FetchingStatus from "../../Components/Utils/FetchingStatus";
  * @return {JSX.Element} - Displays various screens that all deal with setting user information necessary
  * to determine what classes the user needs to take and generating their base (empty) schedule
  */
+
 function Create() {
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);

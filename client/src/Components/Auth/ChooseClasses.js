@@ -22,6 +22,7 @@ const {REACT_APP_SERVER_URL} = process.env;
  * @param next - The next functional component to be rendered after classes are saved (ChooseOptions)
  * @param setIsFetching State the page loading status.
  * @param setUnexpectedError Show error in case an unexpected error with the server.
+ *
  * @return {JSX.Element} - Menu where the user can search for classes using a filter and select them
  * as classes they have already taken
  */

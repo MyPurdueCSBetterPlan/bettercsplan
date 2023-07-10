@@ -7,17 +7,26 @@ import {
     Button, Checkbox,
     Dialog,
     DialogActions,
-    DialogContent,
-    DialogTitle, FormControlLabel, TextField, Typography,
+    DialogContent, FormControlLabel, TextField, Typography,
     useTheme
 } from "@mui/material";
 import React, {useState} from "react";
 import {buttonStyle, textInputStyle} from "../../Themes/ThemeStyles";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
-import {clear} from "@testing-library/user-event/dist/clear";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
+
+/**
+ * Renders a button to change the user's password. When clicked, it displays a dialog
+ * with input fields for the old password, new password, and confirm password.
+ *
+ * @param {function} setIsFetching - A function to set the state for fetching status.
+ * @param {function} setUnexpectedError - A function to set the state for unexpected error status.
+ * @param {number} fetchingTimeout - The timeout duration for setting the fetching status.
+ *
+ * @return {JSX.Element} - The rendered change password button.
+ */
 function ChangePassword({setIsFetching, setUnexpectedError, fetchingTimeout}) {
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies(["token"]);

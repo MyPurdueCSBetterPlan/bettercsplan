@@ -20,8 +20,10 @@ import {buttonStyle} from "../../Themes/ThemeStyles";
 
 function NotFound() {
     const navigate = useNavigate();
+
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
+
     const emojiNotFound = theme.palette.mode === 'dark' ? emojiNotFoundLight : emojiNotFoundDark;
 
     return (

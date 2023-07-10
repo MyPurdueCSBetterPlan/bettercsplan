@@ -55,7 +55,7 @@ function Signup() {
 
     const explanation = "MyBetterCSPlan, we only store the information that is necessary for our website to " +
         "function properly. This includes your name, email address, an encrypted version of your password, the list " +
-        "of courses you need to take, and your schedule. That’s all we keep!"
+        "of courses you need to take, and your schedule. That’s all we keep!";
 
 
     // Function to handle input change for name field

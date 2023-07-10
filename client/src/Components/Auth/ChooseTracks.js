@@ -8,12 +8,11 @@ import {ColorModeContext} from "../../Themes/ColorModeContext";
 const {REACT_APP_SERVER_URL} = process.env;
 
 /**
- *
  * @param next - the next functional component to be returned after saving tracks (ChooseClasses)
  * @param setIsFetching State the page loading status.
  * @param setUnexpectedError Show error in case an unexpected error with the server.
- * @return {JSX.Element} - menu where user can select/save their desired tracks
  *
+ * @return {JSX.Element} - menu where user can select/save their desired tracks
  */
 
 function ChooseTracks({next, setIsFetching, setUnexpectedError}) {

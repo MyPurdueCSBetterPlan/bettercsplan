@@ -28,7 +28,7 @@ export function GoogleAuth({dispatch, navigate, mode}) {
     // Check if the Google login window is closed at regular intervals
     const checkWindowClosed = setInterval(() => {
         if (googleWindow.closed) {
-            clearInterval(checkWindowClosed)
+            clearInterval(checkWindowClosed);
         }
     }, 500)
 
@@ -39,7 +39,7 @@ export function GoogleAuth({dispatch, navigate, mode}) {
             let isLogin = {value: true};
             dispatch(googleUserAction(event.data.payload, mode, isLogin));
             if (isLogin.value) {
-                navigate('/')
+                navigate('/');
             } else {
                 navigate("/login");
             }
@@ -47,11 +47,11 @@ export function GoogleAuth({dispatch, navigate, mode}) {
             await alert.fire({
                 title: event.data.payload.error,
                 icon: 'error',
-                timer: 10000
+                timer: 10000,
             })
-            navigate('/login')
+            navigate('/login');
         } else if (event.data.type === 'AUTH_ERROR_USER_EXIST') {
-            navigate('/login')
+            navigate('/login');
             ErrorAction("This user already exist. Use Google Login instead.");
         }
     })
