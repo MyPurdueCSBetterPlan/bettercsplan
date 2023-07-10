@@ -427,7 +427,7 @@ module.exports.AddClass = async (req, res, next) => {
         }
         //https://selfservice.mypurdue.purdue.edu/prod/bwckctlg.p_disp_course_detail?cat_term_in=202410&subj_code_in=PHYS&crse_numb_in=22100
         else if (className === "PHYS 22100") {
-            if ((!taken.includes("PHYS 22000") && !previousSemClasses.includes("PHYS 22000")) ||
+            if ((!taken.includes("PHYS 22000") && !previousSemClasses.includes("PHYS 22000")) &&
                 (!taken.includes("PHYS 17200") && !previousSemClasses.includes("PHYS 17200"))) {
                 return res.status(200).json({
                     message: "Either PHYS 22000 or PHYS 17200 must be taken before",
@@ -450,8 +450,8 @@ module.exports.AddClass = async (req, res, next) => {
         }
         //https://selfservice.mypurdue.purdue.edu/prod/bwckctlg.p_disp_course_detail?cat_term_in=202410&subj_code_in=PHYS&crse_numb_in=23400
         else if (className === "PHYS 23400") {
-            if ((!taken.includes("PHYS 22000") && !previousSemClasses.includes("PHYS 22000")) ||
-                (!taken.includes("PHYS 17200") && !previousSemClasses.includes("PHYS 17200")) ||
+            if ((!taken.includes("PHYS 22000") && !previousSemClasses.includes("PHYS 22000")) &&
+                (!taken.includes("PHYS 17200") && !previousSemClasses.includes("PHYS 17200")) &&
                 (!taken.includes("PHYS 23300") && !previousSemClasses.includes("PHYS 23300"))) {
                 return res.status(200).json({
                     message: "Either PHYS 22000 or PHYS 17200 or PHYS 23300 must be taken before",
@@ -1077,6 +1077,9 @@ module.exports.removeOldClass = async(req, res) => {
             }
         }
 
+        const prefix = className.split(" ")[0]
+        const number = className.split(" ")[1]
+
         //if the class was moved to an earlier semester, there should not be an issue w/ removing the duplicate
         //if condition below deals with the case in which the class is moved to a later semester
         console.log('remove from sem ', removeSemIndex)
@@ -1126,20 +1129,20 @@ module.exports.removeOldClass = async(req, res) => {
             }
             else if (className === 'STAT 35000') {
 
-                let MA265Pre = false
+                let CS355Met = false
                 //iterate from index 0 to semIndex at most (index of CS 35500 if comes before)
                 for (let i = 0; i < semIndex; i++) {
                     if (scheduleNames[i].includes('CS 35500')) {
                         break
                     }
                     if (scheduleNames[i].includes('MA 26500')) {
-                        MA265Pre = true
+                        CS355Met = true
                     }
                 }
 
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if ((scheduleNames[i].includes('CS 37300') && i !== semIndex) ||
-                        (scheduleNames[i].includes('CS 35500') && !MA265Pre)) {
+                        (scheduleNames[i].includes('CS 35500') && !CS355Met)) {
 
                         //remove newly added STAT 35000
                         scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('STAT 35000'), 1)
@@ -1177,19 +1180,19 @@ module.exports.removeOldClass = async(req, res) => {
                 }
             }
             else if (className === 'MA 26500') {
-                let STAT350Pre = false
+                let CS355Met = false
                 //iterate from index 0 to semIndex at most (index of CS 35500 if it comes before)
                 for (let i = 0; i < semIndex; i++) {
                     if (scheduleNames[i].includes('CS 35500')) {
                         break
                     }
                     if (scheduleNames[i].includes('STAT 35000')) {
-                        STAT350Pre = true
+                        CS355Met = true
                     }
                 }
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('CS 31400') ||
-                        (scheduleNames[i].includes('CS 35500') && !STAT350Pre) ||
+                        (scheduleNames[i].includes('CS 35500') && !CS355Met) ||
                         scheduleNames[i].includes('CS 33400')) {
 
                         //remove newly added MA 16100
@@ -1426,6 +1429,296 @@ module.exports.removeOldClass = async(req, res) => {
                     }
                 }
             }
+            else if (className === 'BIOL 11000') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('BIOL 11100')) {
+
+                        //remove newly added BIOL 11000
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('BIOL 11000'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'BIOL 11000'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "BIOL 11000 is a prereq for BIOL 11100",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'BIOL 12100') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('BIOL 13100')) {
+
+                        //remove newly added BIOL 12100
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('BIOL 12100'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'BIOL 12100'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "BIOL 12100 is a prereq for BIOL 13100",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'BIOL 13100') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('BIOL 13500')) {
+
+                        //remove newly added BIOL 13100
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('BIOL 13100'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'BIOL 13100'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "BIOL 13100 is a prereq for BIOL 13500",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'CHM 11500') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('CHM 11600')) {
+
+                        //remove newly added CHM 11500
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('CHM 11500'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'CHM 11500'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "CHM 11500 is a prereq for CHM 11600",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'CHM 12500') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('CHM 12600')) {
+
+                        //remove newly added CHM 12500
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('CHM 12500'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'CHM 12500'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "CHM 12500 is a prereq for CHM 12600",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'EAPS 11100') {
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('EAPS 11200')) {
+
+                        //remove newly added EAPS 11100
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('EAPS 11100'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'EAPS 11100'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "EAPS 11100 is a prereq for EAPS 11200",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'PHYS 22000') {
+                let PHYS221Met = false
+                let PHYS234Met = false
+
+                //iterate from index 0 to semIndex at most (index of PHYS 22100 if it comes before)
+                for (let i = 0; i < semIndex; i++) {
+                    if (scheduleNames[i].includes('PHYS 22100')) {
+                        break
+                    }
+                    if (scheduleNames[i].includes('PHYS 17200')) {
+                        PHYS221Met = true
+                    }
+                }
+
+                //iterate from index 0 to semIndex at most (index of PHYS 23400 if it comes before)
+                for (let i = 0; i < semIndex; i++) {
+                    if (scheduleNames[i].includes('PHYS 23400')) {
+                        break
+                    }
+                    if (scheduleNames[i].includes('PHYS 17200') || scheduleNames[i].includes('PHYS 23300')) {
+                        PHYS234Met = true
+                    }
+                }
+
+
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if ((scheduleNames[i].includes('PHYS 22100') && !PHYS221Met) ||
+                        (scheduleNames[i].includes('PHYS 23400') && !PHYS234Met)) {
+
+                        //remove newly added PHYS 22000
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('PHYS 22000'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'PHYS 22000'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "PHYS 22100 requires either PHYS 22000 or PHYS 17200. " +
+                                "PHYS 23400 requires PHYS 22000, PHYS 17200, or PHYS 23300.",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'PHYS 17200') {
+                let PHYS221Met = false
+                let PHYS234Met = false
+
+                //iterate from index 0 to semIndex at most (index of PHYS 221 if it comes before)
+                for (let i = 0; i < semIndex; i++) {
+                    if (scheduleNames[i].includes('PHYS 22100')) {
+                        break
+                    }
+                    if (scheduleNames[i].includes('PHYS 22000')) {
+                        PHYS221Met = true
+                    }
+                }
+
+                //iterate from index 0 to semIndex at most (index of PHYS 234 if it comes before)
+                for (let i = 0; i < semIndex; i++) {
+                    if (scheduleNames[i].includes('PHYS 23400')) {
+                        break
+                    }
+                    if (scheduleNames[i].includes('PHYS 22000') || scheduleNames[i].includes('PHYS 23300')) {
+                        PHYS234Met = true
+                    }
+                }
+
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if ((scheduleNames[i].includes('PHYS 22100') && !PHYS221Met) ||
+                        (scheduleNames[i].includes('PHYS 23400') && !PHYS234Met) ||
+                        scheduleNames[i].includes('PHYS 27200') ||
+                        scheduleNames[i].includes('PHYS 24100')) {
+
+                        //remove newly added PHYS 17200
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('PHYS 17200'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'PHYS 17200'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "PHYS 22100 requires either PHYS 22000 or PHYS 17200. " +
+                                "PHYS 23400 requires either PHYS 22000, PHYS 17200, or PHYS 23300. " +
+                                "PHYS 27200 and PHYS 24100 both require PHYS 17200.",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (className === 'PHYS 23300') {
+                let PHYS234Met = false
+
+                //iterate from index 0 to semIndex at most (index of PHYS 23400 if it comes before)
+                for (let i = 0; i < semIndex; i++) {
+                    if (scheduleNames[i].includes('PHYS 23400')) {
+                        break
+                    }
+                    if (scheduleNames[i].includes('PHYS 17200') || scheduleNames[i].includes('PHYS 22000')) {
+                        PHYS234Met = true
+                    }
+                }
+
+                for (let i = removeSemIndex; i <= semIndex; i++) {
+                    if (scheduleNames[i].includes('PHYS 23400') && !PHYS234Met) {
+
+                        //remove newly added PHYS 23300
+                        scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('PHYS 23300'), 1)
+                        scheduleWithCredits[semIndex]
+                            .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === 'PHYS 23300'), 1)
+                        await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                        return res.status(200).json({
+                            message: "PHYS 23400 requires either PHYS 22000, PHYS 17200, or PHYS 23300",
+                            success: false,
+                            schedule: scheduleWithCredits
+                        })
+                    }
+                }
+            }
+            else if (prefix === "ASL" || prefix === "ARAB" || prefix === "CHNS" || prefix === "FR" || prefix === "GER" ||
+                prefix === "GREK" || prefix === "HEBR" || prefix === "ITAL" || prefix === "JPNS" || prefix === "KOR" ||
+                prefix === "LATN" || prefix === "PTGS" || prefix === "RUSS" || prefix === "SPAN") {
+                if (number === '20100') {
+                    const dependent = prefix + ' 20200'
+                    for (let i = removeSemIndex; i <= semIndex; i++) {
+                        if (scheduleNames[i].includes(dependent)) {
+
+                            //remove newly added lang 201-level
+                            scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf(className), 1)
+                            scheduleWithCredits[semIndex]
+                                .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === className), 1)
+                            await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                            return res.status(200).json({
+                                message: "Language 201-level course are prereqs for Language 202-level courses",
+                                success: false,
+                                schedule: scheduleWithCredits
+                            })
+                        }
+                    }
+                }
+                else if (number === '10200') {
+                    const dependent = prefix + ' 20100'
+                    for (let i = removeSemIndex; i <= semIndex; i++) {
+                        if (scheduleNames[i].includes(dependent)) {
+
+                            //remove newly added lang 102-level
+                            scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf(className), 1)
+                            scheduleWithCredits[semIndex]
+                                .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === className), 1)
+                            await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                            return res.status(200).json({
+                                message: "Language 102-level course are prereqs for Language 201-level courses",
+                                success: false,
+                                schedule: scheduleWithCredits
+                            })
+                        }
+                    }
+                }
+                else if (number === '10100') {
+                    const dependent = prefix + ' 10200'
+                    for (let i = removeSemIndex; i <= semIndex; i++) {
+                        if (scheduleNames[i].includes(dependent)) {
+
+                            //remove newly added lang 101-level
+                            scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf(className), 1)
+                            scheduleWithCredits[semIndex]
+                                .splice(scheduleWithCredits[semIndex].findIndex(course => course.name === className), 1)
+                            await User.updateOne({email: req.email}, {schedule: scheduleNames})
+
+                            return res.status(200).json({
+                                message: "Language 101-level course are prereqs for Language 102-level courses",
+                                success: false,
+                                schedule: scheduleWithCredits
+                            })
+                        }
+                    }
+                }
+            }
+
         }
 
         console.log('move allowed')
