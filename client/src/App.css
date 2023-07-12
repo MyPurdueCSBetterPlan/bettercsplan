@@ -1,0 +1,53 @@
+
+.footer {
+    margin-top: 70px;
+    height: 100px;
+}
+
+@media (max-width: 905px) {
+    .footer {
+        margin-top: 0;
+        height: 100px;
+    }
+}
+
+@media screen and (min-width:900px) and (max-width:1440px) and (orientation:portrait){
+    .footer {
+        position:absolute;
+        bottom:0;
+        width:100%;
+        height:100px;
+    }
+}
+
+
+.footer-bottom {
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:100px;
+}
+
+
+@media (max-width: 350px) {
+    .footer-bottom {
+        position: relative;
+    }
+}
+
+.footer-create {
+    margin-top: 20px;
+    height: 100px;
+}
+
+@media (max-width: 905px) {
+    .footer-create {
+        position: relative;
+    }
+}
+
+
+
+
+
+

@@ -6,11 +6,9 @@ import {useDispatch} from "react-redux";
 import GoogleButton from "react-google-button";
 import {ErrorAction, SuccessActionLogin} from "../../Redux/Actions/GlobalActions";
 import Header from "../../Components/Header/Header";
-import Footer from "../../Components/Footer/Footer";
 import {
     Box,
     Button, Checkbox,
-    Container,
     Divider,
     FormControlLabel,
     Grid,
@@ -42,7 +40,7 @@ function Signup() {
     //Loading status page
     const [isFetching, setIsFetching] = useState(false);
     const [unexpectedError, setUnexpectedError] = useState(false);
-    const fetchingTimeout= 3000;
+    const fetchingTimeout = 3000;
 
     // Declare state variable for showing/hiding password
     const [showPassword, setShowPassword] = useState(false);
@@ -243,19 +241,17 @@ function Signup() {
         <>
             <Box>
                 <Grid container spacing={10} direction="column">
-                    <Grid item xs={12} sm={6} lg={4}>
-                        <Container fixed>
-                            <Header mode={"NOT_USER_SIGNUP"}/>
-                        </Container>
+                    <Grid item xs={12} md={6} lg={4}>
+                        <Header mode={"NOT_USER_SIGNUP"}/>
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4}>
+                    <Grid item xs={12} md={6} lg={4}>
                         <Box sx={{
-                            margin: '0 200px',
+                            margin: '0 100px',
                             '@media (max-width: 600px)': {
                                 margin: '0 30px',
                             },
                         }}>
-                            <Grid container spacing={3} direction="column" alignItems="center" justifyContent="center">
+                            <Grid container spacing={3} direction="column">
                                 <Grid item xs={12} md={6} lg={4}>
                                     <Paper sx={{
                                         padding: '1%',
@@ -270,6 +266,7 @@ function Signup() {
                                 </Grid>
                                 <Grid item xs={12} md={6} lg={4}>
                                     <Paper sx={{
+                                        margin: '0 auto',
                                         padding: '3%',
                                         width: '100%',
                                     }} elevation={10}>
@@ -384,19 +381,6 @@ function Signup() {
                         </Box>
                     </Grid>
                 </Grid>
-                <Box
-                    sx={{
-                        paddingTop: '5px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        '@media (max-width: 600px)': {
-                            justifyContent: 'flex-start',
-                        },
-                    }}
-                >
-                    <Footer page={"POSITION_RELATIVE"}/>
-                </Box>
             </Box>
             <FetchingStatus isFetching={isFetching} unexpectedError={unexpectedError}/>
         </>

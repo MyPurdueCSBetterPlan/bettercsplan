@@ -22,38 +22,25 @@ const Footer = ({page}) => {
     };
 
     return (
-        <Container sx={page === "POSITION_RELATIVE" ? {
-            marginTop: 'calc(10% + 60px)',
-            position: 'relative',
-            bottom: 0,
-            width: '100%',
-        } : {
-            marginTop: 'calc(10% + 60px)',
-            position: 'fixed',
-            bottom: 0,
-            width: '100%',
-        }} component="footer">
-            <Box
-                sx={{
-                    flexGrow: 2,
-                    justifyContent: "center",
-                    display: "flex",
-                    mb: 1,
-                }}
-            >
+        <Box component="footer">
+            <Container maxWidth="sm">
                 <Typography sx={{
                     '@media (max-width: 600px)': {
-                    fontSize: '10px',
-                    textAlign: 'center'
-                },
+                        fontSize: '10px',
+                        textAlign: 'center'
+                    },
+                    '@media (max-width: 400px)': {
+                        fontSize: '8px',
+                        textAlign: 'center'
+                    },
                 }} variant="caption">
                     Made with love ❤️ by CS Purdue Students. Copyright ©{getCurrentYear()}.
                     <a href="https://github.com/MyPurdueCSBetterPlan" target="_blank" rel="noopener noreferrer">
                         <FontAwesomeIcon className={`${mode}-github-icon`} icon={faGithub} size="2x"/>
                     </a>
                 </Typography>
-            </Box>
-        </Container>
+            </Container>
+        </Box>
 
     )
 }

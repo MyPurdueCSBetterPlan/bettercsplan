@@ -1,7 +1,6 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import Footer from "../../Components/Footer/Footer";
-import {Box, Button, Container, Grid, Typography, useTheme} from "@mui/material";
+import {Box, Button, Grid, Skeleton, Typography, useTheme} from "@mui/material";
 import emojiNotFoundLight from './emoji-light.png';
 import emojiNotFoundDark from './emoji-dark.png';
 import {ColorModeContext} from "../../Themes/ColorModeContext";
@@ -26,8 +25,16 @@ function NotFound() {
 
     const emojiNotFound = theme.palette.mode === 'dark' ? emojiNotFoundLight : emojiNotFoundDark;
 
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(true);
+        }, 500);
+    }, []);
+
     return (
-        <Container fixed>
+        <Box>
             <Grid container spacing={2} direction="column">
                 <Grid item xs={12} sm={6} lg={4}>
                     <Header mode={"NOT_FOUND"}/>
@@ -51,11 +58,18 @@ function NotFound() {
                                 marginBottom: '30px',
                             }}
                         >
-                            <img
-                                src={emojiNotFound}
-                                alt=""
-                                width={220} height={220}
-                            />
+                            {
+                                loading ? (
+                                    <img
+                                        src={emojiNotFound}
+                                        alt=""
+                                        width={220} height={220}
+                                        loading="lazy"
+                                    />
+                                ) : (
+                                    <Skeleton variant="circular" width={220} height={220}/>
+                                )
+                            }
                         </Box>
                         <Typography variant="h1" sx={{
                             fontSize: '5rem',
@@ -96,20 +110,7 @@ function NotFound() {
                     </Box>
                 </Grid>
             </Grid>
-            <Box
-                sx={{
-                    paddingTop: '5px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    '@media (max-width: 600px)': {
-                        justifyContent: 'flex-start',
-                    },
-                }}
-            >
-                <Footer/>
-            </Box>
-        </Container>
+        </Box>
     )
 }
 

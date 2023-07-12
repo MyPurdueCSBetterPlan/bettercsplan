@@ -21,7 +21,7 @@ function ChooseOptions({setIsFetching, setUnexpectedError}) {
     const colorMode = React.useContext(ColorModeContext);
 
     //LoadingPage Status
-    const fetchingTimeout= 3000;
+    const fetchingTimeout = 3000;
 
     //user's years until graduation
     const [years, setYears] = useState(4);

@@ -6,7 +6,6 @@ import GoogleButton from 'react-google-button'
 import {useDispatch} from "react-redux";
 import {ErrorAction, SuccessActionLogin} from "../../Redux/Actions/GlobalActions";
 import Header from "../../Components/Header/Header";
-import Footer from "../../Components/Footer/Footer";
 import {
     Box,
     Button,
@@ -15,8 +14,7 @@ import {
     Paper,
     TextField,
     Typography,
-    useTheme,
-    Container, FormControlLabel, Checkbox, CircularProgress, Backdrop,
+    useTheme, FormControlLabel, Checkbox,
 } from "@mui/material";
 import {buttonStyle, linkStyle, textInputStyle} from "../../Themes/ThemeStyles";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
@@ -28,6 +26,7 @@ const {REACT_APP_SERVER_URL} = process.env;
 /**
  * @return {JSX.Element} - Login screen
  */
+
 function Login() {
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
@@ -37,7 +36,7 @@ function Login() {
     //Loading status page
     const [isFetching, setIsFetching] = useState(false);
     const [unexpectedError, setUnexpectedError] = useState(false);
-    const fetchingTimeout= 3000;
+    const fetchingTimeout = 3000;
 
     // Declare state variables for error messages
     const [errorMessageEmail, setErrorMessageEmail] = useState('');
@@ -53,7 +52,7 @@ function Login() {
         " to see a list of alternative classes that meet the same requirements. Then, you can plan your coursework" +
         " up until graduation by assigning classes to different semesters. Worried about prerequisites and semester " +
         "availability? Our app will tell you if you have not met any prerequisites or if a class is not offered during" +
-        " a certain semester. Have any complaints or suggestions? Feel free to contact us!"
+        " a certain semester. Have any complaints or suggestions? Feel free to contact us!";
 
 
     //called when user presses submit button
@@ -135,21 +134,19 @@ function Login() {
             <Box>
                 <Grid container spacing={10} direction="column">
                     <Grid item xs={12} sm={6} lg={4}>
-                        <Container fixed>
-                            <Header mode={"NOT_USER_LOGIN"}/>
-                        </Container>
+                        <Header mode={"NOT_USER_LOGIN"}/>
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4}>
+                    <Grid item xs={12} sm={6}>
                         <Box sx={{
                             display: 'flex',
                             justifyContent: 'center',
-                            margin: '0 100px',
+                            margin: '0 50px',
                             '@media (max-width: 600px)': {
                                 margin: '0 30px',
                             },
                         }}>
-                            <Grid container spacing={10} justifyContent="center">
-                                <Grid item xs={12} md={6} lg={4}>
+                            <Grid container spacing={10} justifyContent="center" sx={{flexWrap: 'wrap'}}>
+                                <Grid item xs={12} md={6}>
                                     <Paper sx={{
                                         padding: '5%',
                                         height: '100%',
@@ -161,7 +158,7 @@ function Login() {
                                         <Typography variant="h7">{explanation}</Typography>
                                     </Paper>
                                 </Grid>
-                                <Grid item xs={12} md={6} lg={4}>
+                                <Grid item xs={12} md={6}>
                                     <Paper sx={{
                                         padding: '5%',
                                         height: '100%',
@@ -248,19 +245,6 @@ function Login() {
                         </Box>
                     </Grid>
                 </Grid>
-                <Box
-                    sx={{
-                        paddingTop: '5px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        '@media (max-width: 600px)': {
-                            justifyContent: 'flex-start',
-                        },
-                    }}
-                >
-                    <Footer page={"POSITION_RELATIVE"}/>
-                </Box>
             </Box>
             <FetchingStatus isFetching={isFetching} unexpectedError={unexpectedError}/>
         </>
