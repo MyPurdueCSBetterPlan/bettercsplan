@@ -32,13 +32,13 @@ function ChooseTracks({next, setIsFetching, setUnexpectedError}) {
     function saveTracks(e) {
         e.preventDefault();
 
-        const loadingDelay = setTimeout(() => {
-            setIsFetching(true);
-        }, fetchingTimeout);
-
         if (tracks.length === 0) {
             setEmptyFields(true);
         } else {
+            const loadingDelay = setTimeout(() => {
+                setIsFetching(true);
+            }, fetchingTimeout);
+
             axios.post(
                 `${REACT_APP_SERVER_URL}/tracks`,
                 {

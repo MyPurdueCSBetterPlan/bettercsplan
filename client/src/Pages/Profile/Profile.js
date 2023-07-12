@@ -5,7 +5,6 @@ import axios from "axios";
 import DeleteAccount from "../../Components/Profile/DeleteAccount";
 import ChangePassword from "../../Components/Profile/ChangePassword";
 import Header from "../../Components/Header/Header";
-import Footer from "../../Components/Footer/Footer";
 import {Box, Container, Grid, Typography} from "@mui/material";
 import FetchingStatus from "../../Components/Utils/FetchingStatus";
 
@@ -85,112 +84,112 @@ function Profile() {
 
     return (
         <>
-            <Container fixed>
+            <Box>
                 <Grid container spacing={2} direction="column">
                     <Grid item xs={12} sm={6} lg={4}>
                         <Header mode={"USER_VERIFIED"}/>
                     </Grid>
-                    <Grid item xs={12} sm={6} lg={4}>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                flexDirection: 'column',
-                                marginTop: '100px',
-                                marginRight: '20px'
-                            }}
-                        >
-                            <Typography variant="h1" sx={{
-                                fontSize: '5rem',
-                                '@media (max-width: 600px)': {
-                                    fontSize: '3rem',
-                                    textAlign: 'center'
-                                },
-                            }}
-                            >
-                                Profile Information
-                            </Typography>
-                            <Typography variant="h4" sx={{
-                                marginTop: '10px',
-                                '@media (max-width: 600px)': {
-                                    fontSize: '1.5rem',
-                                },
-                            }}
-                            >
-                                <center>
-                                    <span>Name:</span> <br/>{name} <br/>
-                                    <span>Email:</span> <br/>{email}<br/>
-                                    {googleID && (
-                                        <span>Google Login: Enabled.</span>
-                                    )}
-                                </center>
-                            </Typography>
-                        </Box>
-                    </Grid>
-                    <Grid item xs={12} sm={6} lg={4}>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                marginTop: '50px',
-                            }}
-                        >
-                            {!googleID ? (
-                                <Grid container spacing={2} justifyContent="center" alignItems="center">
-                                    <Grid item xs={12} sm={6} lg={4}>
-                                        <Box
-                                            sx={{
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                            }}
+                    <Grid item xs={12} sm={6}>
+                        <Container fixed>
+                            <Grid container spacing={2} direction="column">
+                                <Grid item xs={12} md={6}>
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            flexDirection: 'column',
+                                            marginTop: '100px',
+                                            marginRight: '20px'
+                                        }}
+                                    >
+                                        <Typography variant="h1" sx={{
+                                            fontSize: '5rem',
+                                            textAlign: 'center',
+                                            '@media (max-width: 600px)': {
+                                                fontSize: '3rem',
+                                            },
+                                            '@media (max-width: 400px)': {
+                                                fontSize: '2.5rem',
+                                            },
+                                        }}
                                         >
-                                            <ChangePassword setIsFetching={setIsFetching}
-                                                            setUnexpectedError={setUnexpectedError}
-                                                            fetchingTimeout={fetchingTimeout}
-                                            />
-                                        </Box>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} lg={4}>
-                                        <Box
-                                            sx={{
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                            }}
+                                            Profile Information
+                                        </Typography>
+                                        <Typography variant="h4" sx={{
+                                            marginTop: '10px',
+                                            textAlign: 'center',
+                                            '@media (max-width: 600px)': {
+                                                fontSize: '1.5rem',
+                                            },
+                                        }}
                                         >
+                                            <center>
+                                                <span>Name:</span> <br/>{name} <br/>
+                                                <span>Email:</span> <br/>{email}<br/>
+                                                {googleID && (
+                                                    <span>Google Login: Enabled.</span>
+                                                )}
+                                            </center>
+                                        </Typography>
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            marginTop: '20px',
+                                            '@media (max-width: 400px)': {
+                                                marginBottom: '100px',
+                                            }
+                                        }}
+                                    >
+                                        {!googleID ? (
+                                            <Grid container spacing={2} justifyContent="center" alignItems="center">
+                                                <Grid item>
+                                                    <Box
+                                                        sx={{
+                                                            display: 'flex',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                        }}
+                                                    >
+                                                        <ChangePassword setIsFetching={setIsFetching}
+                                                                        setUnexpectedError={setUnexpectedError}
+                                                                        fetchingTimeout={fetchingTimeout}
+                                                        />
+                                                    </Box>
+                                                </Grid>
+                                                <Grid item>
+                                                    <Box
+                                                        sx={{
+                                                            display: 'flex',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                        }}
+                                                    >
+                                                        <DeleteAccount setIsFetching={setIsFetching}
+                                                                       setUnexpectedError={setUnexpectedError}
+                                                                       fetchingTimeout={fetchingTimeout}
+                                                        />
+                                                    </Box>
+                                                </Grid>
+                                            </Grid>
+                                        ) : (
                                             <DeleteAccount setIsFetching={setIsFetching}
                                                            setUnexpectedError={setUnexpectedError}
                                                            fetchingTimeout={fetchingTimeout}
                                             />
-                                        </Box>
-                                    </Grid>
+                                        )}
+                                    </Box>
                                 </Grid>
-                            ) : (
-                                <DeleteAccount setIsFetching={setIsFetching}
-                                               setUnexpectedError={setUnexpectedError}
-                                               fetchingTimeout={fetchingTimeout}
-                                />
-                            )}
-                        </Box>
+                            </Grid>
+                        </Container>
                     </Grid>
                 </Grid>
-                <Box
-                    sx={{
-                        paddingTop: '5px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        '@media (max-width: 600px)': {
-                            justifyContent: 'flex-start',
-                        },
-                    }}
-                >
-                    <Footer/>
-                </Box>
-            </Container>
+            </Box>
             <FetchingStatus isFetching={isFetching} unexpectedError={unexpectedError}/>
         </>
     )

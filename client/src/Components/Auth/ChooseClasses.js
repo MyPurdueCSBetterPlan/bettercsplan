@@ -38,7 +38,7 @@ function ChooseClasses({next, setIsFetching, setUnexpectedError}) {
     const [showAlert, setShowAlert] = useState(false);
 
     //LoadingPage Status
-    const fetchingTimeout= 3000;
+    const fetchingTimeout = 3000;
 
     //updates the filter value
     function handleChange(e) {
@@ -121,8 +121,10 @@ function ChooseClasses({next, setIsFetching, setUnexpectedError}) {
 
     return (
         <Box sx={{
+            margin: '0 3%',
             '@media (max-width: 600px)': {
-                width: '95%',
+                width: '90%',
+                margin: '0 auto',
             },
         }}>
             <Box sx={{width: '100%', height: '8vh'}}>
@@ -132,7 +134,7 @@ function ChooseClasses({next, setIsFetching, setUnexpectedError}) {
                     </Box>
                 )}
             </Box>
-            <Grid container spacing={20} justifyContent="center" alignItems="center">
+            <Grid container spacing={15} justifyContent="center" alignItems="center">
                 <Grid item xs={12} sm={6} lg={4}>
                     <TextField
                         id="outlined-basic"

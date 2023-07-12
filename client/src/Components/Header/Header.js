@@ -58,10 +58,6 @@ const Header = ({mode}) => {
     };
 
 
-    const menuStyle = {
-        mt: "1px", "& .MuiMenu-paper":
-            {backgroundColor: '#f8d588',},
-    }
 
     if (mode === "USER_VERIFIED") {
         return (
@@ -70,28 +66,6 @@ const Header = ({mode}) => {
                     <Typography variant="h1"> MYBETTERCSPLAN</Typography>
                     <div className="header-icons">
                         <ul>
-                            <li>
-                                <div onClick={handleProfile}>
-                                    <FontAwesomeIcon icon={faUser}/>
-                                </div>
-                                <Menu
-                                    sx={menuStyle}
-                                    anchorEl={anchorPr}
-                                    open={openProfile}
-                                    onClose={handleCloseProfile}
-                                    TransitionComponent={Fade}
-                                >
-                                    <MenuItem className="MenuItem" onClick={() => navigate("/profile")}>
-                                        <FontAwesomeIcon icon={faUserEdit}/>
-                                        {String.fromCharCode(160)} Profile
-                                    </MenuItem>
-                                    <MenuItem
-                                        className="MenuItem"
-                                        onClick={() => LogOutAction(removeCookie, navigate)}>
-                                        <FontAwesomeIcon icon={faSignOut}/>
-                                        {String.fromCharCode(160)} Sign Out</MenuItem>
-                                </Menu>
-                            </li>
                             <li>
                                 <div onClick={colorMode.toggleColorMode} style={{cursor: 'pointer'}}>
                                     {theme.palette.mode === 'dark' ? <FontAwesomeIcon icon={faSun}/> :
@@ -103,7 +77,6 @@ const Header = ({mode}) => {
                                     <FontAwesomeIcon icon={faBars}/>
                                 </div>
                                 <Menu
-                                    sx={menuStyle}
                                     anchorEl={anchorMn}
                                     open={openMenu}
                                     onClose={handleCloseMenu}
@@ -122,6 +95,23 @@ const Header = ({mode}) => {
                                            href="mailto:bettercsplan@gmail.com">
                                             <FontAwesomeIcon icon={faEnvelope}/> Contact
                                         </a>
+                                    </MenuItem>
+                                    <MenuItem sx={{ marginTop: "30px", cursor: "default", "&:hover": { backgroundColor: "transparent" } }}>
+                                        <Typography variant="h1" sx={{fontSize: '20px'}}>Account Settings</Typography>
+                                    </MenuItem>
+                                    <MenuItem className="MenuItem" onClick={() => navigate("/profile")}>
+                                        <FontAwesomeIcon icon={faUserEdit}/>
+                                        {String.fromCharCode(160)} Edit Profile
+                                    </MenuItem>
+                                    <MenuItem className="MenuItem" onClick={() => navigate("/create")}>
+                                        <FontAwesomeIcon icon={faRotateRight}/>
+                                        {String.fromCharCode(160)} Remake Schedule
+                                    </MenuItem>
+                                    <MenuItem sx={{marginTop: '20px'}}
+                                        className="MenuItem"
+                                        onClick={() => LogOutAction(removeCookie, navigate)}>
+                                        <FontAwesomeIcon icon={faSignOut}/>
+                                        {String.fromCharCode(160)} Sign Out
                                     </MenuItem>
                                 </Menu>
                             </li>
@@ -159,7 +149,6 @@ const Header = ({mode}) => {
                                     </Typography>
                                 </div>
                                 <Menu
-                                    sx={menuStyle}
                                     anchorEl={anchorPr}
                                     open={openProfile}
                                     onClose={handleCloseProfile}
@@ -167,13 +156,13 @@ const Header = ({mode}) => {
                                 >
                                     <MenuItem className="MenuItem" onClick={() => navigate("/profile")}>
                                         <FontAwesomeIcon icon={faUserEdit}/>
-                                        {String.fromCharCode(160)} Profile
+                                        {String.fromCharCode(160)} Edit Profile
                                     </MenuItem>
                                     <MenuItem className="MenuItem" onClick={() => navigate("/create")}>
                                         <FontAwesomeIcon icon={faRotateRight}/>
-                                        {String.fromCharCode(160)} Remake
+                                        {String.fromCharCode(160)} Remake Schedule
                                     </MenuItem>
-                                    <MenuItem
+                                    <MenuItem sx={{marginTop: '20px'}}
                                         className="MenuItem"
                                         onClick={() => LogOutAction(removeCookie, navigate)}>
                                         <FontAwesomeIcon icon={faSignOut}/>
@@ -202,15 +191,6 @@ const Header = ({mode}) => {
                     <div className="header-icons">
                         <ul>
                             <li>
-                                <div>
-                                    <a className="contact-icon" style={{
-                                        textDecoration: 'none', color: `${color}`
-                                    }} href="mailto:bettercsplan@gmail.com">
-                                        <FontAwesomeIcon icon={faEnvelope}/>
-                                    </a>
-                                </div>
-                            </li>
-                            <li>
                                 <div onClick={colorMode.toggleColorMode}
                                      style={{cursor: 'pointer'}}>
                                     {theme.palette.mode === 'dark' ?
@@ -219,10 +199,28 @@ const Header = ({mode}) => {
                                 </div>
                             </li>
                             <li>
-                                <div onClick={() => LogOutAction(removeCookie, navigate)}
-                                     style={{cursor: 'pointer', paddingRight: '10px'}}>
-                                    <FontAwesomeIcon icon={faSignOut}/>
+                                <div onClick={handleMenu}>
+                                    <FontAwesomeIcon icon={faBars}/>
                                 </div>
+                                <Menu
+                                    anchorEl={anchorMn}
+                                    open={openMenu}
+                                    onClose={handleCloseMenu}
+                                    TransitionComponent={Fade}
+                                >
+                                    <MenuItem className="MenuItem">
+                                        <a style={{cursor: 'pointer', textDecoration: 'none', color: `${color}`}}
+                                           href="mailto:bettercsplan@gmail.com">
+                                            <FontAwesomeIcon icon={faEnvelope}/> Contact
+                                        </a>
+                                    </MenuItem>
+                                    <MenuItem
+                                              className="MenuItem"
+                                              onClick={() => LogOutAction(removeCookie, navigate)}>
+                                        <FontAwesomeIcon icon={faSignOut}/>
+                                        {String.fromCharCode(160)} Sign Out
+                                    </MenuItem>
+                                </Menu>
                             </li>
                         </ul>
                     </div>
@@ -277,7 +275,6 @@ const Header = ({mode}) => {
                                     <FontAwesomeIcon icon={faBars}/>
                                 </div>
                                 <Menu
-                                    sx={menuStyle}
                                     anchorEl={anchorMn}
                                     open={openMenu}
                                     onClose={handleCloseMenu}
@@ -359,7 +356,6 @@ const Header = ({mode}) => {
                                     <FontAwesomeIcon icon={faBars}/>
                                 </div>
                                 <Menu
-                                    sx={menuStyle}
                                     anchorEl={anchorMn}
                                     open={openMenu}
                                     onClose={handleCloseMenu}
@@ -374,7 +370,7 @@ const Header = ({mode}) => {
                                         {String.fromCharCode(160)} About
                                     </MenuItem>
                                     <MenuItem className="MenuItem">
-                                        <a style={{cursor: 'pointer', textDecoration: 'none', color: 'black'}}
+                                        <a style={{cursor: 'pointer', textDecoration: 'none', color: `${color}`}}
                                            href="mailto:bettercsplan@gmail.com">
                                             <FontAwesomeIcon icon={faEnvelope}/> Contact
                                         </a>

@@ -53,6 +53,9 @@ export const getDesignTokens = (mode) => ({
                     fontWeight: "bold",
                     color: '#121858',
                     fontSize: "30px",
+                    '@media (max-width: 400px)': {
+                        fontSize: '20px',
+                    },
                 },
                 h7: {
                     fontSize: '16px',
@@ -65,6 +68,9 @@ export const getDesignTokens = (mode) => ({
                     fontWeight: "bold",
                     color: '#ffffff',
                     fontSize: "30px",
+                    '@media (max-width: 400px)': {
+                        fontSize: '20px',
+                    },
                 },
                 h7: {
                     fontSize: '16px',
