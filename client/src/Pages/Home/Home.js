@@ -12,7 +12,7 @@ import axios from "axios";
 import SemesterTable from "../../Components/Home/SemesterTable";
 import "./Home.css"
 import CoursesTable from "../../Components/Home/CoursesTable";
-import {ErrorAction} from "../../Redux/Actions/GlobalActions";
+import {ErrorAction} from "../../Themes/Actions/GlobalActions";
 import Help from '../../Components/Home/Help'
 import {v4} from 'uuid'
 import Header from "../../Components/Header/Header";
@@ -144,7 +144,7 @@ function Home() {
             .then((response) => {
                 const {message, success, coursesToTake, schedule} = response.data
                 console.log("????")
-                if(!success) {
+                if (!success) {
                     ErrorAction(message)
                     setCoursesToTake(coursesToTake)
                     setSchedule(schedule)
@@ -220,13 +220,16 @@ function Home() {
                 <Grid item xs={12} sm={6} lg={4}>
                     <Box sx={scrollableAreaStyle(theme.palette.mode)}>
                         <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
-                            <ScrollingComponent verticalStrength={vStrength} style={{marginTop: '10px', paddingBottom: '20px'}}>
+                            <ScrollingComponent verticalStrength={vStrength}
+                                                style={{marginTop: '10px', paddingBottom: '20px'}}>
                                 <Grid container justifyContent="center" spacing={6}>
                                     <CoursesTable courses={coursesToTake} add={removeClass} replace={replaceClass}
                                                   replaceSequence={replaceSequence}/>
                                     <Grid container item xs={6} sm={6} md={9} spacing={2}>
-                                        {semesters.map((name, index) => <SemesterTable key={v4()} index={index} semester={name}
-                                                                                       courses={schedule[index]} add={addClass}
+                                        {semesters.map((name, index) => <SemesterTable key={v4()} index={index}
+                                                                                       semester={name}
+                                                                                       courses={schedule[index]}
+                                                                                       add={addClass}
                                                                                        move={moveClass}/>)}
                                     </Grid>
                                 </Grid>

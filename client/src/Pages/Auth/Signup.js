@@ -1,14 +1,14 @@
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
-import {GoogleAuth} from "./GoogleAuth";
-import {useDispatch} from "react-redux";
+import GoogleAuth from "./GoogleAuth";
 import GoogleButton from "react-google-button";
-import {ErrorAction, SuccessActionLogin} from "../../Redux/Actions/GlobalActions";
+import {ErrorAction, SuccessActionLogin} from "../../Themes/Actions/GlobalActions";
 import Header from "../../Components/Header/Header";
 import {
     Box,
-    Button, Checkbox,
+    Button,
+    Checkbox,
     Divider,
     FormControlLabel,
     Grid,
@@ -28,7 +28,6 @@ const {REACT_APP_SERVER_URL} = process.env;
  */
 function Signup() {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
 
@@ -234,7 +233,7 @@ function Signup() {
 
     // called when the user clicks on the Google sign-in button
     function handleGoogleLogin() {
-        GoogleAuth(dispatch, navigate, "signup");
+        GoogleAuth({navigate, isLogin: false});
     }
 
     return (

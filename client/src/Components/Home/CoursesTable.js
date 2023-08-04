@@ -6,21 +6,24 @@ import {v4} from 'uuid'
 import axios from "axios";
 import {
     Dialog,
+    DialogContent,
+    DialogContentText,
     DialogTitle,
     Grid,
     List,
     ListItem,
     ListItemButton,
     ListItemText,
-    Table, TableBody,
-    TableCell, TableContainer,
-    TableHead,
-    TableRow,
+    ListSubheader,
     Paper,
-    DialogContent,
-    DialogContentText, ListSubheader
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow
 } from "@mui/material";
-import {ErrorAction} from "../../Redux/Actions/GlobalActions";
+import {ErrorAction} from "../../Themes/Actions/GlobalActions";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -165,7 +168,8 @@ function CoursesTable(props) {
                         {alternates.length !== 0 ?
                             (isSeq ?
                                 (<ListSubheader disableGutters sx={{backgroundColor: 'inherit', color: 'inherit'}}>
-                                    Alternatives to {replace.length === 1 ? (replace) : (replace[0] + " + " + replace[1])}
+                                    Alternatives
+                                    to {replace.length === 1 ? (replace) : (replace[0] + " + " + replace[1])}
                                 </ListSubheader>) :
                                 (<ListSubheader disableGutters sx={{backgroundColor: 'inherit', color: 'inherit'}}>
                                     Alternatives to {replace}
@@ -210,7 +214,8 @@ function CoursesTable(props) {
                         </TableHead>
                         <TableBody>
                             {rows.map(row =>
-                                <ClickableTableRow key={v4()} index={-1} name={row.name} credits={row.credits} delete={removeRow}
+                                <ClickableTableRow key={v4()} index={-1} name={row.name} credits={row.credits}
+                                                   delete={removeRow}
                                                    handleClick={showAlternatives}/>
                             )}
                         </TableBody>

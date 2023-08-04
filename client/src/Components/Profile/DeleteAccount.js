@@ -2,7 +2,7 @@ import {useNavigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
 import alert from "sweetalert2";
 import axios from "axios";
-import {ErrorAction} from "../../Redux/Actions/GlobalActions";
+import {ErrorAction} from "../../Themes/Actions/GlobalActions";
 import {Button, useTheme} from "@mui/material";
 import React from "react";
 import {buttonStyle} from "../../Themes/ThemeStyles";
@@ -27,7 +27,6 @@ function DeleteAccount({setIsFetching, setUnexpectedError, fetchingTimeout}) {
     const [cookies, setCookie, removeCookie] = useCookies(["token"]);
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
-
 
 
     //Handles the click for the delete account button.

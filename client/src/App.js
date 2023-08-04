@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useEffect, useState} from 'react';
 import {Navigate, Route, Routes, useLocation} from "react-router-dom"
 import Login from "./Pages/Auth/Login";
 import Create from "./Pages/Auth/Create";
@@ -7,13 +8,12 @@ import Home from "./Pages/Home/Home";
 import NotFound from "./Pages/NotFound/NotFound";
 import Profile from "./Pages/Profile/Profile";
 import About from "./Pages/About/About"
-import {Container, CssBaseline, GlobalStyles, ThemeProvider, useTheme} from "@mui/material";
+import {Container, CssBaseline, GlobalStyles, ThemeProvider} from "@mui/material";
 import ThemeMode from "./Themes/ThemeMode";
 import {ColorModeContext} from "./Themes/ColorModeContext";
 import {alertStyles} from "./Themes/ThemeStyles";
 import Footer from "./Components/Footer/Footer";
 import './App.css';
-import {useEffect, useState} from "react";
 
 
 /**
@@ -27,7 +27,7 @@ import {useEffect, useState} from "react";
 
 function App() {
     // Obtain the theme and color mode
-    const { newTheme, colorMode } = ThemeMode();
+    const {newTheme, colorMode} = ThemeMode();
 
     // Get the current location using React Router
     const location = useLocation();
@@ -37,6 +37,7 @@ function App() {
 
     const footerBottom = location.pathname === "/profile" || location.pathname === "/notfound";
     const createFooter = location.pathname === "/create";
+
 
     useEffect(() => {
         //Set the footer style based on the current location
@@ -63,11 +64,11 @@ function App() {
                             <Route path={"/create"} element={<Create/>}/>
                             <Route path={"/profile"} element={<Profile/>}/>
                             <Route path={"/about"} element={<About/>}/>
-                            <Route path="*" element={<Navigate to="/notfound"/>} />
-                            <Route path="/notfound" element={<NotFound />} />
+                            <Route path="*" element={<Navigate to="/notfound"/>}/>
+                            <Route path="/notfound" element={<NotFound/>}/>
                         </Routes>
                         <div className={styleFooter}>
-                            <Footer />
+                            <Footer/>
                         </div>
                     </Container>
                 </ThemeProvider>

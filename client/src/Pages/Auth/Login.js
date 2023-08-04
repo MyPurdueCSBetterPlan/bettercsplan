@@ -1,20 +1,21 @@
 import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
-import {GoogleAuth} from "./GoogleAuth";
+import GoogleAuth from "./GoogleAuth";
 import GoogleButton from 'react-google-button'
-import {useDispatch} from "react-redux";
-import {ErrorAction, SuccessActionLogin} from "../../Redux/Actions/GlobalActions";
+import {ErrorAction, SuccessActionLogin} from "../../Themes/Actions/GlobalActions";
 import Header from "../../Components/Header/Header";
 import {
     Box,
     Button,
+    Checkbox,
     Divider,
+    FormControlLabel,
     Grid,
     Paper,
     TextField,
     Typography,
-    useTheme, FormControlLabel, Checkbox,
+    useTheme,
 } from "@mui/material";
 import {buttonStyle, linkStyle, textInputStyle} from "../../Themes/ThemeStyles";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
@@ -31,7 +32,6 @@ function Login() {
     const theme = useTheme();
     const colorMode = React.useContext(ColorModeContext);
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
     //Loading status page
     const [isFetching, setIsFetching] = useState(false);
@@ -116,7 +116,7 @@ function Login() {
 
     // called when the user clicks on the Google sign-in button
     function handleGoogleLogin() {
-        GoogleAuth(dispatch, navigate, "login");
+        GoogleAuth({navigate, isLogin: true});
     }
 
     //Disables texthelper error field whenever the user stats typing
