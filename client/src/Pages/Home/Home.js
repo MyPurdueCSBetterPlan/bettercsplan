@@ -16,14 +16,13 @@ import {ErrorAction} from "../../Themes/Actions/GlobalActions";
 import Help from '../../Components/Home/Help'
 import {v4} from 'uuid'
 import Header from "../../Components/Header/Header";
-import Footer from "../../Components/Footer/Footer";
-import {Box, Container, Grid, useTheme} from "@mui/material";
+import {Box, Grid, useTheme} from "@mui/material";
 import {scrollableAreaStyle} from "../../Themes/ThemeStyles";
 
 
 const {REACT_APP_SERVER_URL} = process.env;
-const ScrollingComponent = withScrolling('div')
-const vStrength = createVerticalStrength(600)
+const ScrollingComponent = withScrolling('div');
+const vStrength = createVerticalStrength(600);
 
 /**
  * @return {JSX.Element} - Home screen for a user that displays their schedule and courses to take
@@ -32,19 +31,19 @@ const vStrength = createVerticalStrength(600)
 function Home() {
     const theme = useTheme();
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     //cookies for user authentication purposes
-    const [cookies, setCookie, removeCookie] = useCookies(["token"])
+    const [cookies, setCookie, removeCookie] = useCookies(["token"]);
 
     //array of objects where each object represents a course (has "name" and "credits" properties)
-    const [coursesToTake, setCoursesToTake] = useState([])
+    const [coursesToTake, setCoursesToTake] = useState([]);
 
     //array of the names of the semesters in the user's schedule
-    const [semesters, setSemesters] = useState([])
+    const [semesters, setSemesters] = useState([]);
 
     //array of arrays of objects where each object represents a course (has "name" and "credits" properties)
-    const [schedule, setSchedule] = useState([])
+    const [schedule, setSchedule] = useState([]);
 
     //Checks if the user is logged in or not
     useEffect(() => {
@@ -63,41 +62,41 @@ function Home() {
             {withCredentials: true}
         )
             .then((response) => {
-                const {success, message, coursesToTake, schedule, summer} = response.data
+                const {success, message, coursesToTake, schedule, summer} = response.data;
                 if (success) {
                     //set boolean variable depending on whether the user is new or not
                     if (coursesToTake.length !== 0) {
-                        setCoursesToTake(coursesToTake)
-                        setSchedule(schedule)
-                        setSemesters([])
+                        setCoursesToTake(coursesToTake);
+                        setSchedule(schedule);
+                        setSemesters([]);
                         if (summer) {
                             for (let i = 0; i < schedule.length; i++) {
                                 if (i % 3 === 0) {
-                                    setSemesters(semesters => [...semesters, "Fall " + (Math.floor(i / 3) + 1)])
+                                    setSemesters(semesters => [...semesters, "Fall " + (Math.floor(i / 3) + 1)]);
                                 } else if (i % 3 === 1) {
-                                    setSemesters(semesters => [...semesters, "Spring " + (Math.floor(i / 3) + 1)])
+                                    setSemesters(semesters => [...semesters, "Spring " + (Math.floor(i / 3) + 1)]);
                                 } else {
-                                    setSemesters(semesters => [...semesters, "Summer " + (Math.floor(i / 3) + 1)])
+                                    setSemesters(semesters => [...semesters, "Summer " + (Math.floor(i / 3) + 1)]);
                                 }
                             }
                         } else {
                             for (let i = 0; i < schedule.length; i++) {
                                 if (i % 2 === 0) {
-                                    setSemesters(semesters => [...semesters, "Fall " + (Math.floor(i / 2) + 1)])
+                                    setSemesters(semesters => [...semesters, "Fall " + (Math.floor(i / 2) + 1)]);
                                 } else {
-                                    setSemesters(semesters => [...semesters, "Spring " + (Math.floor(i / 2) + 1)])
+                                    setSemesters(semesters => [...semesters, "Spring " + (Math.floor(i / 2) + 1)]);
                                 }
                             }
                         }
                     } else {
-                        navigate("/create")
+                        navigate("/create");
                     }
                 } else {
                     if (message !== null && message !== undefined) {
                         ErrorAction(message);
                     }
                     removeCookie("token", [])
-                    navigate("/signup")
+                    navigate("/signup");
                 }
             })
             .catch(() => {
@@ -119,16 +118,16 @@ function Home() {
             {withCredentials: true}
         )
             .then((response) => {
-                const {message, success, coursesToTake, schedule} = response.data
+                const {message, success, coursesToTake, schedule} = response.data;
                 if (!success) {
-                    ErrorAction(message)
-                    setCoursesToTake(coursesToTake)
-                    setSchedule(schedule)
+                    ErrorAction(message);
+                    setCoursesToTake(coursesToTake);
+                    setSchedule(schedule);
                 }
             })
             .catch(error => {
-                const {message} = error.data
-                ErrorAction(message)
+                const {message} = error.data;
+                ErrorAction(message);
             })
     }
 
@@ -137,22 +136,21 @@ function Home() {
         axios.post(
             `${REACT_APP_SERVER_URL}/schedule-remove`,
             {
-                className: className
+                className: className,
             },
             {withCredentials: true}
         )
             .then((response) => {
-                const {message, success, coursesToTake, schedule} = response.data
-                console.log("????")
+                const {message, success, coursesToTake, schedule} = response.data;
                 if (!success) {
-                    ErrorAction(message)
-                    setCoursesToTake(coursesToTake)
-                    setSchedule(schedule)
+                    ErrorAction(message);
+                    setCoursesToTake(coursesToTake);
+                    setSchedule(schedule);
                 }
             })
             .catch(error => {
-                const {message} = error.data
-                ErrorAction(message)
+                const {message} = error.data;
+                ErrorAction(message);
             })
     }
 
@@ -170,8 +168,8 @@ function Home() {
             .then(response => {
                 const {message, success, schedule} = response.data
                 if (!success) {
-                    ErrorAction(message)
-                    setSchedule(schedule)
+                    ErrorAction(message);
+                    setSchedule(schedule);
                 }
             })
     }
@@ -181,14 +179,14 @@ function Home() {
             `${REACT_APP_SERVER_URL}/schedule-replace`,
             {
                 oldClassName: oldClassName,
-                newClassName: newClassName
+                newClassName: newClassName,
             },
             {withCredentials: true}
         )
             .then((response) => {
                 const {message, success} = response.data
                 if (!success) {
-                    ErrorAction(message)
+                    ErrorAction(message);
                 }
             })
     }
@@ -198,21 +196,21 @@ function Home() {
             `${REACT_APP_SERVER_URL}/schedule-replace-sequence`,
             {
                 oldClassNames: oldClassNames,
-                newClassNames: newClassNames
+                newClassNames: newClassNames,
             },
             {withCredentials: true}
         )
             .then((response) => {
                 const {message, success} = response.data
                 if (!success) {
-                    ErrorAction(message)
+                    ErrorAction(message);
                 }
             })
     }
 
 
     return (
-        <Container fixed>
+        <>
             <Grid container spacing={2} direction='column'>
                 <Grid item xs={12} sm={6} lg={4}>
                     <Header mode={"USER_VERIFIED"}/>
@@ -237,20 +235,10 @@ function Home() {
                         </DndProvider>
                     </Box>
                 </Grid>
-                <Grid item xs={12} sm={6} lg={4}>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Footer/>
-                    </Box>
-                </Grid>
             </Grid>
             <Help/>
-        </Container>
+
+        </>
     )
 }
 

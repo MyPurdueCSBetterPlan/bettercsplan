@@ -1,7 +1,4 @@
-import {amber, blue, grey} from "@mui/material/colors";
-import {useTheme} from "@mui/material";
-import React from "react";
-import {ColorModeContext} from "./ColorModeContext";
+import {amber, grey} from "@mui/material/colors";
 
 //#121858 - dark indigo
 //#b2b9e1 - light indigo
@@ -217,8 +214,8 @@ export const stepperStyle = (mode) => ({
 });
 
 export const helpStyle = (mode) => ({
-    position: 'fixed',
-    bottom: 20,
+    position: 'absolute',
+    bottom: 10,
     right: 20,
 })
 

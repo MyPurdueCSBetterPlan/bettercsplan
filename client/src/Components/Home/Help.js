@@ -19,13 +19,13 @@ function Help() {
 
     const directions = "Drag and drop classes from your class list to the semester tables. To avoid " +
         "prerequisite errors, first move your math classes, then your CS core classes, and then your CS track " +
-        "classes. If you would like to see alternatives for a class in your class list, simply click on the class." +
-        "Please note that the list of alternatives is not comprehensive."
+        "classes. If you would like to see alternatives for a class in your class list, simply click on the class.\n" +
+        "\nPlease note that the list of alternatives is not comprehensive.";
 
     return (
         <>
             <Fab color='warning' aria-label="add" sx={helpStyle(theme.palette.mode)}
-                 size="small" onClick={() => setOpen(true)}>
+                 size="medium" onClick={() => setOpen(true)}>
                 <QuestionMarkIcon/>
             </Fab>
             <Dialog open={open} onClose={() => setOpen(false)}>

@@ -35,7 +35,9 @@ function App() {
     // State variables for the footer style
     const [styleFooter, setStyleFooter] = useState("footer");
 
-    const footerBottom = location.pathname === "/profile" || location.pathname === "/notfound";
+    const footerBottom = location.pathname === "/profile"
+        || location.pathname === "/notfound"
+    const homeFooter = location.pathname === "/";
     const createFooter = location.pathname === "/create";
 
 
@@ -45,6 +47,8 @@ function App() {
             setStyleFooter("footer footer-bottom");
         } else if (createFooter) {
             setStyleFooter("footer footer-create");
+        } else if (homeFooter) {
+            setStyleFooter("footer footer-home");
         } else {
             setStyleFooter("footer");
         }
