@@ -178,4 +178,4 @@ function ChooseOptions({setIsFetching, setUnexpectedError}) {
     )
 }
 
-export default ChooseOptions
+export default ChooseOptions;

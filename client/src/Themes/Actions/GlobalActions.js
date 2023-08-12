@@ -11,7 +11,7 @@ const SuccessActionLogin = (message, name) => {
             timer: 1500,
         });
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 };
 
@@ -26,7 +26,7 @@ const SuccessAction = (title, message) => {
             timer: 1500,
         });
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 };
 
@@ -43,7 +43,7 @@ const ErrorAction = (message) => {
             timer: 1500,
         });
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 };
 
@@ -62,7 +62,7 @@ const InvalidPassword = (message) => {
             showConfirmButton: true,
         });
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 };
 
@@ -91,7 +91,7 @@ const LogOutAction = (removeCookie, navigate) => {
             }
         })
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 };
 

@@ -253,7 +253,7 @@ function Signup() {
                             <Grid container spacing={3} direction="column">
                                 <Grid item xs={12} md={6} lg={4}>
                                     <Paper sx={{
-                                        padding: '1%',
+                                        padding: '4%',
                                         width: '100%',
                                     }} elevation={10}>
                                         <Typography variant="h1" sx={{
@@ -261,6 +261,17 @@ function Signup() {
                                             marginBottom: '20px',
                                         }}>WHAT WE SAVE?</Typography>
                                         <Typography variant="h7">{explanation}</Typography>
+                                        <Box sx={{
+                                            paddingTop: '30px',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center'
+                                        }}>
+                                            <Button type="contained"
+                                                    sx={buttonStyle(theme.palette.mode)}
+                                                    onClick={() => navigate("/about")}>Learn more
+                                            </Button>
+                                        </Box>
                                     </Paper>
                                 </Grid>
                                 <Grid item xs={12} md={6} lg={4}>

@@ -10,7 +10,6 @@ import withScrolling, {createVerticalStrength} from 'react-dnd-scrolling'
 
 import axios from "axios";
 import SemesterTable from "../../Components/Home/SemesterTable";
-import "./Home.css"
 import CoursesTable from "../../Components/Home/CoursesTable";
 import {ErrorAction} from "../../Themes/Actions/GlobalActions";
 import Help from '../../Components/Home/Help'
@@ -18,6 +17,7 @@ import {v4} from 'uuid'
 import Header from "../../Components/Header/Header";
 import {Box, Grid, useTheme} from "@mui/material";
 import {scrollableAreaStyle} from "../../Themes/ThemeStyles";
+import FetchingStatus from "../../Components/Utils/FetchingStatus";
 
 
 const {REACT_APP_SERVER_URL} = process.env;
@@ -45,6 +45,12 @@ function Home() {
     //array of arrays of objects where each object represents a course (has "name" and "credits" properties)
     const [schedule, setSchedule] = useState([]);
 
+    //Loading status page
+    const [isFetching, setIsFetching] = useState(false);
+    const [unexpectedError, setUnexpectedError] = useState(false);
+    const fetchingTimeout = 3000;
+
+
     //Checks if the user is logged in or not
     useEffect(() => {
 
@@ -54,6 +60,10 @@ function Home() {
             return;
         }
 
+        const loadingDelay = setTimeout(() => {
+            setIsFetching(true);
+        }, fetchingTimeout);
+
         //sends post req to see if token is valid and if the user is new and acts accordingly
         // either displays the user's schedule, goes back to login page, or takes them to create page
         axios.post(
@@ -62,6 +72,7 @@ function Home() {
             {withCredentials: true}
         )
             .then((response) => {
+                clearTimeout(loadingDelay); // Clear the loading delay timer
                 const {success, message, coursesToTake, schedule, summer} = response.data;
                 if (success) {
                     //set boolean variable depending on whether the user is new or not
@@ -100,14 +111,22 @@ function Home() {
                 }
             })
             .catch(() => {
-                removeCookie("token", []);
-                navigate("/login");
+                setSemesters(null);
+                setCoursesToTake(null);
+                setSchedule(null);
+                setIsFetching(true);
+                setUnexpectedError(true);
             })
+            .finally(() => setIsFetching(false));
     }, [cookies, navigate, removeCookie]);
 
 
     //called whenever a class is added from the courses table to a semester table
     function addClass(semIndex, className) {
+        const loadingDelay = setTimeout(() => {
+            setIsFetching(true);
+        }, fetchingTimeout);
+
         axios.post(
             `${REACT_APP_SERVER_URL}/schedule-add`,
             {
@@ -118,6 +137,7 @@ function Home() {
             {withCredentials: true}
         )
             .then((response) => {
+                clearTimeout(loadingDelay); // Clear the loading delay timer
                 const {message, success, coursesToTake, schedule} = response.data;
                 if (!success) {
                     ErrorAction(message);
@@ -125,14 +145,22 @@ function Home() {
                     setSchedule(schedule);
                 }
             })
-            .catch(error => {
-                const {message} = error.data;
-                ErrorAction(message);
+            .catch(() => {
+                setSemesters(null);
+                setCoursesToTake(null);
+                setSchedule(null);
+                setIsFetching(true);
+                setUnexpectedError(true);
             })
+            .finally(() => setIsFetching(false));
     }
 
     //called whenever a class is moved from a semester table back to the courses table
     function removeClass(className) {
+        const loadingDelay = setTimeout(() => {
+            setIsFetching(true);
+        }, fetchingTimeout);
+
         axios.post(
             `${REACT_APP_SERVER_URL}/schedule-remove`,
             {
@@ -141,6 +169,7 @@ function Home() {
             {withCredentials: true}
         )
             .then((response) => {
+                clearTimeout(loadingDelay); // Clear the loading delay timer
                 const {message, success, coursesToTake, schedule} = response.data;
                 if (!success) {
                     ErrorAction(message);
@@ -148,14 +177,22 @@ function Home() {
                     setSchedule(schedule);
                 }
             })
-            .catch(error => {
-                const {message} = error.data;
-                ErrorAction(message);
+            .catch(() => {
+                setSemesters(null);
+                setCoursesToTake(null);
+                setSchedule(null);
+                setIsFetching(true);
+                setUnexpectedError(true);
             })
+            .finally(() => setIsFetching(false));
     }
 
     //called when a class is moved from one semester table to another
     async function moveClass(semIndex, className) {
+        const loadingDelay = setTimeout(() => {
+            setIsFetching(true);
+        }, fetchingTimeout);
+
         axios.post(
             `${REACT_APP_SERVER_URL}/schedule-move`,
             {
@@ -166,15 +203,28 @@ function Home() {
             {withCredentials: true}
         )
             .then(response => {
-                const {message, success, schedule} = response.data
+                clearTimeout(loadingDelay); // Clear the loading delay timer
+                const {message, success, schedule} = response.data;
                 if (!success) {
                     ErrorAction(message);
                     setSchedule(schedule);
                 }
             })
+            .catch(() => {
+                setSemesters(null);
+                setCoursesToTake(null);
+                setSchedule(null);
+                setIsFetching(true);
+                setUnexpectedError(true);
+            })
+            .finally(() => setIsFetching(false));
     }
 
     function replaceClass(oldClassName, newClassName) {
+        const loadingDelay = setTimeout(() => {
+            setIsFetching(true);
+        }, fetchingTimeout);
+
         axios.post(
             `${REACT_APP_SERVER_URL}/schedule-replace`,
             {
@@ -184,14 +234,27 @@ function Home() {
             {withCredentials: true}
         )
             .then((response) => {
-                const {message, success} = response.data
+                clearTimeout(loadingDelay); // Clear the loading delay timer
+                const {message, success} = response.data;
                 if (!success) {
                     ErrorAction(message);
                 }
             })
+            .catch(() => {
+                setSemesters(null);
+                setCoursesToTake(null);
+                setSchedule(null);
+                setIsFetching(true);
+                setUnexpectedError(true);
+            })
+            .finally(() => setIsFetching(false));
     }
 
     function replaceSequence(oldClassNames, newClassNames) {
+        const loadingDelay = setTimeout(() => {
+            setIsFetching(true);
+        }, fetchingTimeout);
+
         axios.post(
             `${REACT_APP_SERVER_URL}/schedule-replace-sequence`,
             {
@@ -201,11 +264,20 @@ function Home() {
             {withCredentials: true}
         )
             .then((response) => {
-                const {message, success} = response.data
+                clearTimeout(loadingDelay); // Clear the loading delay timer
+                const {message, success} = response.data;
                 if (!success) {
                     ErrorAction(message);
                 }
             })
+            .catch(() => {
+                setSemesters(null);
+                setCoursesToTake(null);
+                setSchedule(null);
+                setIsFetching(true);
+                setUnexpectedError(true);
+            })
+            .finally(() => setIsFetching(false));
     }
 
 
@@ -221,14 +293,22 @@ function Home() {
                             <ScrollingComponent verticalStrength={vStrength}
                                                 style={{marginTop: '10px', paddingBottom: '20px'}}>
                                 <Grid container justifyContent="center" spacing={6}>
-                                    <CoursesTable courses={coursesToTake} add={removeClass} replace={replaceClass}
-                                                  replaceSequence={replaceSequence}/>
+                                    <CoursesTable courses={coursesToTake}
+                                                  add={removeClass}
+                                                  replace={replaceClass}
+                                                  replaceSequence={replaceSequence}
+                                                  setIsFetching={setIsFetching}
+                                                  setUnexpectedError={setUnexpectedError}
+                                    />
                                     <Grid container item xs={6} sm={6} md={9} spacing={2}>
-                                        {semesters.map((name, index) => <SemesterTable key={v4()} index={index}
-                                                                                       semester={name}
-                                                                                       courses={schedule[index]}
-                                                                                       add={addClass}
-                                                                                       move={moveClass}/>)}
+                                        {semesters !== null && (
+                                            semesters.map((name, index) => <SemesterTable key={v4()} index={index}
+                                                                                          semester={name}
+                                                                                          courses={schedule[index]}
+                                                                                          add={addClass}
+                                                                                          move={moveClass}/>)
+                                        )}
+
                                     </Grid>
                                 </Grid>
                             </ScrollingComponent>
@@ -237,7 +317,7 @@ function Home() {
                 </Grid>
             </Grid>
             <Help/>
-
+            <FetchingStatus isFetching={isFetching} unexpectedError={unexpectedError}/>
         </>
     )
 }

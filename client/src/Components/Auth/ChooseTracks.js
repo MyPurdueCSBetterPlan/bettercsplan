@@ -1,7 +1,6 @@
 import axios from "axios";
-import React from 'react'
+import React, {useState} from 'react'
 import {Alert, Box, Button, ToggleButton, ToggleButtonGroup, useTheme} from "@mui/material";
-import {useState} from "react";
 import {buttonStyle} from "../../Themes/ThemeStyles";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
 
@@ -20,7 +19,7 @@ function ChooseTracks({next, setIsFetching, setUnexpectedError}) {
     const colorMode = React.useContext(ColorModeContext);
 
     //LoadingPage Status
-    const fetchingTimeout= 3000;
+    const fetchingTimeout = 3000;
 
     //Declare tracks options state
     const [tracks, setTracks] = useState([]);
@@ -107,4 +106,4 @@ function ChooseTracks({next, setIsFetching, setUnexpectedError}) {
     )
 }
 
-export default ChooseTracks
+export default ChooseTracks;

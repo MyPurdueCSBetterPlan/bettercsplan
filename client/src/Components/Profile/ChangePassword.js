@@ -4,10 +4,14 @@ import alert from "sweetalert2";
 import axios from "axios";
 import {
     Box,
-    Button, Checkbox,
+    Button,
+    Checkbox,
     Dialog,
     DialogActions,
-    DialogContent, FormControlLabel, TextField, Typography,
+    DialogContent,
+    FormControlLabel,
+    TextField,
+    Typography,
     useTheme
 } from "@mui/material";
 import React, {useState} from "react";
@@ -309,4 +313,4 @@ function ChangePassword({setIsFetching, setUnexpectedError, fetchingTimeout}) {
     )
 }
 
-export default ChangePassword
+export default ChangePassword;

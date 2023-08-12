@@ -7,12 +7,15 @@ import {
     ButtonGroup,
     Grid,
     Paper,
-    Table, TableBody,
+    Table,
+    TableBody,
     TableCell,
-    TableContainer, TableRow,
-    TextField, useTheme
+    TableContainer,
+    TableRow,
+    TextField,
+    useTheme
 } from "@mui/material";
-import {buttonStyle, textInputStyle, overflowListStyle} from "../../Themes/ThemeStyles";
+import {buttonStyle, overflowListStyle, textInputStyle} from "../../Themes/ThemeStyles";
 import {ColorModeContext} from "../../Themes/ColorModeContext";
 import {amber} from "@mui/material/colors";
 
@@ -211,4 +214,4 @@ function ChooseClasses({next, setIsFetching, setUnexpectedError}) {
     )
 }
 
-export default ChooseClasses
+export default ChooseClasses;

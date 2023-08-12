@@ -1,9 +1,8 @@
-import "./Table.css"
 import ClickableTableRow from "./ClickableTableRow";
 import {useDrop} from "react-dnd";
 import {useEffect, useState} from "react";
 import {v4} from 'uuid'
-import {Grid, Table, TableCell, TableRow, TableHead, TableContainer, Paper, TableBody} from "@mui/material";
+import {Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 
 
 /**
@@ -20,7 +19,7 @@ import {Grid, Table, TableCell, TableRow, TableHead, TableContainer, Paper, Tabl
  * @returns {JSX.Element} - SemesterTable component with a table displaying the semester's courses.
  */
 
- function SemesterTable(props) {
+function SemesterTable(props) {
 
     //the rows displayed under the semester table
     const [rows, setRows] = useState([]);
@@ -65,36 +64,38 @@ import {Grid, Table, TableCell, TableRow, TableHead, TableContainer, Paper, Tabl
     //reloads the page whenever the props are fully loaded
     useEffect(() => {
         setRows(props.courses);
-        console.log(props.courses);
     }, [props.courses]);
 
     return (
         <Grid item xs={12} sm={6} md={6} lg={3}>
             <TableContainer component={Paper}>
                 <Table ref={drop}>
-                <TableHead>
-                    <TableRow>
-                        <TableCell colSpan={2} align='center'>{props.semester}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell>Class</TableCell>
-                        <TableCell align='right'>Credits</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {rows.map(row =>
-                        <ClickableTableRow key={v4()}
-                                           index={props.index}
-                                           name={row.name}
-                                           credits={row.credits}
-                                           delete={removeRow}
-                                           handleClick={() => {}}
-                        />)}
-                </TableBody>
-            </Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell colSpan={2} align='center'>{props.semester}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell>Class</TableCell>
+                            <TableCell align='right'>Credits</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rows !== null && (
+                            rows.map(row =>
+                                <ClickableTableRow key={v4()}
+                                                   index={props.index}
+                                                   name={row.name}
+                                                   credits={row.credits}
+                                                   delete={removeRow}
+                                                   handleClick={() => {
+                                                   }}
+                                />))
+                        }
+                    </TableBody>
+                </Table>
             </TableContainer>
         </Grid>
     )
 }
 
-export default SemesterTable
+export default SemesterTable;

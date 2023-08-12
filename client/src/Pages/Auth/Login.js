@@ -156,6 +156,17 @@ function Login() {
                                             marginBottom: '20px',
                                         }}>WHAT IT DOES?</Typography>
                                         <Typography variant="h7">{explanation}</Typography>
+                                        <Box sx={{
+                                            paddingTop: '50px',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center'
+                                        }}>
+                                            <Button type="contained"
+                                                    sx={buttonStyle(theme.palette.mode)}
+                                                    onClick={() => navigate("/about")}>Learn more
+                                            </Button>
+                                        </Box>
                                     </Paper>
                                 </Grid>
                                 <Grid item xs={12} md={6}>

@@ -20,7 +20,6 @@ function ClickableTableRow(props) {
         type: 'TABLE_ROW',
         item: {name, credits, index},
         end: (item, monitor) => {
-            console.log(monitor.getDropResult());
             if (monitor.getDropResult()) {
                 props.delete(name);
             }
@@ -38,4 +37,4 @@ function ClickableTableRow(props) {
     )
 }
 
-export default ClickableTableRow
+export default ClickableTableRow;

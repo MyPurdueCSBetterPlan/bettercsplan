@@ -14,7 +14,7 @@ import {buttonStyle} from "../../Themes/ThemeStyles";
  * This component is responsible for displaying the 404 page when a route is not found.
  * It includes a return button to allow users to navigate back to the home page or login.
  *
- * @return {JSX.Element} - The rendered 404 page component.
+ * @return {JSX.Element} - The rendered 404-page component.
  */
 
 function NotFound() {

@@ -14,6 +14,7 @@ import {ColorModeContext} from "./Themes/ColorModeContext";
 import {alertStyles} from "./Themes/ThemeStyles";
 import Footer from "./Components/Footer/Footer";
 import './App.css';
+import {isMobile} from "react-device-detect";
 
 
 /**
@@ -37,8 +38,10 @@ function App() {
 
     const footerBottom = location.pathname === "/profile"
         || location.pathname === "/notfound"
-    const homeFooter = location.pathname === "/";
-    const createFooter = location.pathname === "/create";
+    const homeFooter = location.pathname === "/"
+    const createFooter = location.pathname === "/create"
+    const authFooter = location.pathname === "/login"
+        || location.pathname === "/signup";
 
 
     useEffect(() => {
@@ -46,9 +49,15 @@ function App() {
         if (footerBottom) {
             setStyleFooter("footer footer-bottom");
         } else if (createFooter) {
-            setStyleFooter("footer footer-create");
+            if (isMobile) {
+                setStyleFooter("footer footer-create");
+            } else {
+                setStyleFooter("footer footer-home");
+            }
         } else if (homeFooter) {
             setStyleFooter("footer footer-home");
+        } else if (authFooter) {
+            setStyleFooter("footer footer-create");
         } else {
             setStyleFooter("footer");
         }

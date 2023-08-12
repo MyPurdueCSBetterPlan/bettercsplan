@@ -1,5 +1,4 @@
 import ClickableTableRow from "./ClickableTableRow";
-import "./Table.css"
 import {useEffect, useState} from "react";
 import {useDrop} from "react-dnd";
 import {v4} from 'uuid'
@@ -23,7 +22,8 @@ import {
     TableHead,
     TableRow
 } from "@mui/material";
-import {ErrorAction} from "../../Themes/Actions/GlobalActions";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faExchangeAlt} from "@fortawesome/free-solid-svg-icons";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
@@ -31,6 +31,8 @@ const {REACT_APP_SERVER_URL} = process.env;
  * @param props.courses - array of course objects, each object has "name" and "credits" properties
  * @param props.add - function that updates server data after a class is added to the courses table
  * @param props.replace - function that updates server data after a class is replaced with its alternative
+ * @param props.setIsFetching - function that updates if the data is fetching.
+ * @param props.setUnexpectedError - function that if it will show a message error if the server is off.
  * @return {JSX.Element} - table that displays all the courses the user needs to take
  */
 function CoursesTable(props) {
@@ -52,12 +54,13 @@ function CoursesTable(props) {
     //boolean to track whether the dialog is open or not
     const [open, setOpen] = useState(false);
 
+
     //on a table_row drop, the rows are updated and the add function is called (updates server data)
     //note that on a drop, the original table_row is deleted (look at ClickableTableRow.js)
     const [, drop] = useDrop(() => ({
         accept: 'TABLE_ROW',
         drop: (draggedRow) => {
-            setRows(rows => [...rows, {name: draggedRow.name, credits: draggedRow.credits}])
+            setRows(rows => [...rows, {name: draggedRow.name, credits: draggedRow.credits}]);
             if (draggedRow.index !== -1) {
                 props.add(draggedRow.name);
             }
@@ -93,12 +96,12 @@ function CoursesTable(props) {
         axios.post(
             `${REACT_APP_SERVER_URL}/schedule-alternateList`,
             {
-                className: name
+                className: name,
             },
             {withCredentials: true}
         )
             .then(response => {
-                const {description, isSeq, alternates, replacements} = response.data
+                const {description, isSeq, alternates, replacements} = response.data;
                 setDesc(description);
                 if (!isSeq) {
                     setIsSeq(false);
@@ -110,12 +113,12 @@ function CoursesTable(props) {
                     setAlternates(alternates);
                 }
                 setOpen(true);
-
             })
-            .catch(error => {
-                const {message} = error.data
-                ErrorAction(message)
+            .catch(() => {
+                props.setIsFetching(true);
+                props.setUnexpectedError(true);
             })
+            .finally(() => props.setIsFetching(false));
     }
 
     //updates table rows and tells the server to update data when an alternate is clicked
@@ -134,8 +137,8 @@ function CoursesTable(props) {
     }
 
     function handleAlternateClickSequence(alternates) {
-        setOpen(false)
-        props.replaceSequence(replace, alternates.map(alt => alt.name))
+        setOpen(false);
+        props.replaceSequence(replace, alternates.map(alt => alt.name));
         for (let i = 0; i < replace.length; i++) {
             setRows(rows => {
                 for (let j = 0; j < rows.length; j++) {
@@ -164,40 +167,44 @@ function CoursesTable(props) {
                     <DialogContentText>
                         {desc}
                     </DialogContentText>
-                    <List dense disablePadding={true}>
-                        {alternates.length !== 0 ?
-                            (isSeq ?
-                                (<ListSubheader disableGutters sx={{backgroundColor: 'inherit', color: 'inherit'}}>
-                                    Alternatives
-                                    to {replace.length === 1 ? (replace) : (replace[0] + " + " + replace[1])}
-                                </ListSubheader>) :
-                                (<ListSubheader disableGutters sx={{backgroundColor: 'inherit', color: 'inherit'}}>
-                                    Alternatives to {replace}
-                                </ListSubheader>)) :
-                            (<></>)
-                        }
-                        {isSeq ?
-                            (alternates.map(altSequence => (
-                                <ListItem key={v4()} disablePadding={true}>
-                                    <ListItemButton onClick={() => {
-                                        handleAlternateClickSequence(altSequence)
-                                    }}>
-                                        <ListItemText
-                                            primary={altSequence.length === 1 ? (altSequence[0].name) : (altSequence[0].name + " " + altSequence[1].name)}/>
-                                    </ListItemButton>
-                                </ListItem>
-                            ))) :
-                            (alternates.map(alternate => (
-                                <ListItem disableGutters key={v4()}>
-                                    <ListItemButton onClick={() => {
-                                        handleAlternateClick(alternate.name, alternate.credits)
-                                    }}>
-                                        <ListItemText primary={alternate.name}
-                                                      sx={{'& .MuiTypography-root': {fontFamily: "'Poppins', sans-serif"}}}/>
-                                    </ListItemButton>
-                                </ListItem>
-                            )))}
-                    </List>
+                    {alternates !== null && (
+                        <List dense disablePadding={true}>
+                            {alternates.length !== 0 ?
+                                (isSeq ?
+                                    (<ListSubheader disableGutters sx={{backgroundColor: 'inherit', color: 'inherit'}}>
+                                        Alternatives
+                                        to {replace.length === 1 ? (replace) : (replace[0] + " + " + replace[1])}
+                                    </ListSubheader>) :
+                                    (<ListSubheader disableGutters sx={{backgroundColor: 'inherit', color: 'inherit'}}>
+                                        Alternatives to {replace}
+                                    </ListSubheader>)) :
+                                (<></>)
+                            }
+                            {isSeq ?
+                                (alternates.map(altSequence => (
+                                    <ListItem key={v4()} disablePadding={true}>
+                                        <ListItemButton onClick={() => {
+                                            handleAlternateClickSequence(altSequence)
+                                        }}>
+                                            <ListItemText
+                                                primary={altSequence.length === 1 ? (altSequence[0].name) : (altSequence[0].name + " " + altSequence[1].name)}/>
+                                        </ListItemButton>
+                                        <FontAwesomeIcon icon={faExchangeAlt} style={{margin: '0 10px'}}/>
+                                    </ListItem>
+                                ))) :
+                                (alternates.map(alternate => (
+                                    <ListItem disableGutters key={v4()}>
+                                        <ListItemButton onClick={() => {
+                                            handleAlternateClick(alternate.name, alternate.credits)
+                                        }}>
+                                            <ListItemText primary={alternate.name}
+                                                          sx={{'& .MuiTypography-root': {fontFamily: "'Poppins', sans-serif"}}}/>
+                                        </ListItemButton>
+                                        <FontAwesomeIcon icon={faExchangeAlt} style={{margin: '0 10px'}}/>
+                                    </ListItem>
+                                )))}
+                        </List>
+                    )}
                 </DialogContent>
             </Dialog>
             <Grid item xs={6} sm={6} md={3} ref={drop}>
@@ -213,11 +220,12 @@ function CoursesTable(props) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map(row =>
-                                <ClickableTableRow key={v4()} index={-1} name={row.name} credits={row.credits}
-                                                   delete={removeRow}
-                                                   handleClick={showAlternatives}/>
-                            )}
+                            {rows !== null && (
+                                rows.map(row =>
+                                    <ClickableTableRow key={v4()} index={-1} name={row.name} credits={row.credits}
+                                                       delete={removeRow}
+                                                       handleClick={showAlternatives}/>
+                                ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -227,4 +235,4 @@ function CoursesTable(props) {
     )
 }
 
-export default CoursesTable
+export default CoursesTable;

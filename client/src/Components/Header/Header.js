@@ -558,4 +558,4 @@ const Header = ({mode}) => {
     }
 }
 
-export default Header
+export default Header;
