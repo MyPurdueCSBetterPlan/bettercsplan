@@ -3,6 +3,7 @@ import {useDrop} from "react-dnd";
 import {useEffect, useState} from "react";
 import {v4} from 'uuid'
 import {Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import alert from "sweetalert2";
 
 
 /**
@@ -14,6 +15,7 @@ import {Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, Tab
  * @param {number} props.index - The index of the semester.
  * @param {Array} props.courses - The array of courses for the semester.
  * @param {function} props.add - Function to add a course to the semester.
+ * @param props.remove - function that updates server data after a class is removed to the courses table.
  * @param {function} props.move - Function to move a course from one semester to another.
  *
  * @returns {JSX.Element} - SemesterTable component with a table displaying the semester's courses.
@@ -23,6 +25,26 @@ function SemesterTable(props) {
 
     //the rows displayed under the semester table
     const [rows, setRows] = useState([]);
+
+    const [courseName, setCourseName] = useState("");
+
+    const handleDelete = (courseName) => {
+        alert.fire({
+            title: `Remove ${courseName}`,
+            text: "Do u want to delete this class?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                props.remove(courseName);
+            }
+        })
+    };
+
 
     //on a table row drop, the rows are updated and a certain function is called based on where the row came from
     //note that on a drop, the original table_row is deleted (look at ClickableTableRow.js)
@@ -88,8 +110,10 @@ function SemesterTable(props) {
                                                    credits={row.credits}
                                                    delete={removeRow}
                                                    handleClick={() => {
+                                                       handleDelete(row.name);
                                                    }}
-                                />))
+                                />
+                            ))
                         }
                     </TableBody>
                 </Table>

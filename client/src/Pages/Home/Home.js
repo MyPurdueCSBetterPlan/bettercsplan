@@ -1,13 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
-
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
-import {TouchBackend} from 'react-dnd-touch-backend'
-import {isMobile} from "react-device-detect"
 import withScrolling, {createVerticalStrength} from 'react-dnd-scrolling'
-
 import axios from "axios";
 import SemesterTable from "../../Components/Home/SemesterTable";
 import CoursesTable from "../../Components/Home/CoursesTable";
@@ -289,12 +285,15 @@ function Home() {
                 </Grid>
                 <Grid item xs={12} sm={6} lg={4}>
                     <Box sx={scrollableAreaStyle(theme.palette.mode)}>
-                        <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
+                        <DndProvider backend={HTML5Backend}>
                             <ScrollingComponent verticalStrength={vStrength}
                                                 style={{marginTop: '10px', paddingBottom: '20px'}}>
                                 <Grid container justifyContent="center" spacing={6}>
                                     <CoursesTable courses={coursesToTake}
-                                                  add={removeClass}
+                                                  add={addClass}
+                                                  remove={removeClass}
+                                                  semesters={semesters}
+                                                  schedule={schedule}
                                                   replace={replaceClass}
                                                   replaceSequence={replaceSequence}
                                                   setIsFetching={setIsFetching}
@@ -302,11 +301,16 @@ function Home() {
                                     />
                                     <Grid container item xs={6} sm={6} md={9} spacing={2}>
                                         {semesters !== null && (
-                                            semesters.map((name, index) => <SemesterTable key={v4()} index={index}
-                                                                                          semester={name}
-                                                                                          courses={schedule[index]}
-                                                                                          add={addClass}
-                                                                                          move={moveClass}/>)
+                                            semesters.map((name, index) =>
+                                                <SemesterTable
+                                                    key={v4()}
+                                                    index={index}
+                                                    semester={name}
+                                                    courses={schedule[index]}
+                                                    add={addClass}
+                                                    remove={removeClass}
+                                                    move={moveClass}
+                                                />)
                                         )}
 
                                     </Grid>

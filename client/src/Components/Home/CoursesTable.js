@@ -1,9 +1,11 @@
 import ClickableTableRow from "./ClickableTableRow";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useDrop} from "react-dnd";
 import {v4} from 'uuid'
 import axios from "axios";
 import {
+    Box,
+    Button,
     Dialog,
     DialogContent,
     DialogContentText,
@@ -20,17 +22,22 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow
+    TableRow,
+    TextField
 } from "@mui/material";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faExchangeAlt} from "@fortawesome/free-solid-svg-icons";
+import {faArrowRight, faExchangeAlt} from "@fortawesome/free-solid-svg-icons";
+import MenuItem from "@mui/material/MenuItem";
 
 const {REACT_APP_SERVER_URL} = process.env;
 
 /**
- * @param props.courses - array of course objects, each object has "name" and "credits" properties
- * @param props.add - function that updates server data after a class is added to the courses table
- * @param props.replace - function that updates server data after a class is replaced with its alternative
+ * @param props.courses - array of course objects, each object has "name" and "credits" properties.
+ * @param props.add - function that updates server data after a class is added to the courses table.
+ * @param props.remove - function that updates server data after a class is removed to the courses table.
+ * @param props.semesters - Names and number of semesters.
+ * @param props.schedule - The class of each semester.
+ * @param props.replace - function that updates server data after a class is replaced with its alternative,
  * @param props.setIsFetching - function that updates if the data is fetching.
  * @param props.setUnexpectedError - function that if it will show a message error if the server is off.
  * @return {JSX.Element} - table that displays all the courses the user needs to take
@@ -39,6 +46,8 @@ function CoursesTable(props) {
 
     //rows displayed under the courses table
     const [rows, setRows] = useState(props.courses);
+
+    const [rowsSemester, setRowsSemester] = useState(props.schedule[0]);
 
     //class(es) that alternatives are listed for
     const [replace, setReplace] = useState("");
@@ -54,6 +63,10 @@ function CoursesTable(props) {
     //boolean to track whether the dialog is open or not
     const [open, setOpen] = useState(false);
 
+    const [semesterIndex, setSemesterIndex] = useState(0);
+
+    const [courseName, setCourseName] = useState("");
+
 
     //on a table_row drop, the rows are updated and the add function is called (updates server data)
     //note that on a drop, the original table_row is deleted (look at ClickableTableRow.js)
@@ -62,7 +75,7 @@ function CoursesTable(props) {
         drop: (draggedRow) => {
             setRows(rows => [...rows, {name: draggedRow.name, credits: draggedRow.credits}]);
             if (draggedRow.index !== -1) {
-                props.add(draggedRow.name);
+                props.remove(draggedRow.name);
             }
         },
         collect: monitor => ({
@@ -157,6 +170,15 @@ function CoursesTable(props) {
         setOpen(false);
     }
 
+    //It will hnndle the button of Move class to a semester.
+    function handleAddCourseToSemester() {
+        setOpen(false);
+        props.add(semesterIndex, courseName);
+        console.log(semesterIndex);
+        console.log(courseName);
+        setSemesterIndex(0);
+    }
+
     return (
         <>
             <Dialog open={open} onClose={closeDialog}>
@@ -167,6 +189,34 @@ function CoursesTable(props) {
                     <DialogContentText>
                         {desc}
                     </DialogContentText>
+                    {props.semesters !== null && (
+                        <Box sx={{paddingTop: '30px', paddingBottom: '30px',}}>
+                            <ListSubheader disableGutters
+                                           sx={{backgroundColor: 'inherit', color: 'inherit', marginRight: '10px'}}>
+                                Select a Semester to take the class
+                            </ListSubheader>
+                            <TextField
+                                id="move-sem"
+                                select
+                                defaultValue={props.semesters[0]}
+                                onChange={(event) => {
+                                    setSemesterIndex(props.semesters.findIndex(
+                                        (semester) => semester === event.target.value
+                                    ));
+                                }}
+                                sx={{width: '150px'}}
+                            >
+                                {props.semesters.map((name, index) => (
+                                    <MenuItem key={index} value={name}>
+                                        {name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                            <Button variant="contained" sx={{marginLeft: '20px', marginTop: '15px'}}
+                                    onClick={handleAddCourseToSemester}>>
+                                <FontAwesomeIcon icon={faArrowRight} style={{margin: '0 10px'}}/></Button>
+                        </Box>
+                    )}
                     {alternates !== null && (
                         <List dense disablePadding={true}>
                             {alternates.length !== 0 ?
@@ -222,9 +272,16 @@ function CoursesTable(props) {
                         <TableBody>
                             {rows !== null && (
                                 rows.map(row =>
-                                    <ClickableTableRow key={v4()} index={-1} name={row.name} credits={row.credits}
+                                    <ClickableTableRow key={v4()}
+                                                       index={-1}
+                                                       name={row.name}
+                                                       credits={row.credits}
                                                        delete={removeRow}
-                                                       handleClick={showAlternatives}/>
+                                                       handleClick={() => {
+                                                           showAlternatives(row.name);
+                                                           setCourseName(row.name);
+                                                       }}
+                                    />
                                 ))}
                         </TableBody>
                     </Table>

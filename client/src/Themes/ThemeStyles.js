@@ -217,6 +217,11 @@ export const helpStyle = (mode) => ({
     position: 'absolute',
     bottom: 10,
     right: 20,
+    '@media (max-width: 600px)': {
+        right: 10,
+        bottom: 5,
+    },
+
 })
 
 export const textInputStyle = (mode) => ({
@@ -293,7 +298,7 @@ export const overflowListStyle = (mode) => ({
 
 export const scrollableAreaStyle = (mode) => ({
     overflow: 'auto',
-    height: 'calc(100vh - 140px)',
+    height: 'calc(100vh - 160px)',
     padding: '15px',
     '&::-webkit-scrollbar': {
         width: '10px',
