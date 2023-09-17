@@ -1,6 +1,3 @@
 # MyBetterCSPlan
 
-test
-
-> Soon
 
