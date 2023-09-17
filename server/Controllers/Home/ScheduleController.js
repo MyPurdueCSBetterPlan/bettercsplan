@@ -114,8 +114,7 @@ module.exports.AddClass = async (req, res, next) => {
                     }
                 }
 
-            }
-            else {
+            } else {
                 const semester = semIndex % 2
                 if (semester === 0) { //fall
                     if (!semestersAllowed.includes("Fall")) {
@@ -126,8 +125,7 @@ module.exports.AddClass = async (req, res, next) => {
                             schedule: scheduleWithCredits
                         })
                     }
-                }
-                else { //spring
+                } else { //spring
                     if (!semestersAllowed.includes("Spring")) {
                         return res.status(200).json({
                             message: "This class is not available in the Spring semester",
@@ -161,8 +159,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CS 18200" || className === "CS 24000") {
+        } else if (className === "CS 18200" || className === "CS 24000") {
             if (!taken.includes("CS 18000") && !previousSemClasses.includes("CS 18000")) {
                 return res.status(200).json({
                     message: "CS 18000 must be taken before",
@@ -171,8 +168,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CS 25000" || className === "CS 25100") {
+        } else if (className === "CS 25000" || className === "CS 25100") {
             if ((!taken.includes("CS 24000") && !previousSemClasses.includes("CS 24000")) ||
                 (!taken.includes("CS 18200") && !previousSemClasses.includes("CS 18200"))) {
                 return res.status(200).json({
@@ -182,8 +178,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CS 25200") {
+        } else if (className === "CS 25200") {
             if ((!taken.includes("CS 25000") && !previousSemClasses.includes("CS 25000")) ||
                 (!taken.includes("CS 25100") && !previousSemClasses.includes("CS 25100"))) {
                 return res.status(200).json({
@@ -193,9 +188,8 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CS 40800" || className === "CS 44800" || className === "CS 47100" ||
-                 className === "CS 47300" || className === "CS 34800" || className === "CS 30700") {
+        } else if (className === "CS 40800" || className === "CS 44800" || className === "CS 47100" ||
+            className === "CS 47300" || className === "CS 34800" || className === "CS 30700") {
             if (!taken.includes("CS 25100") && !previousSemClasses.includes("CS 25100")) {
                 return res.status(200).json({
                     message: "CS 25100 must be taken before",
@@ -204,8 +198,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CS 40700") {
+        } else if (className === "CS 40700") {
             if (!taken.includes("CS 30700") && !previousSemClasses.includes("CS 30700")) {
                 return res.status(200).json({
                     message: "CS 30700 must be taken before",
@@ -214,8 +207,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CS 48900" || className === "CS 35400" || className === "CS 35200") {
+        } else if (className === "CS 48900" || className === "CS 35400" || className === "CS 35200") {
             if (!taken.includes("CS 25200") && !previousSemClasses.includes("CS 25200")) {
                 return res.status(200).json({
                     message: "CS 25200 must be taken before",
@@ -224,8 +216,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CS 42200" || className === "CS 42600") {
+        } else if (className === "CS 42200" || className === "CS 42600") {
             if (!taken.includes("CS 35400") && !previousSemClasses.includes("CS 35400") &&
                 !currentSemClasses.includes("CS 35400")) {
                 return res.status(200).json({
@@ -235,8 +226,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CS 45600") {
+        } else if (className === "CS 45600") {
             if (!taken.includes("CS 35200") && !previousSemClasses.includes("CS 35200") &&
                 !previousSemClasses.includes("CS 35200")) {
                 return res.status(200).json({
@@ -246,8 +236,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CS 35300") {
+        } else if (className === "CS 35300") {
             if (!taken.includes("CS 35200") && !previousSemClasses.includes("CS 35200")) {
                 return res.status(200).json({
                     message: "CS 35200 must be taken before",
@@ -256,8 +245,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "MA 16200") {
+        } else if (className === "MA 16200") {
             if (!taken.includes("MA 16100") && !previousSemClasses.includes("MA 16100")) {
                 return res.status(200).json({
                     message: "MA 16100 must be taken before",
@@ -266,8 +254,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "STAT 35000" || className === "MA 26100") {
+        } else if (className === "STAT 35000" || className === "MA 26100") {
             if (!taken.includes("MA 16200") && !previousSemClasses.includes("MA 16200")) {
                 return res.status(200).json({
                     message: "MA 162 must be taken before",
@@ -276,8 +263,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "MA 26500") {
+        } else if (className === "MA 26500") {
             if (!taken.includes("MA 26100") && !previousSemClasses.includes("MA 26100") &&
                 !currentSemClasses.includes("MA 26100")) {
                 return res.status(200).json({
@@ -287,11 +273,10 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className.includes("CS 37300")) {
+        } else if (className.includes("CS 37300")) {
             if ((!taken.includes("CS 25100") && !previousSemClasses.includes("CS 25100")) ||
                 (!taken.includes("STAT 35000") && !previousSemClasses.includes("STAT 35000") &&
-                 !currentSemClasses.includes("STAT 35000"))) {
+                    !currentSemClasses.includes("STAT 35000"))) {
                 return res.status(200).json({
                     message: "CS 25100 must be taken before and STAT 35000 must be taken before or concurrently",
                     success: false,
@@ -299,8 +284,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CS 38100") {
+        } else if (className === "CS 38100") {
             if ((!taken.includes("CS 25100") && !previousSemClasses.includes("CS 25100")) ||
                 (!taken.includes("MA 26100") && !previousSemClasses.includes("MA 26100"))) {
                 return res.status(200).json({
@@ -310,8 +294,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CS 48300") {
+        } else if (className === "CS 48300") {
             if (!taken.includes("CS 38100") && !previousSemClasses.includes("CS 38100")) {
                 return res.status(200).json({
                     message: "CS 38100 must be taken before",
@@ -320,8 +303,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CS 31400") {
+        } else if (className === "CS 31400") {
             if ((!taken.includes("CS 18000") && !previousSemClasses.includes("CS 18000")) ||
                 (!taken.includes("MA 26500") && !previousSemClasses.includes("MA 26500"))) {
                 return res.status(200).json({
@@ -331,11 +313,10 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CS 35500") {
+        } else if (className === "CS 35500") {
             if ((!taken.includes("CS 25100") && !previousSemClasses.includes("CS 25100")) ||
                 (!taken.includes("STAT 35000") && !previousSemClasses.includes("STAT 35000") &&
-                 !taken.includes("MA 26500") && !previousSemClasses.includes("MA 26500"))) {
+                    !taken.includes("MA 26500") && !previousSemClasses.includes("MA 26500"))) {
                 return res.status(200).json({
                     message: "CS 25100 must be taken before and either STAT 35000 or MA 26500 must be taken before",
                     success: false,
@@ -343,8 +324,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CS 33400") {
+        } else if (className === "CS 33400") {
             if ((!taken.includes("CS 24000") && !previousSemClasses.includes("CS 24000")) ||
                 (!taken.includes("MA 26500") && !previousSemClasses.includes("MA 26500"))) {
                 return res.status(200).json({
@@ -354,8 +334,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CS 43400") {
+        } else if (className === "CS 43400") {
             if (!taken.includes("CS 33400") && !previousSemClasses.includes("CS 33400")) {
                 return res.status(200).json({
                     message: "CS 3340 must be taken before",
@@ -364,8 +343,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "BIOL 11100") {
+        } else if (className === "BIOL 11100") {
             if (!taken.includes("BIOL 11000") && !previousSemClasses.includes("BIOL 11000")) {
                 return res.status(200).json({
                     message: "BIOL 11000 must be taken before",
@@ -374,8 +352,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "BIOL 13100") {
+        } else if (className === "BIOL 13100") {
             if (!taken.includes("BIOL 12100") && !previousSemClasses.includes("BIOL 12100")) {
                 return res.status(200).json({
                     message: "BIOL 12100 must be taken before",
@@ -384,8 +361,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "BIOL 13500") {
+        } else if (className === "BIOL 13500") {
             if (!taken.includes("BIOL 13100") && !previousSemClasses.includes("BIOL 13100")) {
                 return res.status(200).json({
                     message: "BIOL 13100 must be taken before",
@@ -394,8 +370,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CHM 11600") {
+        } else if (className === "CHM 11600") {
             if (!taken.includes("CHM 11500") && !previousSemClasses.includes("CHM 11500")) {
                 return res.status(200).json({
                     message: "CHM 11500 must be taken before",
@@ -404,8 +379,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "CHM 12600") {
+        } else if (className === "CHM 12600") {
             if (!taken.includes("CHM 12500") && !previousSemClasses.includes("CHM 12500")) {
                 return res.status(200).json({
                     message: "CHM 12500 must be taken before",
@@ -414,8 +388,7 @@ module.exports.AddClass = async (req, res, next) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === "EAPS 11200") {
+        } else if (className === "EAPS 11200") {
             if (!taken.includes("EAPS 11100") && !previousSemClasses.includes("EAPS 11100")) {
                 return res.status(200).json({
                     message: "EAPS 11100 must be taken before",
@@ -474,8 +447,8 @@ module.exports.AddClass = async (req, res, next) => {
         }
         //language prereqs
         else if (prefix === "ASL" || prefix === "ARAB" || prefix === "CHNS" || prefix === "FR" || prefix === "GER" ||
-                 prefix === "GREK" || prefix === "HEBR" || prefix === "ITAL" || prefix === "JPNS" || prefix === "KOR" ||
-                 prefix === "LATN" || prefix === "PTGS" || prefix === "RUSS" || prefix === "SPAN") {
+            prefix === "GREK" || prefix === "HEBR" || prefix === "ITAL" || prefix === "JPNS" || prefix === "KOR" ||
+            prefix === "LATN" || prefix === "PTGS" || prefix === "RUSS" || prefix === "SPAN") {
             if (number === "10200") {
                 const prereq = prefix + " 10100"
                 if (!taken.includes(prereq) && !previousSemClasses.includes(prereq)) {
@@ -486,8 +459,7 @@ module.exports.AddClass = async (req, res, next) => {
                         schedule: scheduleWithCredits
                     })
                 }
-            }
-            else if (number === "20100") {
+            } else if (number === "20100") {
                 const prereq = prefix + " 10200"
                 if (!taken.includes(prereq) && !previousSemClasses.includes(prereq)) {
                     return res.status(200).json({
@@ -497,8 +469,7 @@ module.exports.AddClass = async (req, res, next) => {
                         schedule: scheduleWithCredits
                     })
                 }
-            }
-            else if (number === "20200") {
+            } else if (number === "20200") {
                 const prereq = prefix + " 20100"
                 if (!taken.includes(prereq) && !previousSemClasses.includes(prereq)) {
                     return res.status(200).json({
@@ -530,8 +501,7 @@ module.exports.AddClass = async (req, res, next) => {
             message: "Successfully updated schedule",
             success: true
         })
-    }
-    catch {
+    } catch {
         return res.status(400).json({
             message: "Something went wrong while trying to update your schedule",
         })
@@ -606,7 +576,6 @@ module.exports.RemoveClass = async (req, res) => {
         db.close()
 
 
-
         //flattened list of courses in schedule
         let scheduleNamesList = user.schedule.flat()
 
@@ -624,8 +593,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'MA 16200') {
+        } else if (className === 'MA 16200') {
             if (scheduleNamesList.includes('STAT 35000') || scheduleNamesList.includes('MA 26100')) {
                 return res.status(200).json({
                     message: "MA 16200 is a prereq for STAT 35000 and MA 26100. Remove those classes first",
@@ -634,8 +602,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'STAT 35000') {
+        } else if (className === 'STAT 35000') {
 
             //checking if schedule contains MA 26500 and its placement relative to STAT 35000
             let replaceable = false
@@ -650,7 +617,7 @@ module.exports.RemoveClass = async (req, res) => {
                 }
             }
 
-            if (scheduleNamesList.includes('CS 37300') || (scheduleNamesList.includes('CS 35500') && !replaceable)){
+            if (scheduleNamesList.includes('CS 37300') || (scheduleNamesList.includes('CS 35500') && !replaceable)) {
                 return res.status(200).json({
                     message: "STAT 35000 is a prereq for CS 37300 and CS 35500. Remove those classes first.",
                     success: false,
@@ -658,8 +625,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'MA 26100') {
+        } else if (className === 'MA 26100') {
             if (scheduleNamesList.includes('MA 26500') || scheduleNamesList.includes('CS 38100')) {
                 return res.status(200).json({
                     message: "MA 26100 is a prereq for MA 26500 and CS 38100. Remove those classes first",
@@ -668,8 +634,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'MA 26500') {
+        } else if (className === 'MA 26500') {
 
             //checking if schedule contains STAT 35000 and its placement relative to MA 26500
             let replaceable = false
@@ -692,8 +657,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'CS 18000') {
+        } else if (className === 'CS 18000') {
             if (scheduleNamesList.includes('CS 18200') || scheduleNamesList.includes('CS 24000') ||
                 scheduleNamesList.includes('CS 31400')) {
                 return res.status(200).json({
@@ -703,8 +667,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'CS 18200') {
+        } else if (className === 'CS 18200') {
             if (scheduleNamesList.includes('CS 25000') || scheduleNamesList.includes('CS 25100')) {
                 return res.status(200).json({
                     message: "CS 18200 is a prereq for CS 25000 and CS 25100. Remove those classes first",
@@ -713,8 +676,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'CS 24000') {
+        } else if (className === 'CS 24000') {
             if (scheduleNamesList.includes('CS 25000') || scheduleNamesList.includes('CS 25100') ||
                 scheduleNamesList.includes('CS 33400')) {
                 return res.status(200).json({
@@ -724,8 +686,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'CS 25000') {
+        } else if (className === 'CS 25000') {
             if (scheduleNamesList.includes('CS 25200')) {
                 return res.status(200).json({
                     message: "CS 25000 is a prereq for CS 25200. Remove that class first",
@@ -734,13 +695,12 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'CS 25100') {
+        } else if (className === 'CS 25100') {
             if (scheduleNamesList.includes('CS 25200') || scheduleNamesList.includes('CS 40800') ||
                 scheduleNamesList.includes('CS 44800') || scheduleNamesList.includes('CS 47100') ||
                 scheduleNamesList.includes('CS 47300') || scheduleNamesList.includes('CS 34800') ||
                 scheduleNamesList.includes('CS 30700') || scheduleNamesList.includes('CS 37300') ||
-                scheduleNamesList.includes('CS 38100') || scheduleNamesList.includes('CS 35500')){
+                scheduleNamesList.includes('CS 38100') || scheduleNamesList.includes('CS 35500')) {
                 return res.status(200).json({
                     message: "CS 25100 is a prereq for CS 25200, CS 40800, CS 44800, CS 47100, CS 47300, CS 34800, " +
                         "CS 30700, CS 37300, CS 38100, and CS 35500. Remove these classes first",
@@ -749,8 +709,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'CS 25200') {
+        } else if (className === 'CS 25200') {
             if (scheduleNamesList.includes('CS 48900') || scheduleNamesList.includes('CS 35400') ||
                 scheduleNamesList.includes('CS 35200')) {
                 return res.status(200).json({
@@ -760,8 +719,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'CS 30700') {
+        } else if (className === 'CS 30700') {
             if (scheduleNamesList.includes('CS 40700')) {
                 return res.status(200).json({
                     message: "CS 30700 is a prereq for CS 40700. Remove this class first",
@@ -770,8 +728,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'CS 35400') {
+        } else if (className === 'CS 35400') {
             if (scheduleNamesList.includes('CS 42200') || scheduleNamesList.includes('CS 42600')) {
                 return res.status(200).json({
                     message: "CS 35400 is a prereq for CS 42200 and CS 42600. Remove these classes first",
@@ -780,8 +737,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'CS 35200') {
+        } else if (className === 'CS 35200') {
             if (scheduleNamesList.includes('CS 45600') || scheduleNamesList.includes('CS 35300')) {
                 return res.status(200).json({
                     message: "CS 35200 is a prereq for CS 45600 and CS 35300. Remove these classes first",
@@ -790,8 +746,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'CS 38100') {
+        } else if (className === 'CS 38100') {
             if (scheduleNamesList.includes('CS 48300')) {
                 return res.status(200).json({
                     message: "CS 38100 is a prereq for CS 48300. Remove this class first",
@@ -800,8 +755,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'CS 33400') {
+        } else if (className === 'CS 33400') {
             if (scheduleNamesList.includes('CS 43400')) {
                 return res.status(200).json({
                     message: "CS 33400 is a prereq for CS 43400. Remove this class first",
@@ -810,8 +764,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'BIOL 11000') {
+        } else if (className === 'BIOL 11000') {
             if (scheduleNamesList.includes('BIOL 11100')) {
                 return res.status(200).json({
                     message: "BIOL 11000 is a prereq for BIOL 11100. Remove this class first",
@@ -820,8 +773,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'BIOL 12100') {
+        } else if (className === 'BIOL 12100') {
             if (scheduleNamesList.includes('BIOL 13100')) {
                 return res.status(200).json({
                     message: "BIOL 12100 is a prereq for BIOL 13100. Remove this class first",
@@ -830,8 +782,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'BIOL 13100') {
+        } else if (className === 'BIOL 13100') {
             if (scheduleNamesList.includes('BIOL 13500')) {
                 return res.status(200).json({
                     message: "BIOL 13100 is a prereq for BIOL 13500. Remove this class first",
@@ -840,8 +791,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'CHM 11500') {
+        } else if (className === 'CHM 11500') {
             if (scheduleNamesList.includes('CHM 11600')) {
                 return res.status(200).json({
                     message: "CHM 11500 is a prereq for CHM 11600. Remove this class first",
@@ -850,8 +800,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'CHM 12500') {
+        } else if (className === 'CHM 12500') {
             if (scheduleNamesList.includes('CHM 12600')) {
                 return res.status(200).json({
                     message: "CHM 12500 is a prereq for CHM 12600. Remove this class first",
@@ -860,8 +809,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'EAPS 11100') {
+        } else if (className === 'EAPS 11100') {
             if (scheduleNamesList.includes('EAPS 11200')) {
                 return res.status(200).json({
                     message: "EAPS 11100 is a prereq for EAPS 11200. Remove this class first",
@@ -870,8 +818,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'PHYS 22000') {
+        } else if (className === 'PHYS 22000') {
 
             //checking if schedule contains PHYS 17200 and PHYS 23300 and their placement relative to PHYS 22200
             let PHYS221Met = false
@@ -907,8 +854,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'PHYS 17200') {
+        } else if (className === 'PHYS 17200') {
 
             //checking if schedule contains PHYS 22000 and PHYS 23300 and their placement relative to PHYS 17200
             let PHYS221Met = false
@@ -947,8 +893,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (className === 'PHYS 23300') {
+        } else if (className === 'PHYS 23300') {
 
             //checking if schedule contains PHYS 17200 and PHYS 22000 and their placement relative to PHYS 23400
             let PHYS234Met = false
@@ -971,8 +916,7 @@ module.exports.RemoveClass = async (req, res) => {
                     schedule: scheduleWithCredits
                 })
             }
-        }
-        else if (prefix === "ASL" || prefix === "ARAB" || prefix === "CHNS" || prefix === "FR" || prefix === "GER" ||
+        } else if (prefix === "ASL" || prefix === "ARAB" || prefix === "CHNS" || prefix === "FR" || prefix === "GER" ||
             prefix === "GREK" || prefix === "HEBR" || prefix === "ITAL" || prefix === "JPNS" || prefix === "KOR" ||
             prefix === "LATN" || prefix === "PTGS" || prefix === "RUSS" || prefix === "SPAN") {
             if (number === '20100') {
@@ -985,8 +929,7 @@ module.exports.RemoveClass = async (req, res) => {
                         schedule: scheduleWithCredits
                     })
                 }
-            }
-            else if (number === '10200') {
+            } else if (number === '10200') {
                 const dependent = prefix + ' 20100'
                 if (scheduleNamesList.includes(dependent)) {
                     return res.status(200).json({
@@ -996,8 +939,7 @@ module.exports.RemoveClass = async (req, res) => {
                         schedule: scheduleWithCredits
                     })
                 }
-            }
-            else if (number === '10100') {
+            } else if (number === '10100') {
                 const dependent = prefix + ' 10200'
                 if (scheduleNamesList.includes(dependent)) {
                     return res.status(200).json({
@@ -1030,13 +972,12 @@ module.exports.RemoveClass = async (req, res) => {
             coursesToTake: coursesWithCredits,
             schedule: scheduleWithCredits
         })
-    }
-    catch {
+    } catch {
         return res.status(400).json({message: "Schedule was not able to be updated"})
     }
 }
 
-module.exports.removeOldClass = async(req, res) => {
+module.exports.removeOldClass = async (req, res) => {
     //try to remove the class that's not in the semIndex
     try {
         const {semIndex, className} = req.body
@@ -1085,7 +1026,7 @@ module.exports.removeOldClass = async(req, res) => {
         console.log('remove from sem ', removeSemIndex)
         console.log('add to sem ', semIndex)
 
-        if(removeSemIndex < semIndex) {
+        if (removeSemIndex < semIndex) {
             console.log("check for errors")
             if (className === 'MA 16100') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
@@ -1107,8 +1048,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'MA 16200') {
+            } else if (className === 'MA 16200') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if ((scheduleNames[i].includes('STAT 35000')) ||
                         scheduleNames[i].includes('MA 26100')) {
@@ -1126,8 +1066,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'STAT 35000') {
+            } else if (className === 'STAT 35000') {
 
                 let CS355Met = false
                 //iterate from index 0 to semIndex at most (index of CS 35500 if comes before)
@@ -1158,8 +1097,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'MA 26100') {
+            } else if (className === 'MA 26100') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if ((scheduleNames[i].includes('MA 26500') && i !== semIndex) ||
                         scheduleNames[i].includes('CS 38100')) {
@@ -1178,8 +1116,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'MA 26500') {
+            } else if (className === 'MA 26500') {
                 let CS355Met = false
                 //iterate from index 0 to semIndex at most (index of CS 35500 if it comes before)
                 for (let i = 0; i < semIndex; i++) {
@@ -1209,8 +1146,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'CS 18000') {
+            } else if (className === 'CS 18000') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('CS 18200') ||
                         scheduleNames[i].includes('CS 24000') ||
@@ -1229,8 +1165,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'CS 18200') {
+            } else if (className === 'CS 18200') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('CS 25100') ||
                         scheduleNames[i].includes('CS 25000')) {
@@ -1248,8 +1183,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'CS 24000') {
+            } else if (className === 'CS 24000') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('CS 25000') ||
                         scheduleNames[i].includes('CS 25100') ||
@@ -1268,8 +1202,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'CS 25000') {
+            } else if (className === 'CS 25000') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('CS 25200')) {
 
@@ -1286,8 +1219,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'CS 25100') {
+            } else if (className === 'CS 25100') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('CS 25200') ||
                         scheduleNames[i].includes('CS 40800') ||
@@ -1299,7 +1231,7 @@ module.exports.removeOldClass = async(req, res) => {
                         scheduleNames[i].includes('CS 35500') ||
                         scheduleNames[i].includes('CS 38100') ||
                         scheduleNames[i].includes('CS 37300')
-                        ) {
+                    ) {
 
                         //remove newly added CS 25100
                         scheduleNames[semIndex].splice(scheduleNames[semIndex].indexOf('CS 25100'), 1)
@@ -1315,8 +1247,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'CS 25200') {
+            } else if (className === 'CS 25200') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('CS 48900') ||
                         scheduleNames[i].includes('CS 35400') ||
@@ -1335,8 +1266,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'CS 30700') {
+            } else if (className === 'CS 30700') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('CS 40700')) {
 
@@ -1353,8 +1283,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'CS 35400') {
+            } else if (className === 'CS 35400') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if ((scheduleNames[i].includes('CS 42200') && i !== semIndex) ||
                         (scheduleNames[i].includes('CS 42600') && i !== semIndex)) {
@@ -1373,8 +1302,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'CS 35200') {
+            } else if (className === 'CS 35200') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if ((scheduleNames[i].includes('CS 45600') && i !== semIndex) ||
                         scheduleNames[i].includes('CS 35300')) {
@@ -1392,8 +1320,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'CS 38100') {
+            } else if (className === 'CS 38100') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('CS 48300')) {
 
@@ -1410,8 +1337,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'CS 33400') {
+            } else if (className === 'CS 33400') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('CS 43400')) {
 
@@ -1428,8 +1354,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'BIOL 11000') {
+            } else if (className === 'BIOL 11000') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('BIOL 11100')) {
 
@@ -1446,8 +1371,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'BIOL 12100') {
+            } else if (className === 'BIOL 12100') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('BIOL 13100')) {
 
@@ -1464,8 +1388,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'BIOL 13100') {
+            } else if (className === 'BIOL 13100') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('BIOL 13500')) {
 
@@ -1482,8 +1405,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'CHM 11500') {
+            } else if (className === 'CHM 11500') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('CHM 11600')) {
 
@@ -1500,8 +1422,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'CHM 12500') {
+            } else if (className === 'CHM 12500') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('CHM 12600')) {
 
@@ -1518,8 +1439,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'EAPS 11100') {
+            } else if (className === 'EAPS 11100') {
                 for (let i = removeSemIndex; i <= semIndex; i++) {
                     if (scheduleNames[i].includes('EAPS 11200')) {
 
@@ -1536,8 +1456,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'PHYS 22000') {
+            } else if (className === 'PHYS 22000') {
                 let PHYS221Met = false
                 let PHYS234Met = false
 
@@ -1580,8 +1499,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'PHYS 17200') {
+            } else if (className === 'PHYS 17200') {
                 let PHYS221Met = false
                 let PHYS234Met = false
 
@@ -1626,8 +1544,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (className === 'PHYS 23300') {
+            } else if (className === 'PHYS 23300') {
                 let PHYS234Met = false
 
                 //iterate from index 0 to semIndex at most (index of PHYS 23400 if it comes before)
@@ -1656,8 +1573,7 @@ module.exports.removeOldClass = async(req, res) => {
                         })
                     }
                 }
-            }
-            else if (prefix === "ASL" || prefix === "ARAB" || prefix === "CHNS" || prefix === "FR" || prefix === "GER" ||
+            } else if (prefix === "ASL" || prefix === "ARAB" || prefix === "CHNS" || prefix === "FR" || prefix === "GER" ||
                 prefix === "GREK" || prefix === "HEBR" || prefix === "ITAL" || prefix === "JPNS" || prefix === "KOR" ||
                 prefix === "LATN" || prefix === "PTGS" || prefix === "RUSS" || prefix === "SPAN") {
                 if (number === '20100') {
@@ -1678,8 +1594,7 @@ module.exports.removeOldClass = async(req, res) => {
                             })
                         }
                     }
-                }
-                else if (number === '10200') {
+                } else if (number === '10200') {
                     const dependent = prefix + ' 20100'
                     for (let i = removeSemIndex; i <= semIndex; i++) {
                         if (scheduleNames[i].includes(dependent)) {
@@ -1697,8 +1612,7 @@ module.exports.removeOldClass = async(req, res) => {
                             })
                         }
                     }
-                }
-                else if (number === '10100') {
+                } else if (number === '10100') {
                     const dependent = prefix + ' 10200'
                     for (let i = removeSemIndex; i <= semIndex; i++) {
                         if (scheduleNames[i].includes(dependent)) {
@@ -1738,8 +1652,7 @@ module.exports.removeOldClass = async(req, res) => {
             success: true,
             schedule: scheduleWithCredits
         })
-    }
-    catch {
+    } catch {
         return res.status(400).json({message: "There was an unexpected error...unfortunately, you will have to remake your schedule"})
     }
 }
@@ -1748,7 +1661,7 @@ module.exports.removeOldClass = async(req, res) => {
  * This function will return any alternatives available for the given course back to the client.
  * It also will get the description for the class
  */
-module.exports.getAlternatives = async(req, res) => {
+module.exports.getAlternatives = async (req, res) => {
     try {
         const {className} = req.body
 
@@ -1868,14 +1781,11 @@ module.exports.getAlternatives = async(req, res) => {
         }
 
 
-
-
-
         //arrays that store alternatives
         const core_wc_il = [
             {name: "SCLA 10100", credits: "3.00"},
             {name: "ENGL 10600", credits: "4.00"},
-            {name:"ENGL 10800", credits: "3.00"},
+            {name: "ENGL 10800", credits: "3.00"},
             {name: "ENGL 30400", credits: "3.00"}
         ]
 
@@ -1937,8 +1847,7 @@ module.exports.getAlternatives = async(req, res) => {
         })
 
 
-    }
-    catch {
+    } catch {
         return res.status(400).json({message: "Unable to get description and/or alternatives"})
     }
 
@@ -1961,13 +1870,12 @@ module.exports.ReplaceClass = async (req, res) => {
         await User.updateOne({email: req.email}, {coursesToTake: coursesToTake})
 
         return res.status(200).json({message: "Replaced classes successfully", success: true})
-    }
-    catch {
+    } catch {
         return res.status(400).json({message: "Unable to replace classes", success: false})
     }
 }
 
-module.exports.ReplaceSequence = async (req, res)  => {
+module.exports.ReplaceSequence = async (req, res) => {
     try {
         const {oldClassNames, newClassNames} = req.body
 
@@ -1988,8 +1896,7 @@ module.exports.ReplaceSequence = async (req, res)  => {
         await User.updateOne({email: req.email}, {coursesToTake: coursesToTake})
 
         return res.status(200).json({message: "Replaced classes successfully", success: true})
-    }
-    catch {
+    } catch {
         return res.status(400).json({message: "Unable to replace classes", success: false})
     }
 }

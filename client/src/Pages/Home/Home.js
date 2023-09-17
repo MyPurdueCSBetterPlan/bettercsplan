@@ -40,6 +40,8 @@ function Home() {
 
     //array of arrays of objects where each object represents a course (has "name" and "credits" properties)
     const [schedule, setSchedule] = useState([]);
+    const [scheduleUpdated, setScheduleUpdated] = useState(0);
+
 
     //Loading status page
     const [isFetching, setIsFetching] = useState(false);
@@ -114,7 +116,14 @@ function Home() {
                 setUnexpectedError(true);
             })
             .finally(() => setIsFetching(false));
-    }, [cookies, navigate, removeCookie]);
+    }, [cookies, navigate, removeCookie, scheduleUpdated]);
+
+
+    //It will update the schedule of a semester. Called whenever you need to update a table locally.
+    const handleScheduleUpdate = () => {
+        // Increment the scheduleUpdated state to trigger a re-render
+        setScheduleUpdated(scheduleUpdated + 1);
+    };
 
 
     //called whenever a class is added from the courses table to a semester table
@@ -139,6 +148,8 @@ function Home() {
                     ErrorAction(message);
                     setCoursesToTake(coursesToTake);
                     setSchedule(schedule);
+                } else {
+                    handleScheduleUpdate();
                 }
             })
             .catch(() => {
@@ -150,6 +161,7 @@ function Home() {
             })
             .finally(() => setIsFetching(false));
     }
+
 
     //called whenever a class is moved from a semester table back to the courses table
     function removeClass(className) {
@@ -171,6 +183,8 @@ function Home() {
                     ErrorAction(message);
                     setCoursesToTake(coursesToTake);
                     setSchedule(schedule);
+                } else {
+                    handleScheduleUpdate();
                 }
             })
             .catch(() => {
@@ -204,6 +218,8 @@ function Home() {
                 if (!success) {
                     ErrorAction(message);
                     setSchedule(schedule);
+                } else {
+                    handleScheduleUpdate();
                 }
             })
             .catch(() => {
@@ -305,6 +321,7 @@ function Home() {
                                                 <SemesterTable
                                                     key={v4()}
                                                     index={index}
+                                                    coursesToTake={coursesToTake}
                                                     semester={name}
                                                     courses={schedule[index]}
                                                     add={addClass}

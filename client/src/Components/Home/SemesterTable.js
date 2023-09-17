@@ -10,28 +10,29 @@ import alert from "sweetalert2";
  * Renders a table for a specific semester.
  * The component also provides add, move, and remove classes options.
  *
- * @param {Object} props - The component props.
- * @param {string} props.semester - The semester name.
- * @param {number} props.index - The index of the semester.
- * @param {Array} props.courses - The array of courses for the semester.
- * @param {function} props.add - Function to add a course to the semester.
+ * @param props - The component props.
+ * @param props.semester - The semester name.
+ * @param props.index - The index of the semester.
+ * @param props.coursesToTake - List of courses to take.
+ * @param props.courses - The array of courses for the semester.
+ * @param props.add - Function to add a course to the semester.
  * @param props.remove - function that updates server data after a class is removed to the courses table.
- * @param {function} props.move - Function to move a course from one semester to another.
- *
+ * @param props.move - Function to move a course from one semester to another.
+ * @param props.updateListCourses - function that it will update a table of a semester locally.
  * @returns {JSX.Element} - SemesterTable component with a table displaying the semester's courses.
  */
 
 function SemesterTable(props) {
 
     //the rows displayed under the semester table
-    const [rows, setRows] = useState([]);
+    const [rows, setRows] = useState(props.courses);
+    const [courses, setCourses] = useState(props.coursesToTake);
 
-    const [courseName, setCourseName] = useState("");
 
     const handleDelete = (courseName) => {
         alert.fire({
             title: `Remove ${courseName}`,
-            text: "Do u want to delete this class?",
+            text: "Do you want to delete this class?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -41,6 +42,8 @@ function SemesterTable(props) {
         }).then((result) => {
             if (result.isConfirmed) {
                 props.remove(courseName);
+                removeRow(courseName);
+
             }
         })
     };
@@ -87,6 +90,11 @@ function SemesterTable(props) {
     useEffect(() => {
         setRows(props.courses);
     }, [props.courses]);
+
+
+    useEffect(() => {
+        setCourses(props.coursesToTake);
+    }, [props.coursesToTake]);
 
     return (
         <Grid item xs={12} sm={6} md={6} lg={3}>

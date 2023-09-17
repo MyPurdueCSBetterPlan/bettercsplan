@@ -38,6 +38,7 @@ function App() {
 
     const footerBottom = location.pathname === "/profile"
         || location.pathname === "/notfound"
+        || location.pathname === "/about"
     const homeFooter = location.pathname === "/"
     const createFooter = location.pathname === "/create"
     const authFooter = location.pathname === "/login"

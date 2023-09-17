@@ -47,7 +47,7 @@ function CoursesTable(props) {
     //rows displayed under the courses table
     const [rows, setRows] = useState(props.courses);
 
-    const [rowsSemester, setRowsSemester] = useState(props.schedule[0]);
+    const [schedule, setSchedule] = useState(props.schedule);
 
     //class(es) that alternatives are listed for
     const [replace, setReplace] = useState("");
@@ -74,6 +74,7 @@ function CoursesTable(props) {
         accept: 'TABLE_ROW',
         drop: (draggedRow) => {
             setRows(rows => [...rows, {name: draggedRow.name, credits: draggedRow.credits}]);
+            console.log(draggedRow.index + " test");
             if (draggedRow.index !== -1) {
                 props.remove(draggedRow.name);
             }
@@ -102,6 +103,10 @@ function CoursesTable(props) {
     useEffect(() => {
         setRows(props.courses);
     }, [props.courses]);
+
+    useEffect(() => {
+        setSchedule(props.schedule);
+    }, [props.schedule]);
 
 
     //shows the user a list of alternatives for the class w/ the name given by the argument
@@ -145,7 +150,7 @@ function CoursesTable(props) {
                     rows[i].credits = alternateCredits;
                 }
             }
-            return rows
+            return rows;
         })
     }
 
@@ -170,12 +175,27 @@ function CoursesTable(props) {
         setOpen(false);
     }
 
-    //It will hnndle the button of Move class to a semester.
+    function handleRowClick(name) {
+        showAlternatives(name);
+        setCourseName(name);
+    }
+
+    //It will handle the button of Move class to a semester.
     function handleAddCourseToSemester() {
         setOpen(false);
-        props.add(semesterIndex, courseName);
         console.log(semesterIndex);
         console.log(courseName);
+        props.add(semesterIndex, courseName);
+        setRows((rows) => {
+            let matchDeleted = false;
+            return rows.filter((row) => {
+                if (!matchDeleted && row.name === courseName) {
+                    matchDeleted = true;
+                    return false;
+                }
+                return true;
+            })
+        })
         setSemesterIndex(0);
     }
 
@@ -277,10 +297,7 @@ function CoursesTable(props) {
                                                        name={row.name}
                                                        credits={row.credits}
                                                        delete={removeRow}
-                                                       handleClick={() => {
-                                                           showAlternatives(row.name);
-                                                           setCourseName(row.name);
-                                                       }}
+                                                       handleClick={handleRowClick}
                                     />
                                 ))}
                         </TableBody>
