@@ -7,6 +7,7 @@ Our web provides a user-friendly interface that allows students to map out their
 
 <div align="center">
   <img alt="img" src="https://i.imgur.com/7ZKmmWC.png" width="50%" height="auto" />
+  <img alt="img" src="https://imgur.com/iHIxoUn.png" width="50%" height="auto" />
 </div>
 
 ## Features
