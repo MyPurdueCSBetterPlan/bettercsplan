@@ -6,8 +6,8 @@ MyBetterCSPlan is a web application developed using the MERN (MongoDB, Express.j
 Our web provides a user-friendly interface that allows students to map out their courses semester by semester, ensuring they meet all the necessary prerequisites and graduation requirements.
 
 <div align="center">
-  <img alt="img" src="https://i.imgur.com/7ZKmmWC.png" width="50%" height="auto" />
-  <img alt="img" src="https://imgur.com/iHIxoUn.png" width="50%" height="auto" />
+  <img alt="img" src="https://imgur.com/U77UjYh.png" width="45%" height="auto" style="display: inline-block;"/>
+  <img alt="img" src="https://i.imgur.com/7ZKmmWC.png" width="45%" height="auto" style="display: inline-block;"/>
 </div>
 
 ## Features
